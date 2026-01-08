@@ -8,51 +8,62 @@
         
         body { background: #1a1a1a; font-family: 'Roboto', sans-serif; margin: 0; padding: 10px; color: white; display: flex; flex-direction: column; align-items: center; }
 
-        /* प्रोफेशनल स्कोरबोर्ड */
-        .scoreboard { width: 850px; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.8)); margin-bottom: 25px; } /* 25px gap (approx 2-5 cm depending on screen) */
+        /* MAIN SCOREBOARD */
+        .scoreboard { width: 900px; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.8)); margin-bottom: 20px; position: relative; }
         
-        .top-bar { display: flex; height: 60px; background: linear-gradient(90deg, #00122e, #003a8c); border-bottom: 3px solid #fec309; border-radius: 8px 8px 0 0; }
+        .top-bar { display: flex; height: 60px; background: linear-gradient(90deg, #00122e, #003a8c); border-bottom: 3px solid #fec309; border-radius: 8px 8px 0 0; position: relative; }
+        
         .team-box { width: 130px; background: #fec309; color: #00122e; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 24px; text-transform: uppercase; }
         .score-box { width: 200px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; background: #00122e; }
-        .bats-info { flex-grow: 1; display: flex; align-items: center; justify-content: space-around; font-size: 18px; background: rgba(0,0,0,0.3); border-left: 1px solid rgba(255,255,255,0.1); }
+        .bats-info { flex-grow: 1; display: flex; align-items: center; justify-content: space-around; font-size: 17px; background: rgba(0,0,0,0.3); border-left: 1px solid rgba(255,255,255,0.1); padding-right: 150px; }
+        
+        /* OPPONENT SCORE BOX (Top Right) */
+        .opp-score-box { position: absolute; right: 0; top: 0; height: 100%; width: 160px; background: #d9534f; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; border-left: 3px solid white; border-top-right-radius: 8px; }
+        .opp-name { font-size: 12px; font-weight: bold; opacity: 0.9; }
+        .opp-val { font-size: 18px; font-weight: 900; }
+
         .bottom-bar { height: 40px; background: rgba(0,0,0,0.95); display: flex; align-items: center; padding: 0 15px; font-size: 14px; color: #fec309; border-radius: 0 0 8px 8px; }
         
         .dots { margin-left: auto; display: flex; gap: 8px; }
         .dot { width: 25px; height: 25px; border-radius: 50%; background: #333; border: 1px solid #555; display: flex; align-items: center; justify-content: center; font-size: 12px; }
         .dot-active { background: #fec309; color: black; border-color: #fff; }
-        .dot-w { background: #d9534f; color: white; }
+        .dot-w { background: white; color: red; font-weight: bold; }
         .active-s { color: #fec309; font-weight: bold; }
 
-        /* बड़े बटन वाला एडमिन पैनल */
-        .admin-panel { width: 850px; background: #ffffff; color: #222; border-radius: 12px; padding: 20px; border: 4px solid #003a8c; box-sizing: border-box; }
+        /* ADMIN PANEL */
+        .admin-panel { width: 900px; background: #ffffff; color: #222; border-radius: 12px; padding: 20px; border: 4px solid #003a8c; box-sizing: border-box; }
         .group { background: #f0f4f8; padding: 15px; border-radius: 10px; border: 1px solid #ccc; margin-bottom: 15px; }
         h3 { margin: 0 0 12px 0; font-size: 16px; background: #003a8c; color: white; padding: 8px; text-align: center; border-radius: 5px; }
         
         .btn-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        button { padding: 20px 10px; cursor: pointer; border: none; border-radius: 8px; background: #003a8c; color: white; font-weight: bold; font-size: 18px; transition: 0.2s; }
-        button:active { transform: scale(0.95); opacity: 0.8; }
+        button { padding: 15px 10px; cursor: pointer; border: none; border-radius: 8px; background: #003a8c; color: white; font-weight: bold; font-size: 16px; }
+        button:active { transform: scale(0.95); }
         
         .btn-red { background: #d9534f; }
-        .btn-green { background: #2ecc71; color: black; font-size: 20px; }
+        .btn-green { background: #2ecc71; color: black; }
         .btn-yel { background: #fec309; color: black; }
 
-        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
-        input { padding: 12px; font-size: 16px; border: 2px solid #ccc; border-radius: 6px; }
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
+        input { padding: 12px; font-size: 14px; border: 2px solid #ccc; border-radius: 6px; width: 100%; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
     <div class="scoreboard">
         <div class="top-bar">
-            <div class="team-box" id="d-team">IND</div>
+            <div class="team-box" id="d-team">TEAM 1</div>
             <div class="score-box"><span id="d-runs">0</span>-<span id="d-wkt">0</span> <span style="font-size:18px; margin-left:8px; opacity:0.8;">(<span id="d-ov">0.0</span>)</span></div>
             <div class="bats-info">
                 <div><span id="d-b1">B1</span><span id="d-b1s" class="active-s">*</span> <span id="d-b1r">0</span>(<span id="d-b1b">0</span>)</div>
                 <div><span id="d-b2">B2</span><span id="d-b2s" class="active-s"></span> <span id="d-b2r">0</span>(<span id="d-b2b">0</span>)</div>
             </div>
+            <div class="opp-score-box">
+                <div class="opp-name" id="d-opp-name">OPPONENT</div>
+                <div class="opp-val" id="d-opp-score">0-0 (0.0)</div>
+            </div>
         </div>
         <div class="bottom-bar">
-            <span id="d-tour">TOURNAMENT NAME</span> &nbsp;|&nbsp; <span id="d-status">1ST INNINGS | CRR: 0.00</span>
+            <span id="d-tour">TOURNAMENT</span> &nbsp;|&nbsp; <span id="d-status">1ST INNINGS | CRR: 0.00</span>
             <div class="dots" id="dots-wrap">
                 <div class="dot">1</div><div class="dot">2</div><div class="dot">3</div>
                 <div class="dot">4</div><div class="dot">5</div><div class="dot">6</div>
@@ -62,14 +73,14 @@
 
     <div class="admin-panel">
         <div class="group">
-            <h3>SCORE & OVER CONTROLS</h3>
+            <h3>LIVE TEAM CONTROLS (Batting Now)</h3>
             <div class="btn-grid">
-                <button onclick="add('runs',1)">+1</button>
+                <button onclick="add('runs',1)">+1 Run</button>
                 <button onclick="add('runs',4)">+4</button>
                 <button onclick="add('runs',6)">+6</button>
-                <button class="btn-red" onclick="add('runs',-1)">-1 RUN</button>
+                <button class="btn-red" onclick="add('runs',-1)">-1 Run</button>
             </div>
-            <div class="btn-grid" style="margin-top:15px;">
+            <div class="btn-grid" style="margin-top:10px;">
                 <button style="grid-column: span 2;" class="btn-green" onclick="nextBall()">NEXT BALL</button>
                 <button class="btn-red" onclick="addWicket()">WICKET</button>
                 <button class="btn-yel" onclick="resetOver()">RESET OVER</button>
@@ -77,30 +88,60 @@
         </div>
 
         <div class="group">
-            <h3>PLAYER & TEAM NAMES</h3>
+            <h3>OPPONENT TEAM RESULT (Already Played)</h3>
             <div class="input-grid">
-                <input type="text" id="i-b1" placeholder="Batsman 1 Name" oninput="upd()">
-                <button onclick="setS(1)">Set Striker (*)</button>
-                <input type="text" id="i-b2" placeholder="Batsman 2 Name" oninput="upd()">
-                <button onclick="setS(2)">Set Striker (*)</button>
-                <input type="text" id="i-team" placeholder="Batting Team (e.g. IND)" oninput="upd()">
-                <input type="text" id="i-tour" placeholder="Tournament Name" oninput="upd()">
+                <input type="text" id="i-opp-name" placeholder="Opponent Name (e.g. AUS)" oninput="upd()">
+                <input type="text" id="i-opp-score" placeholder="Score (e.g. 150-5)" oninput="upd()">
+                <input type="text" id="i-opp-over" placeholder="Overs (e.g. 20.0)" oninput="upd()">
+            </div>
+            <div class="btn-grid" style="margin-top:10px;">
+                <button onclick="modOpp('r',1)">+1 Run</button>
+                <button onclick="modOpp('r',-1)">-1 Run</button>
+                <button onclick="modOpp('w',1)">+1 Wkt</button>
+                <button onclick="modOpp('w',-1)">-1 Wkt</button>
             </div>
         </div>
 
-        <div style="text-align: center;">
-            <button class="btn-yel" style="width: 100%;" onclick="changeInn()">CHANGE INNINGS</button>
+        <div class="group">
+            <h3>NAMES & SETTINGS</h3>
+            <div class="input-grid">
+                <input type="text" id="i-team" placeholder="Live Team Name" oninput="upd()">
+                <input type="text" id="i-b1" placeholder="Batsman 1" oninput="upd()">
+                <button onclick="setS(1)">Striker 1</button>
+                <input type="text" id="i-tour" placeholder="Tournament" oninput="upd()">
+                <input type="text" id="i-b2" placeholder="Batsman 2" oninput="upd()">
+                <button onclick="setS(2)">Striker 2</button>
+            </div>
         </div>
+        <button class="btn-yel" style="width:100%; padding:15px;" onclick="changeInn()">TOGGLE INNINGS</button>
     </div>
 
     <script>
-        let st = { runs:0, wkt:0, b:0, ov:0, b1r:0, b1b:0, b2r:0, b2b:0, s:1, inn:1, curBall:0 };
-        
+        let st = { runs:0, wkt:0, b:0, ov:0, b1r:0, b1b:0, b2r:0, b2b:0, s:1, inn:1, curBall:0, or:0, ow:0 };
+
         function upd() {
-            document.getElementById('d-tour').innerText = document.getElementById('i-tour').value || "TOURNAMENT NAME";
-            document.getElementById('d-team').innerText = document.getElementById('i-team').value || "IND";
+            document.getElementById('d-tour').innerText = document.getElementById('i-tour').value || "TOURNAMENT";
+            document.getElementById('d-team').innerText = document.getElementById('i-team').value || "TEAM 1";
             document.getElementById('d-b1').innerText = document.getElementById('i-b1').value || "B1";
             document.getElementById('d-b2').innerText = document.getElementById('i-b2').value || "B2";
+            document.getElementById('d-opp-name').innerText = document.getElementById('i-opp-name').value || "OPPONENT";
+            updateOppDisp();
+        }
+
+        function modOpp(type, v) {
+            if(type==='r') st.or += v;
+            if(type==='w') st.ow += v;
+            updateOppDisp();
+        }
+
+        function updateOppDisp() {
+            let ov = document.getElementById('i-opp-over').value || "0.0";
+            let scoreStr = document.getElementById('i-opp-score').value;
+            if(!scoreStr) {
+                document.getElementById('d-opp-score').innerText = st.or + "-" + st.ow + " (" + ov + ")";
+            } else {
+                document.getElementById('d-opp-score').innerText = scoreStr + " (" + ov + ")";
+            }
         }
 
         function add(type, v) {
@@ -144,10 +185,8 @@
             document.getElementById('d-runs').innerText = st.runs;
             document.getElementById('d-wkt').innerText = st.wkt;
             document.getElementById('d-ov').innerText = st.ov + "." + st.b;
-            document.getElementById('d-b1r').innerText = st.b1r; 
-            document.getElementById('d-b1b').innerText = st.b1b;
-            document.getElementById('d-b2r').innerText = st.b2r; 
-            document.getElementById('d-b2b').innerText = st.b2b;
+            document.getElementById('d-b1r').innerText = st.b1r; document.getElementById('d-b1b').innerText = st.b1b;
+            document.getElementById('d-b2r').innerText = st.b2r; document.getElementById('d-b2b').innerText = st.b2b;
             document.getElementById('d-b1s').innerText = st.s===1 ? "*" : "";
             document.getElementById('d-b2s').innerText = st.s===2 ? "*" : "";
             let crr = (st.runs / (st.ov + st.b/6) || 0).toFixed(2);
