@@ -1,268 +1,109 @@
-DOCTYPE html>
+<!DOCTYPE html>
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPL Style Cricket Scoreboard</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Roboto:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&display=swap');
+        
+        body { background: transparent; font-family: 'Chakra Petch', sans-serif; margin: 0; padding: 20px; color: white; }
 
-        body {
-            background: transparent;
-            font-family: 'Chakra Petch', sans-serif;
-            margin: 0;
-            padding: 10px;
-            color: white;
-            overflow: hidden; /* ताकि कोई बाहरी चीज न दिखे */
-        }
+        /* प्रोफेशनल स्कोरबोर्ड */
+        .scoreboard { width: 600px; background: linear-gradient(180deg, #001d4a, #003366); border-radius: 10px; overflow: hidden; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); border-bottom: 5px solid #efb920; }
+        .match-header { background: #efb920; color: #001d4a; text-align: center; padding: 5px; font-size: 18px; font-weight: bold; text-transform: uppercase; }
+        .main-score { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; }
+        .team-box { display: flex; flex-direction: column; }
+        .team-name { font-size: 28px; color: #efb920; }
+        .score-val { font-size: 48px; font-weight: bold; }
+        .overs-val { font-size: 20px; color: #ccc; }
 
-        .scoreboard-container {
-            width: 700px; /* OBS में साइज */
-            transform: scale(0.8); /* थोड़ा छोटा दिखाएं */
-            transform-origin: top left; /* ऊपर बाएं से स्केल करें */
-            filter: drop-shadow(0 8px 15px rgba(0,0,0,0.6));
-        }
+        /* बॉल्स का गोला */
+        .balls-row { background: rgba(0,0,0,0.5); padding: 10px 25px; display: flex; gap: 8px; justify-content: flex-end; }
+        .ball-dot { width: 30px; height: 30px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 2px solid #555; }
+        .ball-active { background: #efb920; color: black; border-color: #fff; transform: scale(1.1); }
+        .ball-w { background: #e74c3c; color: white; }
 
-        /* मैच का नाम */
-        .match-title {
-            background: linear-gradient(90deg, #1a2a6c, #001d4a);
-            padding: 8px 20px;
-            font-size: 24px;
-            font-weight: 700;
-            text-transform: uppercase;
-            border-bottom: 3px solid #efb920;
-            border-radius: 8px 8px 0 0;
-            letter-spacing: 1px;
-            text-align: center;
-        }
-
-        /* टीमों का स्कोर */
-        .team-score-wrapper {
-            display: flex;
-            justify-content: space-between;
-            gap: 5px;
-            margin-top: 5px;
-        }
-
-        .team-score-box {
-            flex: 1;
-            background: linear-gradient(180deg, #003366, #001d4a);
-            padding: 10px 15px;
-            border-radius: 5px;
-            border-left: 5px solid #efb920;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 60px;
-            box-shadow: inset 0 0 5px rgba(255,255,255,0.1);
-        }
-        .team-score-box.active {
-            border-left: 5px solid #e74c3c; /* एक्टिव टीम के लिए लाल */
-        }
-
-        .team-name-small {
-            font-size: 20px;
-            font-weight: 700;
-            color: #efb920;
-            width: 80px;
-            text-align: left;
-        }
-
-        .score-display {
-            font-family: 'Roboto', sans-serif;
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: white;
-        }
-        .overs-display {
-            font-family: 'Roboto', sans-serif;
-            font-size: 18px;
-            color: #ccc;
-            width: 70px;
-            text-align: right;
-        }
-
-        /* बैट्समैन और बॉलर */
-        .player-info-bar {
-            background: rgba(0,0,0,0.8);
-            margin-top: 5px;
-            padding: 8px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 5px;
-            font-family: 'Roboto', sans-serif;
-            font-size: 16px;
-            color: #ddd;
-        }
-        .player-name {
-            color: #efb920;
-            font-weight: 700;
-            margin-right: 5px;
-        }
-        .player-score {
-            color: white;
-            font-weight: 700;
-        }
-
-        /* लास्ट 6 बॉल्स */
-        .last-6-balls {
-            display: flex;
-            gap: 4px;
-        }
-        .ball-dot {
-            width: 28px;
-            height: 28px;
-            background: #333;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
-            color: white;
-            transition: background 0.3s ease, transform 0.3s ease;
-        }
-        .ball-dot.active { background: #efb920; color: #000; transform: scale(1.1); }
-        .ball-dot.boundary { background: #27ae60; color: white; } /* 4/6 */
-        .ball-dot.wicket { background: #e74c3c; color: white; animation: pulse 0.5s infinite alternate; } /* W */
-        .ball-dot.extra { background: #f39c12; color: white; } /* No ball, Wide */
-
-        @keyframes pulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.2); }
-        }
-
-        /* टारगेट और रन रेट */
-        .target-info {
-            background: linear-gradient(90deg, #1a2a6c, #001d4a);
-            margin-top: 5px;
-            padding: 8px 15px;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            font-family: 'Roboto', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: white;
-            border-bottom: 3px solid #efb920;
-        }
-        .target-label { color: #efb920; margin-right: 10px;}
+        /* कंट्रोल पैनल (यह लाइव स्ट्रीम में छुपाना होगा या नीचे रखना होगा) */
+        .admin-panel { margin-top: 30px; background: #fff; padding: 20px; border-radius: 10px; color: #000; width: 600px; display: flex; flex-wrap: wrap; gap: 10px; }
+        button { padding: 10px 15px; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 5px; border: none; background: #004b93; color: white; transition: 0.2s; }
+        button:hover { background: #efb920; color: #000; }
+        .btn-w { background: #e74c3c; }
+        .btn-reset { background: #333; }
+        input { padding: 8px; width: 120px; border: 1px solid #ccc; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <div class="scoreboard-container">
-        <div id="match-title" class="match-title">CRICKET LIVE</div>
-
-        <div class="team-score-wrapper">
-            <div id="team1-box" class="team-score-box active">
-                <div id="team1-name" class="team-name-small">CSK</div>
-                <div class="score-display">
-                    <span id="team1-runs">0</span>/<span id="team1-wickets">0</span>
-                </div>
-                <div id="team1-overs" class="overs-display">0.0</div>
+    <div class="scoreboard">
+        <div class="match-header" id="m-title">LIVE MATCH</div>
+        <div class="main-score">
+            <div class="team-box">
+                <div class="team-name" id="t-name">TEAM NAME</div>
+                <div class="score-val"><span id="r">0</span>/<span id="w">0</span></div>
             </div>
-
-            <div id="team2-box" class="team-score-box">
-                <div id="team2-name" class="team-name-small">MI</div>
-                <div class="score-display">
-                    <span id="team2-runs">0</span>/<span id="team2-wickets">0</span>
-                </div>
-                <div id="team2-overs" class="overs-display">0.0</div>
-            </div>
+            <div class="overs-val"><span id="ov">0.0</span> OV</div>
         </div>
-
-        <div class="player-info-bar">
-            <div>
-                <span class="player-name">BATSMAN:</span>
-                <span id="striker-name">Player1</span> (<span id="striker-runs">0</span> - <span id="striker-balls">0</span>)
-            </div>
-            <div class="last-6-balls" id="last-6-progress">
-                </div>
-        </div>
-
-        <div class="target-info">
-            <div><span class="target-label">TARGET:</span> <span id="target-runs">0</span></div>
-            <div><span class="target-label">RR:</span> <span id="req-rr">0.0</span></div>
+        <div class="balls-row" id="ball-container">
+            <div class="ball-dot">1</div><div class="ball-dot">2</div><div class="ball-dot">3</div>
+            <div class="ball-dot">4</div><div class="ball-dot">5</div><div class="ball-dot">6</div>
         </div>
     </div>
 
+    <div class="admin-panel">
+        <input type="text" id="in-team" placeholder="टीम का नाम">
+        <button onclick="updateTeam()">नाम बदलें</button>
+        <hr style="width:100%">
+        <button onclick="addRun(1)">+1 Run</button>
+        <button onclick="addRun(4)">+4 Run</button>
+        <button onclick="addRun(6)">+6 Run</button>
+        <button class="btn-w" onclick="addWicket()">Wicket</button>
+        <button onclick="nextBall()">Next Ball</button>
+        <button class="btn-reset" onclick="resetOver()">Reset Over</button>
+    </div>
+
     <script>
-        const SHEET_ID = '1h7UgARhqgHey9lcku9Pqx7yiQ4BO3QMH3ZSMwP-9glQ'; // यहाँ अपनी Sheet ID डालें
-        const SHEET_TITLE = 'Sheet1'; // आपकी शीट का नाम (अगर बदला हो)
-        const SHEET_RANGE = 'A1:N2'; // A1 से N2 तक का डेटा
+        let runs = 0, wickets = 0, overs = 0, balls = 0, currentBall = 0;
 
-        const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
+        function updateTeam() {
+            document.getElementById('t-name').innerText = document.getElementById('in-team').value;
+        }
 
-        async function updateScoreboard() {
-            try {
-                const response = await fetch(URL);
-                const text = await response.text();
-                const data = JSON.parse(text.substr(47).slice(0, -2));
+        function addRun(n) {
+            runs += n;
+            document.getElementById('r').innerText = runs;
+        }
 
-                const matchRow = data.table.rows[0].c; // A1 का डेटा
-                const team1Row = data.table.rows[1].c; // A2 का डेटा
-                const team2Row = data.table.rows[2].c; // A3 का डेटा
-
-                // मैच का नाम
-                document.getElementById('match-title').innerText = matchRow[0].v;
-
-                // टीम 1
-                document.getElementById('team1-name').innerText = team1Row[0].v;
-                document.getElementById('team1-runs').innerText = team1Row[1].v;
-                document.getElementById('team1-wickets').innerText = team1Row[2].v;
-                document.getElementById('team1-overs').innerText = team1Row[3].v + ' OV';
-
-                // टीम 2
-                document.getElementById('team2-name').innerText = team2Row[0].v;
-                document.getElementById('team2-runs').innerText = team2Row[1].v;
-                document.getElementById('team2-wickets').innerText = team2Row[2].v;
-                document.getElementById('team2-overs').innerText = team2Row[3].v + ' OV';
-
-                // कौन सी टीम एक्टिव है (अगर टीम2 खेल रही है)
-                const team2Playing = team2Row[1].v > 0; // अगर टीम 2 के रन हैं
-                document.getElementById('team1-box').classList.toggle('active', !team2Playing);
-                document.getElementById('team2-box').classList.toggle('active', team2Playing);
-
-
-                // बैट्समैन
-                document.getElementById('striker-name').innerText = team1Row[4].v; // E2
-                document.getElementById('striker-runs').innerText = team1Row[5].v; // F2
-                document.getElementById('striker-balls').innerText = team1Row[6].v; // G2
-                
-                // टारगेट और रन रेट
-                document.getElementById('target-runs').innerText = team1Row[10].v; // K2
-                document.getElementById('req-rr').innerText = team1Row[11].v; // L2
-
-                // पिछली 6 गेंदें और ओवर प्रोग्रेस (M2 और N2)
-                const last6Text = team1Row[12].v; // M2
-                const currentBallNum = parseInt(team1Row[13].v); // N2
-
-                let last6Html = '';
-                for (let i = 1; i <= 6; i++) {
-                    let ballValue = last6Text.split(' ')[i-1] || '';
-                    let className = 'ball-dot';
-                    if (i === currentBallNum) { // अगर यह करंट बॉल है
-                        className += ' active';
-                    }
-                    if (ballValue.toLowerCase() === 'w') className += ' wicket';
-                    else if (ballValue === '4' || ballValue === '6') className += ' boundary';
-                    else if (isNaN(ballValue) && ballValue !== '') className += ' extra'; // NB, Wd आदि
-
-                    last6Html += `<div class="${className}">${ballValue || i}</div>`; // अगर खाली है तो बॉल नंबर दिखाओ
-                }
-                document.getElementById('last-6-progress').innerHTML = last6Html;
-
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                document.getElementById('match-title').innerText = "LOADING ERROR";
+        function addWicket() {
+            if(wickets < 10) {
+                wickets++;
+                document.getElementById('w').innerText = wickets;
+                document.querySelectorAll('.ball-dot')[currentBall-1].classList.add('ball-w');
+                document.querySelectorAll('.ball-dot')[currentBall-1].innerText = 'W';
             }
         }
 
-        setInterval(updateScoreboard, 3000); // हर 3 सेकंड में अपडेट
-        updateScoreboard(); // पेज लोड होते ही पहली बार अपडेट
+        function nextBall() {
+            if(currentBall < 6) {
+                currentBall++;
+                balls++;
+                if(balls == 6) { 
+                    overs++; balls = 0; 
+                }
+                document.getElementById('ov').innerText = overs + "." + balls;
+                
+                let dots = document.querySelectorAll('.ball-dot');
+                dots[currentBall-1].classList.add('ball-active');
+            }
+        }
+
+        function resetOver() {
+            currentBall = 0;
+            let dots = document.querySelectorAll('.ball-dot');
+            dots.forEach((d, i) => {
+                d.classList.remove('ball-active', 'ball-w');
+                d.innerText = i + 1;
+            });
+        }
     </script>
 </body>
 </html>
