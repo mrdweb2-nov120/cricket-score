@@ -6,32 +6,34 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap');
         
-        body { background: transparent; font-family: 'Roboto', sans-serif; margin: 0; padding: 10px; color: white; }
+        body { background: transparent; font-family: 'Roboto', sans-serif; margin: 0; padding: 5px; color: white; }
 
-        /* SCOREBOARD DESIGN */
-        .main-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 1150px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.9)); }
-        .top-bar { display: flex; height: 60px; background: linear-gradient(90deg, #00122e 0%, #003a8c 50%, #00122e 100%); border-bottom: 3px solid #fec309; border-radius: 8px 8px 0 0; overflow: hidden; }
-        .team-box { width: 180px; background: #fec309; color: #00122e; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 26px; }
-        .score-box { width: 220px; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900; background: #00122e; }
-        .batsmen-info { flex-grow: 1; display: flex; align-items: center; justify-content: space-around; font-size: 18px; background: rgba(0,0,0,0.2); }
-        .bowler-info { width: 280px; display: flex; align-items: center; justify-content: center; font-size: 18px; background: #00122e; }
+        /* कॉम्पैक्ट स्कोरबोर्ड - इसे स्क्रीन के सबसे ऊपर रखा गया है */
+        .main-container { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 1000px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.8)); }
         
-        .bottom-bar { height: 40px; background: rgba(0,0,0,0.9); display: flex; align-items: center; padding: 0 15px; font-size: 14px; color: #fec309; border-radius: 0 0 8px 8px; }
+        .top-bar { display: flex; height: 50px; background: linear-gradient(90deg, #00122e 0%, #003a8c 50%, #00122e 100%); border-bottom: 3px solid #fec309; border-radius: 8px 8px 0 0; overflow: hidden; }
+        .team-box { width: 120px; background: #fec309; color: #00122e; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px; text-transform: uppercase; }
+        .score-box { width: 180px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; background: #00122e; }
+        .batsmen-info { flex-grow: 1; display: flex; align-items: center; justify-content: space-around; font-size: 14px; background: rgba(0,0,0,0.2); }
+        .bowler-info { width: 220px; display: flex; align-items: center; justify-content: center; font-size: 14px; background: #00122e; }
         
-        /* 6 DOTS SYSTEM */
-        .dots-container { margin-left: auto; display: flex; gap: 8px; }
-        .dot { width: 25px; height: 25px; border-radius: 50%; background: #333; border: 2px solid #555; display: flex; align-items: center; justify-content: center; font-size: 12px; color: white; font-weight: bold; transition: 0.3s; }
-        .dot-active { background: #fec309; color: black; border-color: white; transform: scale(1.1); }
-        .dot-w { background: #d9534f; color: white; border-color: white; }
+        .bottom-bar { height: 30px; background: rgba(0,0,0,0.95); display: flex; align-items: center; padding: 0 10px; font-size: 11px; color: #fec309; border-radius: 0 0 8px 8px; }
+        
+        /* 6 DOTS Visuals */
+        .dots-container { margin-left: auto; display: flex; gap: 5px; }
+        .dot { width: 20px; height: 20px; border-radius: 50%; background: #222; border: 1px solid #555; display: flex; align-items: center; justify-content: center; font-size: 10px; color: white; }
+        .dot-active { background: #fec309; color: black; border-color: white; }
+        .dot-w { background: #d9534f; color: white; }
 
-        /* ADMIN PANEL */
-        .admin-panel { margin-top: 400px; background: #fff; color: #222; padding: 20px; border-radius: 12px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; border: 5px solid #003a8c; width: 1100px; margin-left: auto; margin-right: auto; }
-        .group { background: #f9f9f9; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
-        h3 { margin: 0 0 10px 0; font-size: 14px; background: #003a8c; color: white; padding: 5px; text-align: center; }
-        input { width: 90%; padding: 5px; margin-bottom: 5px; }
-        button { padding: 8px; cursor: pointer; border: none; border-radius: 4px; background: #003a8c; color: white; font-weight: bold; font-size: 12px; margin: 2px; }
+        /* एडमिन पैनल - इसे काफी नीचे धकेला गया है (800px का गैप) */
+        .admin-panel { margin-top: 600px; background: #ffffff; color: #222; padding: 15px; border-radius: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; border: 4px solid #003a8c; width: 95%; max-width: 1000px; margin-left: auto; margin-right: auto; }
+        .group { background: #f1f1f1; padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
+        h3 { margin: 0 0 8px 0; font-size: 12px; background: #003a8c; color: white; padding: 4px; text-align: center; border-radius: 3px; }
+        input { width: 85%; padding: 4px; margin-bottom: 5px; font-size: 12px; }
+        button { padding: 6px 10px; cursor: pointer; border: none; border-radius: 4px; background: #003a8c; color: white; font-weight: bold; font-size: 11px; margin: 2px; }
         .btn-red { background: #d9534f; }
         .btn-green { background: #2ecc71; }
+        .active-s { color: #fec309; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -39,15 +41,15 @@
     <div class="main-container">
         <div class="top-bar">
             <div class="team-box" id="d-team">IND</div>
-            <div class="score-box"><span id="d-runs">0</span>-<span id="d-wkt">0</span> <span style="font-size:16px; margin-left:8px; opacity:0.8;">(<span id="d-ov">0.0</span>)</span></div>
+            <div class="score-box"><span id="d-runs">0</span>-<span id="d-wkt">0</span> <span style="font-size:14px; margin-left:5px; opacity:0.8;">(<span id="d-ov">0.0</span>)</span></div>
             <div class="batsmen-info">
-                <div id="b1-box"> <span id="d-b1">P1</span><span id="d-b1s">*</span> <span id="d-b1r">0</span>(<span id="d-b1b">0</span>) </div>
-                <div id="b2-box"> <span id="d-b2">P2</span><span id="d-b2s"></span> <span id="d-b2r">0</span>(<span id="d-b2b">0</span>) </div>
+                <div id="b1-box"><span id="d-b1">B1</span><span id="d-b1s" class="active-s">*</span> <span id="d-b1r">0</span>(<span id="d-b1b">0</span>)</div>
+                <div id="b2-box"><span id="d-b2">B2</span><span id="d-b2s" class="active-s"></span> <span id="d-b2r">0</span>(<span id="d-b2b">0</span>)</div>
             </div>
             <div class="bowler-info"><span id="d-bowl">Bowler</span>&nbsp; <span id="d-bowl-f">0-0-0-0</span></div>
         </div>
         <div class="bottom-bar">
-            <span id="d-tour">TOURNAMENT</span> &nbsp;|&nbsp; <span id="d-status">1ST INN | CRR: 0.00</span>
+            <span id="d-tour">ICC WORLD CUP</span> &nbsp;|&nbsp; <span id="d-status">1ST INN | CRR: 0.00</span>
             <div class="dots-container" id="dots-wrap">
                 <div class="dot">1</div><div class="dot">2</div><div class="dot">3</div>
                 <div class="dot">4</div><div class="dot">5</div><div class="dot">6</div>
@@ -57,8 +59,10 @@
 
     <div class="admin-panel">
         <div class="group">
-            <h3>SCORE & BALLS</h3>
-            <button onclick="add('runs',1)">+1</button><button onclick="add('runs',4)">+4</button><button onclick="add('runs',6)">+6</button>
+            <h3>SCORE CONTROLS</h3>
+            <button onclick="add('runs',1)">+1</button>
+            <button onclick="add('runs',4)">+4</button>
+            <button onclick="add('runs',6)">+6</button>
             <button class="btn-red" onclick="add('runs',-1)">-1</button>
             <hr>
             <button class="btn-green" onclick="nextBall()">NEXT BALL</button>
@@ -67,23 +71,18 @@
         </div>
 
         <div class="group">
-            <h3>BATSMEN</h3>
-            <input type="text" id="i-b1" placeholder="Batsman 1" oninput="upd()"><button onclick="setS(1)">Set Striker</button>
-            <input type="text" id="i-b2" placeholder="Batsman 2" oninput="upd()"><button onclick="setS(2)">Set Striker</button>
+            <h3>PLAYER NAMES</h3>
+            <input type="text" id="i-b1" placeholder="Batsman 1" oninput="upd()"><button onclick="setS(1)">Striker</button>
+            <input type="text" id="i-b2" placeholder="Batsman 2" oninput="upd()"><button onclick="setS(2)">Striker</button>
+            <input type="text" id="i-bowl" placeholder="Bowler" oninput="upd()">
         </div>
 
         <div class="group">
-            <h3>NAMES & TARGET</h3>
+            <h3>TEAM & MATCH</h3>
             <input type="text" id="i-tour" placeholder="Tour Name" oninput="upd()">
             <input type="text" id="i-team" placeholder="Team Name" oninput="upd()">
-            <input type="text" id="i-bowl" placeholder="Bowler" oninput="upd()">
-            <input type="text" id="i-bowl-f" placeholder="O-M-R-W" oninput="upd()">
-        </div>
-
-        <div class="group">
-            <h3>MISC</h3>
+            <input type="text" id="i-bowl-f" placeholder="Bowler O-M-R-W" oninput="upd()">
             <button onclick="changeInn()">Change Innings</button>
-            <p style="font-size:10px">नोट: 'Next Ball' दबाने पर ओवर के गोले पीले होंगे।</p>
         </div>
     </div>
 
@@ -93,8 +92,8 @@
         function upd() {
             document.getElementById('d-tour').innerText = document.getElementById('i-tour').value || "TOURNAMENT";
             document.getElementById('d-team').innerText = document.getElementById('i-team').value || "IND";
-            document.getElementById('d-b1').innerText = document.getElementById('i-b1').value || "P1";
-            document.getElementById('d-b2').innerText = document.getElementById('i-b2').value || "P2";
+            document.getElementById('d-b1').innerText = document.getElementById('i-b1').value || "B1";
+            document.getElementById('d-b2').innerText = document.getElementById('i-b2').value || "B2";
             document.getElementById('d-bowl').innerText = document.getElementById('i-bowl').value || "Bowler";
             document.getElementById('d-bowl-f').innerText = document.getElementById('i-bowl-f').value || "0-0-0-0";
         }
@@ -111,31 +110,24 @@
                 st.b++;
                 if(st.b >= 6) { st.ov++; st.b = 0; }
                 if(st.s===1) st.b1b++; else st.b2b++;
-                
-                let dots = document.querySelectorAll('.dot');
-                dots[st.curBall-1].classList.add('dot-active');
+                document.querySelectorAll('.dot')[st.curBall-1].classList.add('dot-active');
             }
             refresh();
         }
 
         function addWicket() {
             if(st.curBall < 6) {
-                st.wkt++;
-                st.curBall++;
-                st.b++;
+                st.wkt++; st.curBall++; st.b++;
                 if(st.b >= 6) { st.ov++; st.b = 0; }
-                
-                let dots = document.querySelectorAll('.dot');
-                dots[st.curBall-1].classList.add('dot-w');
-                dots[st.curBall-1].innerText = "W";
+                let d = document.querySelectorAll('.dot')[st.curBall-1];
+                d.classList.add('dot-w'); d.innerText = "W";
             }
             refresh();
         }
 
         function resetOver() {
             st.curBall = 0;
-            let dots = document.querySelectorAll('.dot');
-            dots.forEach((d, i) => {
+            document.querySelectorAll('.dot').forEach((d, i) => {
                 d.classList.remove('dot-active', 'dot-w');
                 d.innerText = i + 1;
             });
