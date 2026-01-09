@@ -44,6 +44,22 @@
     </style>
 </head>
 <body>
+<div id="neon-win-container" style="width: 900px; background: #000; border-radius: 8px 8px 0 0; padding: 10px 0 5px 0; border: 1px solid #333; border-bottom: none; font-family: 'Roboto', sans-serif;">
+    <div style="display: flex; justify-content: space-between; padding: 0 15px 5px 15px; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">
+        <span id="txt-t1" style="color: #00f2ff; text-shadow: 0 0 8px #00f2ff;">TEAM 1</span>
+        <span id="mode-indicator" style="color: #fff; opacity: 0.4; font-size: 9px; border: 1px solid #444; padding: 1px 5px; border-radius: 3px;">AUTO MODE</span>
+        <span id="txt-t2" style="color: #ff0055; text-shadow: 0 0 8px #ff0055;">TEAM 2</span>
+    </div>
+    
+    <div style="width: 96%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; margin: 0 auto; display: flex; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+        <div id="bar-t1" style="width: 50%; height: 100%; background: linear-gradient(90deg, #0041ff, #00f2ff); box-shadow: 0 0 12px #00f2ff; transition: width 1s ease-in-out; position: relative;">
+            <div style="position: absolute; right: 2px; top: -14px; font-size: 14px; color: #00f2ff; font-weight: 900;" id="val-t1">50%</div>
+        </div>
+        <div id="bar-t2" style="width: 50%; height: 100%; background: linear-gradient(90deg, #ff0055, #ff4d00); box-shadow: 0 0 12px #ff0055; transition: width 1s ease-in-out; position: relative;">
+            <div style="position: absolute; left: 2px; top: -14px; font-size: 14px; color: #ff0055; font-weight: 900;" id="val-t2">50%</div>
+        </div>
+    </div>
+</div>
 
     <div class="scoreboard">
         <div id="flash-overlay">FOUR</div>
@@ -177,5 +193,115 @@
             document.getElementById('d-status').innerText = st.inn + (st.inn==1?"ST":"ND") + " INNINGS | CRR: " + crr;
         }
     </script>
+    <div class="admin-panel" style="width: 900px; margin-top: 5px; border-top: none; border-radius: 0 0 12px 12px;">
+    <div class="admin-row" style="background: #f1f1f1; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+        <div class="label" style="width: 130px;">PRO WIN METER:</div>
+        
+        <button id="btn-mode" class="btn-yel" style="flex: 0.8;" onclick="toggleWinMode()">MODE: AUTO</button>
+        
+        <button class="btn-green" style="background:#00f2ff; color:black; border:1px solid #00c2cc;" onclick="manualAdjust(5)">T1 +5%</button>
+        <button class="btn-green" style="background:#0041ff; color:white;" onclick="manualAdjust(-5)">T1 -5%</button>
+        
+        <input type="number" id="manual-win-input" placeholder="Set %" style="width:70px; flex: 0.4; border: 2px solid #003a8c;" oninput="directWinInput()">
+        
+        <button class="btn-red" onclick="resetWinMeter()">RESET</button>
+    </div>
+</div>
+
+<script>
+    let isAutoMode = true;
+    let manualWinVal = 50;
+
+    function toggleWinMode() {
+        isAutoMode = !isAutoMode;
+        updateModeUI();
+    }
+
+    function updateModeUI() {
+        const btn = document.getElementById('btn-mode');
+        const indicator = document.getElementById('mode-indicator');
+        if (isAutoMode) {
+            btn.innerText = "MODE: AUTO";
+            btn.style.background = "#fec309";
+            indicator.innerText = "AUTO MODE";
+        } else {
+            btn.innerText = "MODE: MANUAL";
+            btn.style.background = "#2ecc71";
+            indicator.innerText = "MANUAL MODE";
+        }
+        updateWinUI();
+    }
+
+    function manualAdjust(v) {
+        isAutoMode = false;
+        manualWinVal += v;
+        if(manualWinVal > 95) manualWinVal = 95;
+        if(manualWinVal < 5) manualWinVal = 5;
+        updateModeUI();
+    }
+
+    function directWinInput() {
+        let val = parseInt(document.getElementById('manual-win-input').value);
+        if(!isNaN(val)) {
+            isAutoMode = false;
+            manualWinVal = val;
+            updateModeUI();
+        }
+    }
+
+    function resetWinMeter() {
+        isAutoMode = true;
+        manualWinVal = 50;
+        updateModeUI();
+    }
+
+    function updateWinUI() {
+        let finalWin1 = 50;
+
+        if (isAutoMode) {
+            // TARGET BASED AUTO LOGIC
+            let runs = (typeof st !== 'undefined') ? st.r : 0;
+            let wkts = (typeof st !== 'undefined') ? st.w : 0;
+            let balls = (typeof st !== 'undefined') ? (st.o * 6 + st.b) : 0;
+            let target = parseInt(document.getElementById('i-opp-score')?.value) || 0;
+
+            if (target > 0) {
+                // Agar target set hai to uske hisab se logic
+                let need = target - runs;
+                let ballsLeft = 120 - balls; // Default T20
+                if (ballsLeft <= 0) ballsLeft = 1;
+                
+                let rrr = (need / (ballsLeft / 6));
+                finalWin1 = 100 - (rrr * 8) - (wkts * 5); 
+            } else {
+                // Agar target nahi hai (1st Inning) to runs/wkt logic
+                finalWin1 = 50 + (runs / 5) - (wkts * 7) - (balls / 15);
+            }
+        } else {
+            finalWin1 = manualWinVal;
+        }
+
+        // Percentage Bound (4% to 96%)
+        if (finalWin1 > 96) finalWin1 = 96;
+        if (finalWin1 < 4) finalWin1 = 4;
+        
+        let w1 = Math.round(finalWin1);
+        let w2 = 100 - w1;
+
+        // Apply UI Updates
+        document.getElementById('bar-t1').style.width = w1 + "%";
+        document.getElementById('bar-t2').style.width = w2 + "%";
+        document.getElementById('val-t1').innerText = w1 + "%";
+        document.getElementById('val-t2').innerText = w2 + "%";
+
+        // Sync Team Names from Admin Panel
+        document.getElementById('txt-t1').innerText = document.getElementById('i-team')?.value || "TEAM 1";
+        document.getElementById('txt-t2').innerText = document.getElementById('i-opp-name')?.value || "TEAM 2";
+    }
+
+    // Refresh every second
+    setInterval(updateWinUI, 1000);
+</script>
+    
 </body>
 </html>
