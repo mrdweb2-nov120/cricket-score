@@ -42,7 +42,7 @@
 
         /* BOTTOM STRIP */
         .bottom-strip { width: 100%; height: 30px; background: #000; display: flex; align-items: center; padding: 0 20px; box-sizing: border-box; }
-        #d-tour { font-size: 15px; font-weight: 900; color: #fec309; text-transform: uppercase; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(255,255,255,0.1); }
+        #d-tour { font-size: 16px; font-weight: 900; color: #fec309; text-transform: uppercase; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(255,255,255,0.5); }
         #d-status { font-size: 12px; margin-left: 15px; color: #fff; opacity: 0.8; }
         
         .over-dots { margin-left: auto; display: flex; align-items: center; }
@@ -111,8 +111,8 @@
 
     <div id="login-area">
         <h2 style="color: #000;">Restricted Access</h2>
-        <input type="password" id="pass-input" placeholder="Enter Admin Password" style="width:250px; margin-bottom: 10px;">
-        <br>
+        <input type="password" id="pass-input" placeholder="Enter Password">
+        <br><br>
         <button onclick="checkPass()" class="btn-yel" style="width:150px;">UNLOCK PANEL</button>
     </div>
 
@@ -134,7 +134,6 @@
                 <button class="btn-blue" onclick="setStrike(1)">STRIKE: PLAYER 1</button>
                 <button class="btn-blue" onclick="setStrike(2)">STRIKE: PLAYER 2</button>
             </div>
-            <label style="font-size:11px;">BATSMAN NAMES (REAL-TIME)</label>
             <div class="admin-row">
                 <input type="text" id="i-b1" placeholder="Batsman 1 Name" oninput="saveData()">
                 <input type="text" id="i-b2" placeholder="Batsman 2 Name" oninput="saveData()">
@@ -144,26 +143,26 @@
         <div class="admin-section">
             <label style="font-weight:900; color:#003a8c;">MATCH & TEAM DETAILS</label>
             <div class="admin-row" style="margin-top:8px;">
-                <button id="btn-inn1" class="btn-blue" onclick="setInn(1)">START 1ST INNINGS</button>
-                <button id="btn-inn2" class="btn-blue" onclick="setInn(2)">START 2ND INNINGS</button>
+                <button class="btn-blue" onclick="setInn(1)">START 1ST INNINGS</button>
+                <button class="btn-blue" onclick="setInn(2)">START 2ND INNINGS</button>
             </div>
             <div class="admin-row">
                 <input type="text" id="i-team" placeholder="Batting Team" oninput="saveData()">
                 <input type="text" id="i-opp" placeholder="Opponent Team" oninput="saveData()">
             </div>
             <div class="admin-row">
-                <input type="number" id="i-opp-r" placeholder="Opponent Runs" oninput="saveData()">
-                <input type="number" id="i-opp-w" placeholder="Opponent Wickets" oninput="saveData()">
-                <input type="text" id="i-opp-ov" placeholder="Opponent Overs" oninput="saveData()">
+                <input type="number" id="i-opp-r" placeholder="Opp Runs" oninput="saveData()">
+                <input type="number" id="i-opp-w" placeholder="Opp Wkts" oninput="saveData()">
+                <input type="text" id="i-opp-ov" placeholder="Opp Overs" oninput="saveData()">
             </div>
             <div class="admin-row">
-                <input type="number" id="i-target" placeholder="Target to Win" oninput="saveData()">
-                <input type="text" id="i-tour" placeholder="Tournament Name" oninput="saveData()">
+                <input type="number" id="i-target" placeholder="Target" oninput="saveData()">
+                <input type="text" id="i-tour" placeholder="Tournament" oninput="saveData()">
             </div>
             <div class="admin-row">
-                <input type="text" id="i-bowl" placeholder="Current Bowler Name" oninput="saveData()">
-                <button class="btn-red" style="background:red" onclick="resetDB()">FULL RESET</button>
-                <button class="btn-blue" onclick="logout()">LOCK PANEL</button>
+                <input type="text" id="i-bowl" placeholder="Bowler" oninput="saveData()">
+                <button class="btn-red" style="background:red" onclick="resetDB()">RESET</button>
+                <button class="btn-blue" onclick="logout()">LOCK</button>
             </div>
         </div>
     </div>
@@ -200,8 +199,11 @@
 
         function addRun(v) {
             st.r += v; if(st.r < 0) st.r = 0;
+            // CORRECT RUN LOGIC: Run only goes to Striker
             if(st.strike === 1) { st.b1r += v; if(st.b1r < 0) st.b1r = 0; }
             else { st.b2r += v; if(st.b2r < 0) st.b2r = 0; }
+            
+            // Strike Change on 1, 3, 5 runs
             if(v===1 || v===3 || v===5) st.strike = (st.strike === 1) ? 2 : 1;
             saveData();
         }
@@ -227,11 +229,12 @@
             document.getElementById('d-wkt').innerText = st.w;
             document.getElementById('d-ov').innerText = st.o + "." + st.b;
             
-            // Batsman Stats Display
             document.getElementById('d-b1').innerText = (st.strike===1 ? "★ " : "") + st.b1;
             document.getElementById('d-b2').innerText = (st.strike===2 ? "★ " : "") + st.b2;
             document.getElementById('d-b1r').innerText = st.b1r;
             document.getElementById('d-b2r').innerText = st.b2r;
+            
+            // Displaying Player Balls in Over format (e.g. 6.3)
             document.getElementById('d-b1b').innerText = "(" + Math.floor(st.b1b/6) + "." + (st.b1b%6) + ")";
             document.getElementById('d-b2b').innerText = "(" + Math.floor(st.b2b/6) + "." + (st.b2b%6) + ")";
 
@@ -252,7 +255,11 @@
             if(st.anim) { animDiv.innerText = st.anim + "!"; animDiv.style.display = "flex"; } else { animDiv.style.display = "none"; }
 
             let ds = document.querySelectorAll('.dot');
-            ds.forEach((d,i)=>{ d.className="dot"; if(i<st.b)d.classList.add('dot-active'); if(st.history[i]==="W")d.classList.add('dot-w'); });
+            ds.forEach((d,i)=>{ 
+                d.className="dot"; 
+                if(i<st.b)d.classList.add('dot-active'); 
+                if(st.history[i]==="W")d.classList.add('dot-w'); 
+            });
             
             let tb = st.o*6+st.b; let crr = (st.r/(tb/6||1)).toFixed(2);
             let calc = document.getElementById('d-live-calc');
