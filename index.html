@@ -203,12 +203,10 @@
 
         function addRun(v) {
             st.r += v; if(st.r < 0) st.r = 0;
-            // FIXED: Runs only go to current striker
             if(st.strike === 1) { st.b1r += v; if(st.b1r < 0) st.b1r = 0; }
             else { st.b2r += v; if(st.b2r < 0) st.b2r = 0; }
             
-            // Strike Change logic for 1, 3, 5 runs
-            if(v===1 || v===3 || v===5) st.strike = (st.strike === 1) ? 2 : 1;
+            // MANUAL MODE: Strike auto-change logic removed
             saveData();
         }
 
@@ -218,7 +216,7 @@
             if(st.strike === 1) st.b1b++; else st.b2b++;
             if(t==='w') { st.w++; st.history[st.b]="W"; } else { st.history[st.b]="Y"; }
             st.b++;
-            if(st.b>=6){ st.o++; st.b=0; st.history=["","","","","",""]; st.strike=(st.strike===1)?2:1; }
+            if(st.b>=6){ st.o++; st.b=0; st.history=["","","","","",""]; /* Auto strike change removed */ }
             saveData();
         }
 
