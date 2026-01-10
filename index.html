@@ -3,87 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chhotu Pro Scorer - Master Edition</title>
+    <title>Chhotu Scorer Pro - Elite Edition</title>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
-        :root { --primary: #fec309; --dark: #00122e; --accent: #ff0055; }
-        body { background: #000; font-family: 'Roboto', sans-serif; color: white; margin: 0; padding-bottom: 90px; overflow-x: hidden; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@400;700;900&display=swap');
+        
+        :root { 
+            --primary: #fec309; 
+            --dark-bg: #030a16; 
+            --glass: rgba(255, 255, 255, 0.05);
+            --neon-red: #ff0040;
+            --neon-blue: #00e1ff;
+        }
 
-        /* --- TOP LIVE EQUATION BAR --- */
-        .live-eq-bar { background: #ff0040; color: white; font-size: 13px; padding: 4px 15px; text-align: center; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #fff; }
+        body { 
+            background: var(--dark-bg); 
+            font-family: 'Roboto', sans-serif; 
+            color: white; 
+            margin: 0; 
+            padding-bottom: 90px; 
+            overflow-x: hidden; 
+        }
 
-        /* --- VS BAR --- */
-        .top-vs-bar { background: #000; padding: 5px 15px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 900; }
-        .win-progress-bg { width: 100%; height: 8px; background: #333; display: flex; position: relative; overflow: hidden; }
-        #win-p1 { width: 50%; background: #004cff; transition: 0.5s; }
-        #win-p2 { width: 50%; background: #ff0040; transition: 0.5s; }
+        /* --- GLOW ANIMATIONS --- */
+        .glow-text { text-shadow: 0 0 10px rgba(254, 195, 9, 0.5); }
+        .live-dot { height: 8px; width: 8px; background-color: #00ff00; border-radius: 50%; display: inline-block; margin-right: 5px; animation: blink 1s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        /* --- TOP UI --- */
+        .live-eq-bar { background: linear-gradient(90deg, #ff0040, #900028); color: white; font-size: 13px; padding: 6px; text-align: center; font-weight: 900; letter-spacing: 1px; border-bottom: 2px solid var(--primary); }
+        
+        .top-vs-bar { background: #000; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 700; }
+        .win-progress-bg { width: 100%; height: 6px; background: #222; border-radius: 10px; display: flex; overflow: hidden; box-shadow: inset 0 0 5px #000; }
+        #win-p1 { width: 50%; background: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); transition: 1s; }
+        #win-p2 { width: 50%; background: var(--neon-red); box-shadow: 0 0 10px var(--neon-red); transition: 1s; }
 
         /* --- MAIN SCOREBOARD --- */
-        .scoreboard-wrapper { position: relative; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .scoreboard { width: 100%; height: 100px; background: linear-gradient(180deg, #00122e 0%, #002b6b 100%); border-bottom: 4px solid var(--primary); display: flex; align-items: center; position: relative; overflow: hidden; }
+        .scoreboard-wrapper { position: relative; margin: 10px; border-radius: 15px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+        .scoreboard { width: 100%; height: 110px; background: linear-gradient(135deg, #00122e 0%, #002b6b 100%); display: flex; align-items: center; position: relative; }
         
-        .team-box { width: 130px; background: var(--primary); color: #000; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; text-align: center; z-index: 10; }
-        .score-main { font-size: 55px; font-weight: 900; padding: 0 20px; border-right: 1px solid rgba(255,255,255,0.2); z-index: 10; letter-spacing: -2px; }
-        .ov-small { font-size: 18px; opacity: 0.8; font-weight: 400; margin-left: 5px; color: #fff; }
+        .team-box { width: 130px; background: var(--primary); color: #000; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; font-family: 'Orbitron', sans-serif; text-align: center; clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%); }
         
-        .batsman-box { flex-grow: 1; padding-left: 20px; font-size: 18px; border-right: 1px solid rgba(255,255,255,0.2); height: 80%; display: flex; flex-direction: column; justify-content: center; z-index: 10; }
-        .striker { color: var(--primary) !important; font-weight: 900; text-shadow: 0 0 10px rgba(254,195,9,0.8); }
-        .batsman-row { color: rgba(255,255,255,0.7); transition: 0.3s; }
-        .b-stats { font-size: 14px; opacity: 0.9; margin-left: 10px; color: #fff; }
+        .score-main { font-size: 58px; font-weight: 900; padding: 0 15px; font-family: 'Orbitron', sans-serif; letter-spacing: -3px; color: #fff; }
+        .ov-small { font-size: 20px; opacity: 0.7; font-weight: 400; margin-left: 5px; color: var(--primary); font-family: 'Roboto'; }
+        
+        .batsman-box { flex-grow: 1; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.1); height: 70%; display: flex; flex-direction: column; justify-content: center; }
+        .batsman-row { font-size: 17px; margin: 2px 0; color: rgba(255,255,255,0.6); }
+        .striker { color: var(--primary) !important; font-weight: 700; text-shadow: 0 0 15px rgba(254, 195, 9, 0.4); }
+        .b-stats { font-size: 14px; color: #fff; font-weight: 400; margin-left: 8px; opacity: 0.8; }
 
-        .opp-container { width: 280px; height: 100%; display: flex; z-index: 10; }
-        .opp-box { background: #d9534f; width: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #fff; }
-        .target-box { background: #b0413e; width: 40%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--primary); }
+        .opp-container { width: 260px; height: 100%; display: flex; font-family: 'Orbitron'; }
+        .opp-box { background: rgba(217, 83, 79, 0.2); width: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center; border-left: 1px solid rgba(255,255,255,0.1); }
+        .target-box { background: rgba(254, 195, 9, 0.1); width: 40%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--primary); border-left: 1px solid rgba(255,255,255,0.1); }
 
         /* --- BOUNDARY ANIMATION --- */
-        #boundary-anim { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; align-items: center; justify-content: center; font-size: 75px; font-weight: 900; z-index: 100; background: var(--primary); color: #000; animation: flash 0.3s infinite; }
-        @keyframes flash { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        #boundary-anim { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; align-items: center; justify-content: center; font-size: 80px; font-weight: 900; z-index: 100; background: var(--primary); color: #000; font-family: 'Orbitron'; animation: zoomIn 0.3s; }
+        @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* --- TOURNAMENT & INNINGS STRIP --- */
-        .bottom-strip { background: #000; padding: 8px 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #333; }
-        .tour-info { display: flex; align-items: center; gap: 15px; }
-        #d-tour { font-size: 18px; font-weight: 900; color: var(--primary); text-transform: uppercase; }
-        .inn-tag { background: #333; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 900; color: #00ff00; }
-        .crr-tag { color: #fff; font-size: 12px; font-weight: 900; }
+        /* --- STRIPS --- */
+        .bottom-strip { background: rgba(0,0,0,0.8); padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; backdrop-filter: blur(10px); }
+        .tour-info { display: flex; align-items: center; gap: 12px; }
+        #d-tour { font-size: 16px; font-weight: 900; color: var(--primary); }
+        .inn-tag { background: #00ff00; color: #000; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; }
 
-        .over-dots { display: flex; gap: 5px; }
-        .dot { width: 22px; height: 22px; border-radius: 50%; background: #222; border: 1px solid #444; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; }
-        .dot.active { background: var(--primary); color: #000; border-color: #fff; }
+        .dot { width: 24px; height: 24px; border-radius: 6px; background: #1a1a1a; border: 1px solid #333; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; transition: 0.3s; }
+        .dot.active { background: var(--primary); color: #000; border-color: #fff; transform: scale(1.1); box-shadow: 0 0 10px var(--primary); }
 
-        /* --- NAVIGATION --- */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: #111; display: flex; justify-content: space-around; align-items: center; border-top: 3px solid var(--primary); z-index: 1000; }
-        .nav-item { color: #fff; font-size: 11px; opacity: 0.5; text-align: center; font-weight: 900; flex: 1; }
-        .nav-item.active { opacity: 1; color: var(--primary); }
-        .nav-item span { display: block; font-size: 22px; margin-bottom: 2px; }
-
-        /* --- PAGES --- */
-        .page { display: none; padding: 15px; padding-bottom: 100px; }
+        /* --- ADMIN & PAGES --- */
+        .page { display: none; padding: 20px; animation: fadeIn 0.4s; }
         .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- ADMIN PANEL & HISTORY STYLES --- */
-        .admin-card { background: #1a1a1a; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #333; }
-        .btn-row { display: flex; gap: 8px; margin-bottom: 10px; }
-        button { padding: 12px; font-weight: 900; border: none; border-radius: 6px; cursor: pointer; flex: 1; font-size: 12px; text-transform: uppercase; }
-        .btn-blue { background: #004cff; color: white; }
-        .btn-yel { background: var(--primary); color: #000; }
-        .btn-red { background: #ff0040; color: white; }
-        .btn-green { background: #28a745; color: white; }
-        input { width: 95%; padding: 12px; margin-bottom: 10px; background: #000; border: 1px solid #444; color: #fff; border-radius: 6px; }
-        label { display: block; font-size: 10px; color: #888; margin-bottom: 5px; font-weight: 900; }
-        .match-card { background: #222; padding: 10px; margin-top: 10px; border-radius: 8px; border-left: 5px solid var(--primary); cursor: pointer; }
+        .admin-card { background: #0e1624; padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .btn-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        button { padding: 14px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; flex: 1; font-size: 12px; text-transform: uppercase; transition: 0.2s; }
+        button:active { transform: scale(0.95); }
+        .btn-blue { background: #0055ff; color: white; box-shadow: 0 4px 15px rgba(0,85,255,0.3); }
+        .btn-yel { background: var(--primary); color: #000; box-shadow: 0 4px 15px rgba(254,195,9,0.3); }
+        .btn-red { background: var(--neon-red); color: white; }
+        .btn-green { background: #00c853; color: white; }
+        
+        input { width: 93%; padding: 14px; margin-bottom: 12px; background: #050b14; border: 1px solid #1a2436; color: #fff; border-radius: 10px; font-size: 14px; }
+        label { display: block; font-size: 11px; color: var(--primary); margin-bottom: 6px; font-weight: 700; letter-spacing: 1px; }
+
+        /* --- NAV --- */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 80px; background: rgba(3, 10, 22, 0.95); display: flex; justify-content: space-around; align-items: center; border-top: 2px solid var(--primary); backdrop-filter: blur(15px); z-index: 1000; }
+        .nav-item { color: #fff; font-size: 12px; opacity: 0.4; text-align: center; font-weight: 700; flex: 1; cursor: pointer; transition: 0.3s; }
+        .nav-item.active { opacity: 1; color: var(--primary); transform: translateY(-5px); }
+        .nav-icon { font-size: 24px; display: block; margin-bottom: 4px; }
+
+        .sub-tab-btn { background: #1a2436; color: #888; margin-bottom: 10px; border: 1px solid transparent; }
+        .sub-tab-btn.active { background: rgba(254,195,9,0.1); color: var(--primary); border: 1px solid var(--primary); }
     </style>
 </head>
-<body onload="startClock(); setupHistoryYears();">
+<body onload="startClock();">
 
-    <div class="live-eq-bar" id="d-equation">WELCOME TO LIVE STREAM</div>
+    <div class="live-eq-bar" id="d-equation">CONNECTING TO SERVER...</div>
 
     <div class="top-vs-bar">
         <span id="txt-t1">TEAM A</span>
-        <div style="flex-grow: 1; margin: 0 15px;">
+        <div style="flex-grow: 1; margin: 0 20px;">
             <div class="win-progress-bg">
                 <div id="win-p1"></div>
                 <div id="win-p2"></div>
@@ -95,7 +117,7 @@
     <div class="scoreboard-wrapper">
         <div id="boundary-anim">FOUR!</div>
         <div class="scoreboard">
-            <div class="team-box" id="d-team">TEAM A</div>
+            <div class="team-box" id="d-team">T1</div>
             <div class="score-main">
                 <span id="d-runs">0</span>-<span id="d-wkt">0</span><span class="ov-small">(<span id="d-ov">0.0</span>)</span>
             </div>
@@ -107,25 +129,25 @@
 
             <div class="opp-container">
                 <div class="opp-box">
-                    <span style="font-size: 9px; font-weight: 900; opacity: 0.8;">OPPONENT</span>
-                    <span style="font-size: 20px; font-weight: 900;" id="d-opp-score">0-0 (0.0)</span>
+                    <span style="font-size: 9px; font-weight: 900; opacity: 0.6;">OPPONENT</span>
+                    <span style="font-size: 18px; font-weight: 900; color: #fff;" id="d-opp-score">0-0 (0.0)</span>
                 </div>
                 <div class="target-box">
-                    <span style="font-size: 9px; font-weight: 900;">TARGET</span>
-                    <span style="font-size: 24px; font-weight: 900;" id="d-target">0</span>
+                    <span style="font-size: 9px; font-weight: 900; opacity: 0.6;">TARGET</span>
+                    <span style="font-size: 22px; font-weight: 900;" id="d-target">0</span>
                 </div>
             </div>
         </div>
 
         <div class="bottom-strip">
             <div class="tour-info">
-                <span id="d-tour">TOURNAMENT NAME</span>
+                <span id="d-tour">PRO TOURNAMENT</span>
                 <span class="inn-tag" id="d-inn-status">1ST INNINGS</span>
-                <span class="crr-tag">CRR: <span id="d-crr">0.00</span></span>
+                <span style="font-size: 12px; font-weight: 700;">CRR: <span id="d-crr" style="color:var(--primary)">0.00</span></span>
             </div>
             <div style="display: flex; align-items: center; gap: 15px;">
-                <span style="font-size: 12px; font-weight: 900; color: #fff;" id="d-bowl">BOWLER</span>
-                <div class="over-dots" id="dots-container">
+                <span style="font-size: 13px; font-weight: 700; color: #fff;"><span class="live-dot"></span> <span id="d-bowl">BOWLER</span></span>
+                <div class="over-dots">
                     <div class="dot">1</div><div class="dot">2</div><div class="dot">3</div><div class="dot">4</div><div class="dot">5</div><div class="dot">6</div>
                 </div>
             </div>
@@ -133,92 +155,91 @@
     </div>
 
     <div id="page-live" class="page active">
-        <div class="admin-card">
-            <h4 style="margin:0 0 10px 0; color:var(--primary);">MATCH CENTER</h4>
-            <p style="font-size: 13px; opacity:0.8;">Live match data is being synced with Firebase.</p>
-            <div style="display: flex; justify-content: space-between; border-top: 1px solid #333; pt:10px;">
-                <span id="live-time-date">DATE: 10-JAN-2026</span>
-                <span id="live-clock">00:00:00 AM</span>
+        <div class="admin-card" style="text-align: center;">
+            <h2 style="color:var(--primary); margin-top:0;">LIVE DASHBOARD</h2>
+            <div style="display: flex; justify-content: space-around; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                <div><small style="display:block; opacity:0.5;">DATE</small><span id="live-time-date">--</span></div>
+                <div><small style="display:block; opacity:0.5;">TIME</small><span id="live-clock">--</span></div>
             </div>
         </div>
-    </div>
-
-    <div id="page-history" class="page">
-        <h3>Archives</h3>
-        <div id="year-buttons-container" style="display: flex; gap: 10px; margin-bottom:15px;"></div>
-        <div id="hist-matches-list">सालों पर क्लिक करके मैच देखें...</div>
-        <div id="history-detail-view" style="display:none; background:#111; padding:15px; border-radius:10px; margin-top:15px; border:1px solid var(--primary);">
-            <button onclick="document.getElementById('history-detail-view').style.display='none'" class="btn-red" style="padding:5px; margin-bottom:10px;">CLOSE</button>
-            <div id="h-player-stats"></div>
-        </div>
-    </div>
-
-    <div id="page-squad" class="page">
-        <h3>Playing XI Management</h3>
-        <div class="admin-card">
-            <label>Add Player to Squad</label>
-            <input type="text" id="squad-input" placeholder="Enter Player Name">
-            <button class="btn-blue" onclick="addToSquad()">ADD TO LIST</button>
-        </div>
-        <div id="player-list-display">No players added yet.</div>
     </div>
 
     <div id="page-admin" class="page">
-        <div id="login-area" style="text-align: center; padding: 30px 0;">
-            <input type="password" id="pass-input" placeholder="Admin Password">
-            <button onclick="checkPass()" class="btn-yel" style="width:100%; margin-top:10px;">LOGIN</button>
+        <div id="login-area" style="text-align: center; padding-top: 50px;">
+            <div style="font-size: 50px; margin-bottom: 20px;">🛡️</div>
+            <h3 style="letter-spacing: 2px;">ADMIN AUTHENTICATION</h3>
+            <input type="password" id="pass-input" placeholder="Enter Secure Pin" style="text-align:center; font-size: 20px;">
+            <button onclick="checkPass()" class="btn-yel" style="width:100%; padding: 18px;">UNLOCK CONTROLS</button>
         </div>
 
         <div id="admin-panel" style="display:none;">
-            <div class="admin-card">
-                <label>RUNS & WICKETS</label>
-                <div class="btn-row">
-                    <button class="btn-blue" onclick="addRun(1)">+1</button>
-                    <button class="btn-blue" onclick="addRun(2)">+2</button>
-                    <button class="btn-blue" onclick="addRun(3)">+3</button>
-                    <button class="btn-red" onclick="addRun(-1)">-1</button>
+            <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+                <button class="sub-tab-btn active" id="tab-score" onclick="showSubPage('score')">🎮 SCORE</button>
+                <button class="sub-tab-btn" id="tab-squad" onclick="showSubPage('squad')">👥 SQUAD</button>
+                <button class="sub-tab-btn" id="tab-hist" onclick="showSubPage('hist')">📜 HISTORY</button>
+            </div>
+
+            <div id="sub-score" class="sub-page active">
+                <div class="admin-card">
+                    <label>QUICK RUNS</label>
+                    <div class="btn-row">
+                        <button class="btn-blue" onclick="addRun(1)">+1</button>
+                        <button class="btn-blue" onclick="addRun(2)">+2</button>
+                        <button class="btn-blue" onclick="addRun(3)">+3</button>
+                        <button class="btn-red" onclick="addRun(-1)">-1</button>
+                    </div>
+                    <div class="btn-row">
+                        <button class="btn-yel" onclick="triggerAnim('FOUR', 4)">FOUR</button>
+                        <button class="btn-yel" onclick="triggerAnim('SIX', 6)">SIX</button>
+                        <button class="btn-red" onclick="handleWicket()" style="background:#ff3d00;">WICKET</button>
+                        <button class="btn-green" onclick="nextBall('n')">NEXT BALL</button>
+                    </div>
+                    <button class="btn-yel" style="width:100%; background:linear-gradient(90deg, #e67e22, #d35400); color:white;" onclick="changeStrike()">🔄 SWAP STRIKE</button>
                 </div>
-                <div class="btn-row">
-                    <button class="btn-yel" onclick="triggerAnim('FOUR', 4)">FOUR</button>
-                    <button class="btn-yel" onclick="triggerAnim('SIX', 6)">SIX</button>
-                    <button class="btn-red" onclick="handleWicket()">WICKET</button>
-                    <button class="btn-green" onclick="nextBall('n')">NEXT BALL</button>
+
+                <div class="admin-card">
+                    <label>MATCH CONFIGURATION</label>
+                    <input type="text" id="i-b1" placeholder="Batsman 1 Name" oninput="saveData()">
+                    <input type="text" id="i-b2" placeholder="Batsman 2 Name" oninput="saveData()">
+                    <input type="text" id="i-bowl" placeholder="Current Bowler" oninput="saveData()">
+                    <input type="text" id="i-team" placeholder="Batting Team" oninput="saveData()">
+                    <input type="text" id="i-opp-name" placeholder="Opponent Team" oninput="saveData()">
+                    <input type="number" id="i-target" placeholder="Set Target" oninput="saveData()">
+                    <button class="btn-blue" onclick="toggleInnings()" style="width:100%; margin-top:5px; background: #00122e; border:1px solid var(--primary);">🌗 TOGGLE INNINGS</button>
                 </div>
-                <div class="btn-row">
-                    <button class="btn-yel" style="background:#e67e22; color:#fff;" onclick="changeStrike()">🔄 SWAP STRIKE</button>
+                
+                <div class="admin-card" style="background: rgba(255,0,0,0.05); border: 1px solid rgba(255,0,0,0.2);">
+                    <button class="btn-red" onclick="resetDB()" style="width:100%;">⚠️ RESET LIVE DATA</button>
+                    <button class="btn-red" onclick="logoutAdmin()" style="width:100%; margin-top:10px; background:#333;">🔒 LOCK ADMIN PANEL</button>
                 </div>
             </div>
 
-            <div class="admin-card">
-                <label>BATSMEN NAMES (Manual or from Squad)</label>
-                <input type="text" id="i-b1" placeholder="Batsman 1 Name" oninput="saveData()">
-                <input type="text" id="i-b2" placeholder="Batsman 2 Name" oninput="saveData()">
-                <label>BOWLER NAME</label>
-                <input type="text" id="i-bowl" placeholder="Current Bowler" oninput="saveData()">
+            <div id="sub-squad" class="sub-page">
+                <div class="admin-card">
+                    <label>ADD TO PLAYING XI</label>
+                    <input type="text" id="squad-input" placeholder="Player Name">
+                    <button class="btn-green" onclick="addToSquad()" style="width:100%;">ADD TO LIST</button>
+                    <div id="player-list-display" style="margin-top:20px; border-top:1px solid #222; padding-top:10px;"></div>
+                </div>
             </div>
 
-            <div class="admin-card">
-                <label>TEAM CONFIG</label>
-                <input type="text" id="i-team" placeholder="Batting Team Name" oninput="saveData()">
-                <input type="text" id="i-opp-name" placeholder="Opponent Team Name" oninput="saveData()">
-                <input type="text" id="i-opp-score" placeholder="Opponent Full Score (Ex: 145-6 20.0)" oninput="saveData()">
-                <input type="number" id="i-target" placeholder="Match Target" oninput="saveData()">
-                <input type="text" id="i-tour" placeholder="Tournament Name" oninput="saveData()">
-            </div>
-
-            <div class="admin-card">
-                <label>FINAL ACTIONS</label>
-                <button class="btn-green" onclick="finishAndArchive()" style="width:100%; margin-bottom:10px;">💾 FINISH & SAVE TO HISTORY</button>
-                <button class="btn-red" onclick="resetDB()" style="width:100%;">RESET LIVE DATA</button>
+            <div id="sub-hist" class="sub-page">
+                <div class="admin-card">
+                    <button class="btn-green" onclick="finishAndArchive()" style="width:100%; padding:18px;">💾 ARCHIVE THIS MATCH</button>
+                </div>
+                <div id="year-buttons-container" style="display:flex; gap:10px; overflow-x:auto; padding-bottom:10px;"></div>
+                <div id="hist-matches-list"></div>
             </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="showPage('live', this)"><span>🏏</span>LIVE</div>
-        <div class="nav-item" onclick="showPage('history', this)"><span>📜</span>HISTORY</div>
-        <div class="nav-item" onclick="showPage('squad', this)"><span>👥</span>SQUAD</div>
-        <div class="nav-item" onclick="showPage('admin', this)"><span>⚙️</span>ADMIN</div>
+        <div class="nav-item active" onclick="showPage('live', this)">
+            <span class="nav-icon">🏏</span>LIVE
+        </div>
+        <div class="nav-item" onclick="showPage('admin', this)">
+            <span class="nav-icon">⚙️</span>ADMIN
+        </div>
     </nav>
 
     <script>
@@ -235,16 +256,15 @@
             anim:"", inn: "1ST INNINGS", squad: []
         };
 
-        // --- CLOCK ---
         function startClock() {
             setInterval(() => {
                 const now = new Date();
                 document.getElementById('live-clock').innerText = now.toLocaleTimeString();
-                document.getElementById('live-time-date').innerText = "DATE: " + now.toLocaleDateString().toUpperCase();
+                document.getElementById('live-time-date').innerText = now.toLocaleDateString('hi-IN', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
             }, 1000);
+            setupHistoryYears();
         }
 
-        // --- NAVIGATION & ADMIN ---
         function showPage(p, el) {
             document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
             document.getElementById('page-'+p).classList.add('active');
@@ -252,14 +272,32 @@
             el.classList.add('active');
         }
 
+        function showSubPage(p) {
+            document.querySelectorAll('.sub-page').forEach(sp => sp.classList.remove('active'));
+            document.getElementById('sub-'+p).classList.add('active');
+            document.querySelectorAll('.sub-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-'+p).classList.add('active');
+        }
+
         function checkPass() {
             if(document.getElementById('pass-input').value === myPass) {
                 document.getElementById('admin-panel').style.display = 'block';
                 document.getElementById('login-area').style.display = 'none';
-            } else alert("Wrong Password!");
+            } else alert("गलत पिन! फिर से कोशिश करें।");
         }
 
-        // --- CORE LOGIC ---
+        function logoutAdmin() {
+            document.getElementById('admin-panel').style.display = 'none';
+            document.getElementById('login-area').style.display = 'block';
+            document.getElementById('pass-input').value = "";
+            alert("Admin Locked Successfully!");
+        }
+
+        function toggleInnings() {
+            st.inn = (st.inn === "1ST INNINGS") ? "2ND INNINGS" : "1ST INNINGS";
+            saveData();
+        }
+
         function addRun(v) {
             st.r += v;
             if(st.strike === 1) st.p1.r += v; else st.p2.r += v;
@@ -274,10 +312,10 @@
         }
 
         function handleWicket() {
-            let nextPlayer = prompt("Wicket! Enter New Batsman Name:");
-            if(nextPlayer) {
-                if(st.strike === 1) { st.p1 = {name: nextPlayer, r:0, b:0}; }
-                else { st.p2 = {name: nextPlayer, r:0, b:0}; }
+            let n = prompt("नए बल्लेबाज का नाम लिखें:");
+            if(n) {
+                if(st.strike === 1) st.p1 = {name: n, r:0, b:0};
+                else st.p2 = {name: n, r:0, b:0};
                 nextBall('w');
             }
         }
@@ -296,75 +334,10 @@
                 st.squad.push(name);
                 document.getElementById('squad-input').value = "";
                 saveData();
-                renderSquad();
             }
-        }
-
-        function renderSquad() {
-            let html = "";
-            if(st.squad) {
-                st.squad.forEach((p, i) => {
-                    html += `<div style="padding:10px; border-bottom:1px solid #333;">${i+1}. ${p}</div>`;
-                });
-            }
-            document.getElementById('player-list-display').innerHTML = html;
         }
 
         function saveData() {
             if(document.getElementById('i-b1')) {
                 st.p1.name = document.getElementById('i-b1').value || st.p1.name;
-                st.p2.name = document.getElementById('i-b2').value || st.p2.name;
-                st.t1 = document.getElementById('i-team').value || st.t1;
-                st.t2 = document.getElementById('i-opp-name').value || st.t2;
-                st.oppS = document.getElementById('i-opp-score').value || st.oppS;
-                st.target = document.getElementById('i-target').value || st.target;
-                st.tour = document.getElementById('i-tour').value || st.tour;
-                st.bowl = document.getElementById('i-bowl').value || st.bowl;
-            }
-            db.set(st);
-        }
-
-        function resetDB() { if(confirm("Clear Match Data?")) { db.set(null); location.reload(); } }
-
-        // --- HISTORY & ARCHIVE ---
-        function finishAndArchive() {
-            if(!confirm("Finish Match and save to History?")) return;
-            let year = new Date().getFullYear();
-            let matchKey = Date.now();
-            let archiveData = {
-                teams: st.t1 + " vs " + st.t2,
-                score: st.r + "-" + st.w + " (" + st.o + "." + st.b + ")",
-                tour: st.tour,
-                date: new Date().toLocaleDateString(),
-                p1: st.p1, p2: st.p2
-            };
-            archRef.child(year).child(matchKey).set(archiveData).then(() => {
-                alert("Saved Successfully!");
-                resetDB();
-            });
-        }
-
-        function setupHistoryYears() {
-            const container = document.getElementById('year-buttons-container');
-            const startYear = 2025;
-            const currentYear = new Date().getFullYear();
-            container.innerHTML = "";
-            for (let i = startYear; i <= currentYear; i++) {
-                let btn = document.createElement('button');
-                btn.innerText = i; btn.className = "btn-blue";
-                btn.style.width = "auto"; btn.style.padding = "10px 20px";
-                btn.onclick = () => loadHistoryByYear(i);
-                container.appendChild(btn);
-            }
-        }
-
-        function loadHistoryByYear(year) {
-            archRef.child(year).on('value', snap => {
-                let data = snap.val();
-                let html = "";
-                if(!data) html = "<p>No matches found for " + year + "</p>";
-                else {
-                    for(let key in data) {
-                        let m = data[key];
-                        html += `<div class="match-card" onclick="showHistDetail('${year}','${key}')">
-                            <b>${m.teams}</b><br><small>${m.date} | ${m.tour}</s
+                st.p2.name = document.getElementById('i-b2').val
