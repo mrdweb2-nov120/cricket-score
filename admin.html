@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IPL PRO ADMIN PANEL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+
+<style>
+:root{
+ --bg:#050b1e;
+ --card:#0c1638;
+ --gold:#fec309;
+ --red:#ff0040;
+ --blue:#004cff;
+ --green:#00c853;
+}
+
+body{
+ margin:0;
+ background:var(--bg);
+ color:white;
+ font-family:Inter,sans-serif;
+}
+
+h2{
+ font-family:Teko;
+ letter-spacing:2px;
+ margin:0 0 10px;
+ color:var(--gold);
+ text-align:center;
+}
+
+.section{
+ background:var(--card);
+ margin:12px;
+ padding:12px;
+ border-radius:12px;
+ border:1px solid #1f2c5c;
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:10px;
+}
+
+button{
+ padding:14px;
+ font-weight:700;
+ border:none;
+ border-radius:8px;
+ font-size:13px;
+ cursor:pointer;
+}
+
+.btn-blue{background:var(--blue);color:white}
+.btn-red{background:var(--red);color:white}
+.btn-gold{background:var(--gold);color:black}
+.btn-green{background:var(--green);color:black}
+.btn-dark{background:#222;color:white}
+
+input{
+ width:100%;
+ padding:12px;
+ border-radius:6px;
+ border:1px solid #333;
+ background:black;
+ color:white;
+ margin-bottom:8px;
+}
+
+label{
+ font-size:11px;
+ opacity:.7;
+}
+
+.footer{
+ text-align:center;
+ font-size:11px;
+ opacity:.5;
+ padding:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🏏 IPL PRO ADMIN PANEL</h2>
+
+<!-- MATCH SETUP -->
+<div class="section">
+<label>Batting Team</label>
+<input id="team">
+
+<label>Target (2nd Innings)</label>
+<input id="target" type="number">
+
+<label>Bowler Name</label>
+<input id="bowler">
+</div>
+
+<!-- SCORE CONTROL -->
+<div class="section">
+<h2>SCORE CONTROL</h2>
+<div class="grid">
+<button class="btn-blue" onclick="addRun(1)">+1 RUN</button>
+<button class="btn-blue" onclick="addRun(2)">+2 RUNS</button>
+<button class="btn-blue" onclick="addRun(3)">+3 RUNS</button>
+<button class="btn-dark" onclick="dotBall()">DOT BALL</button>
+
+<button class="btn-gold" onclick="bigEvent('FOUR',4)">🔥 FOUR</button>
+<button class="btn-red" onclick="bigEvent('SIX',6)">💣 SIX</button>
+
+<button class="btn-red" onclick="wicket()">🚨 WICKET</button>
+<button class="btn-green" onclick="nextBall()">NEXT BALL</button>
+</div>
+
+<button class="btn-gold" style="width:100%;margin-top:10px" onclick="swapStrike()">🔄 SWAP STRIKE</button>
+</div>
+
+<!-- PLAYER CARD -->
+<div class="section">
+<h2>GRAPHICS</h2>
+<div class="grid">
+<button class="btn-gold" onclick="showCard()">SHOW STRIKER CARD</button>
+<button class="btn-dark" onclick="hideCard()">HIDE CARD</button>
+</div>
+</div>
+
+<!-- RESET -->
+<div class="section">
+<button class="btn-red" style="width:100%" onclick="resetMatch()">❌ RESET MATCH</button>
+</div>
+
+<div class="footer">Connected with Firebase • Live Sync</div>
+
+<script>
+firebase.initializeApp({
+ databaseURL:"https://myscoreboard-b140f-default-rtdb.firebaseio.com/"
+});
+const db=firebase.database().ref("tv_scoreboard");
+
+let st={
+ r:0,w:0,o:0,b:0,
+ team:"TEAM A",
+ target:0,
+ strike:1,
+ p1:{n:"BATSMAN 1",r:0,b:0},
+ p2:{n:"BATSMAN 2",r:0,b:0},
+ bowler:"BOWLER",
+ anim:""
+};
+
+function save(){db.set(st);}
+
+function addRun(v){
+ st.r+=v;
+ st.strike===1?st.p1.r+=v:st.p2.r+=v;
+ save();
+}
+
+function dotBall(){
+ st.strike===1?st.p1.b++:st.p2.b++;
+ nextBall();
+}
+
+function nextBall(){
+ st.b++;
+ if(st.b>=6){st.o++;st.b=0}
+ save();
+}
+
+function wicket(){
+ let n=prompt("New Batsman Name");
+ if(!n)return;
+ st.w++;
+ if(st.strike===1)st.p1={n,r:0,b:0};
+ else st.p2={n,r:0,b:0};
+ nextBall();
+}
+
+function swapStrike(){
+ st.strike=st.strike===1?2:1;
+ save();
+}
+
+function bigEvent(t,r){
+ st.anim=t;
+ addRun(r);
+ setTimeout(()=>{st.anim="";save()},1500);
+}
+
+function showCard(){
+ st.anim="CARD";
+ save();
+}
+
+function hideCard(){
+ st.anim="";
+ save();
+}
+
+function resetMatch(){
+ if(!confirm("Reset Match?"))return;
+ location.reload();
+}
+
+team.oninput=()=>{st.team=team.value;save()}
+target.oninput=()=>{st.target=+target.value;save()}
+bowler.oninput=()=>{st.bowler=bowler.value;save()}
+</script>
+
+</body>
+</html>
