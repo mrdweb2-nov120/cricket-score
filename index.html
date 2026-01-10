@@ -11,50 +11,49 @@
         
         body { background: transparent; font-family: 'Roboto', sans-serif; color: white; margin: 0; padding: 0; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; }
 
-        /* WIN METER */
+        /* FULL SCORECARD OVERLAY */
+        #summary-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #00122e 0%, #002b6b 100%);
+            z-index: 1000; display: none; flex-direction: column; align-items: center; padding: 20px; box-sizing: border-box;
+        }
+        .summary-header { width: 100%; text-align: center; border-bottom: 4px solid #fec309; padding-bottom: 10px; margin-bottom: 20px; }
+        .summary-table { width: 100%; max-width: 800px; border-collapse: collapse; font-size: 18px; }
+        .summary-table th { background: #fec309; color: #000; padding: 10px; text-align: left; }
+        .summary-table td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .batting-now { color: #fec309; font-weight: 900; }
+
+        /* OLD CSS KEPT AS IS */
         #neon-win-container { width: 100%; background: rgba(0,0,0,0.9); padding: 4px 0; border-bottom: 1px solid #222; }
         .win-labels { display: flex; justify-content: space-between; padding: 0 50px; align-items: center; height: 20px; }
         #d-live-calc { background: #fff; color: #000; padding: 0 15px; border-radius: 10px; font-size: 10px; font-weight: 900; text-transform: uppercase; }
         .neon-bar-bg { width: 96%; height: 6px; background: #111; border-radius: 5px; margin: 4px auto; display: flex; overflow: hidden; }
         #bar-t1 { width: 50%; background: linear-gradient(90deg, #0041ff, #00f2ff); transition: 1.5s ease-in-out; }
         #bar-t2 { width: 50%; background: linear-gradient(90deg, #ff0055, #ff4d00); transition: 1.5s ease-in-out; }
-
-        /* SCOREBOARD WRAPPER */
         .scoreboard-wrapper { width: 100%; position: relative; }
         .scoreboard { width: 100%; height: 75px; background: linear-gradient(180deg, #00122e 0%, #002b6b 100%); border-bottom: 4px solid #fec309; display: flex; align-items: center; position: relative; }
-        
         .team-box { width: 140px; background: #fec309; color: #000; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; text-align: center; }
         .score-main { font-size: 45px; font-weight: 900; padding: 0 25px; min-width: 170px; border-right: 1px solid rgba(255,255,255,0.2); }
-        
-        /* TWO ROW BATSMAN */
         .batsman-box { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; padding-left: 20px; gap: 4px; }
         .batsman-row { font-size: 17px; display: flex; align-items: center; opacity: 0.9; }
         .striker-active { color: #fec309; font-weight: 900; font-size: 19px; opacity: 1; text-shadow: 0 0 10px rgba(254, 195, 9, 0.4); }
         .b-stats { font-weight: 900; margin-left: 10px; color: #fff; }
         .b-balls { font-size: 14px; opacity: 0.7; font-weight: 400; margin-left: 5px; }
-
-        /* OPPONENT BOXES */
         .opp-container { width: 280px; height: 100%; display: flex; border-left: 2px solid #fff; }
         .opp-score-box { background: #d9534f; width: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #fff; }
         .target-box { background: #b0413e; width: 40%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .opp-label { font-size: 11px; font-weight: 900; color: #fff; margin-bottom: 2px; }
         .opp-val { font-size: 19px; font-weight: 900; }
-
-        /* BOTTOM STRIP */
         .bottom-strip { width: 100%; height: 30px; background: #000; display: flex; align-items: center; padding: 0 20px; box-sizing: border-box; }
-        #d-tour { font-size: 16px; font-weight: 900; color: #fec309; text-transform: uppercase; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(255,255,255,0.5); }
+        #d-tour { font-size: 16px; font-weight: 900; color: #fec309; text-transform: uppercase; letter-spacing: 1px; }
         #d-status { font-size: 12px; margin-left: 15px; color: #fff; opacity: 0.8; }
-        
         .over-dots { margin-left: auto; display: flex; align-items: center; }
         .dot { width: 22px; height: 22px; border-radius: 50%; background: #222; margin-left: 5px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; border: 1px solid #555; color: #fff; }
         .dot-active { background: #fec309 !important; color: #000 !important; border-color: #fff; }
         .dot-w { background: #ff0055 !important; color: #fff !important; }
-
-        /* BOUNDARY ANIMATION */
         #boundary-anim { position: absolute; top:0; left:0; width:100%; height:100%; display:none; align-items:center; justify-content:center; font-size:45px; font-weight:900; z-index:20; background:#fec309; color:#000; animation: flash 0.3s infinite; }
         @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-
-        /* ADMIN PANEL */
+        
         #admin-panel { width: 98%; background: #fff; color: #000; padding: 20px; border-radius: 15px; margin-top: 20px; display: none; grid-template-columns: 1fr 1fr; gap: 20px; border: 5px solid #003a8c; }
         .admin-section { border: 1px solid #ddd; padding: 15px; border-radius: 10px; }
         .admin-row { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
@@ -67,6 +66,22 @@
     </style>
 </head>
 <body>
+
+    <div id="summary-overlay">
+        <div class="summary-header">
+            <h1 id="sum-tour" style="margin:0; color:#fff; font-size: 20px;">TOURNAMENT</h1>
+            <h2 style="margin:5px 0; color:#fec309; font-size: 40px;"><span id="sum-team">TEAM</span> <span id="sum-score">0-0</span></h2>
+            <p id="sum-status">1ST INNINGS</p>
+        </div>
+        <table class="summary-table">
+            <thead>
+                <tr><th>BATSMAN</th><th>STATUS</th><th>RUNS</th><th>BALLS</th><th>SR</th></tr>
+            </thead>
+            <tbody id="summary-list">
+                </tbody>
+        </table>
+        <button onclick="toggleSummary(false)" class="btn-red" style="margin-top:20px; max-width: 200px;">CLOSE SUMMARY</button>
+    </div>
 
     <div id="neon-win-container">
         <div class="win-labels">
@@ -90,7 +105,7 @@
 
             <div class="opp-container">
                 <div class="opp-score-box">
-                    <span class="opp-label" id="d-opp-name" style="font-size: 14px; color: #ffd1d1;">OPPONENT NAME</span>
+                    <span class="opp-label" id="d-opp-name" style="font-size: 14px; color: #ffd1d1;">OPPONENT</span>
                     <span class="opp-val"><span id="d-opp-r">0</span>-<span id="d-opp-w">0</span> (<span id="d-opp-ov">0.0</span>)</span>
                 </div>
                 <div class="target-box">
@@ -100,160 +115,204 @@
             </div>
         </div>
         <div class="bottom-strip">
-            <span id="d-tour">TOURNAMENT NAME</span>
+            <span id="d-tour">TOURNAMENT</span>
             <span id="d-status">1ST INNINGS | CRR: 0.00</span>
             <div class="over-dots">
-                <span id="d-bowl" style="color:#fff; font-size:11px; margin-right:10px; font-weight: 900;">BOWLER NAME</span>
+                <span id="d-bowl" style="color:#fff; font-size:11px; margin-right:10px; font-weight: 900;">BOWLER</span>
                 <div class="dot">1</div><div class="dot">2</div><div class="dot">3</div><div class="dot">4</div><div class="dot">5</div><div class="dot">6</div>
             </div>
         </div>
     </div>
 
     <div id="login-area">
-        <h2 style="color: #000;">Restricted Access</h2>
-        <input type="password" id="pass-input" placeholder="Enter Password">
-        <br><br>
-        <button onclick="checkPass()" class="btn-yel" style="width:150px;">UNLOCK PANEL</button>
+        <input type="password" id="pass-input" placeholder="Password">
+        <button onclick="checkPass()" class="btn-yel">UNLOCK</button>
     </div>
 
     <div id="admin-panel">
         <div class="admin-section">
-            <label style="font-weight:900; color:#003a8c;">RUNS & WICKETS CONTROL</label>
-            <div class="admin-row" style="margin-top:8px;">
-                <button class="btn-blue" onclick="addRun(1)">+1 RUN</button>
-                <button class="btn-blue" onclick="addRun(3)">+3 RUNS</button>
-                <button class="btn-blue" onclick="addRun(5)">+5 RUNS</button>
+            <label style="font-weight:900; color:#003a8c;">GAME CONTROL</label>
+            <div class="admin-row" style="margin-top:10px;">
+                <button class="btn-yel" style="background:#e67e22; color:#fff" onclick="toggleSummary(true)">👁️ SHOW FULL SUMMARY</button>
             </div>
             <div class="admin-row">
-                <button class="btn-yel" onclick="triggerAnim('FOUR', 4)">HIT FOUR</button>
-                <button class="btn-yel" onclick="triggerAnim('SIX', 6)">HIT SIX</button>
-                <button class="btn-red" onclick="addRun(-1)">MINUS 1 RUN</button>
+                <button class="btn-blue" onclick="addRun(1)">+1</button>
+                <button class="btn-blue" onclick="addRun(3)">+3</button>
+                <button class="btn-yel" onclick="triggerAnim('FOUR', 4)">4</button>
+                <button class="btn-yel" onclick="triggerAnim('SIX', 6)">6</button>
+                <button class="btn-red" onclick="addRun(-1)">-1</button>
             </div>
             <div class="admin-row">
-                <button class="btn-blue" style="background:#2ecc71" onclick="nextBall('n')">NEXT BALL (+1)</button>
-                <button class="btn-red" onclick="nextBall('w')">WICKET OUT</button>
-                <button class="btn-red" style="background:#888" onclick="remWkt()">MINUS 1 WICKET</button>
+                <button class="btn-blue" style="background:#2ecc71" onclick="nextBall('n')">NEXT BALL</button>
+                <button class="btn-red" onclick="nextBall('w')">WICKET</button>
             </div>
             <div class="admin-row">
-                <button class="btn-blue" onclick="setStrike(1)">STRIKE: PLAYER 1</button>
-                <button class="btn-blue" onclick="setStrike(2)">STRIKE: PLAYER 2</button>
+                <button class="btn-blue" id="btn-s1" onclick="setStrike(1)">STRIKE: P1</button>
+                <button class="btn-blue" id="btn-s2" onclick="setStrike(2)">STRIKE: P2</button>
             </div>
+            <hr>
+            <p>PLAYERS RUNS (SELECT 1-11 TO ASSIGN)</p>
             <div class="admin-row">
-                <input type="text" id="i-b1" placeholder="Batsman 1 Name" oninput="saveData()">
-                <input type="text" id="i-b2" placeholder="Batsman 2 Name" oninput="saveData()">
+                <select id="sel-p1" onchange="assignPlayer(1)"><option>Assign Striker 1</option></select>
+                <select id="sel-p2" onchange="assignPlayer(2)"><option>Assign Striker 2</option></select>
             </div>
         </div>
 
         <div class="admin-section">
-            <label style="font-weight:900; color:#003a8c;">MATCH & TEAM DETAILS</label>
-            <div class="admin-row" style="margin-top:8px;">
-                <button class="btn-blue" onclick="setInn(1)">START 1ST INNINGS</button>
-                <button class="btn-blue" onclick="setInn(2)">START 2ND INNINGS</button>
-            </div>
+            <label style="font-weight:900; color:#003a8c;">SQUAD & MATCH INFO</label>
+            <div class="admin-row" id="player-inputs">
+                </div>
+            <hr>
             <div class="admin-row">
-                <input type="text" id="i-team" placeholder="Batting Team" oninput="saveData()">
-                <input type="text" id="i-opp" placeholder="Opponent Team" oninput="saveData()">
-            </div>
-            <div class="admin-row">
-                <input type="number" id="i-opp-r" placeholder="Opp Runs" oninput="saveData()">
-                <input type="number" id="i-opp-w" placeholder="Opp Wkts" oninput="saveData()">
-                <input type="text" id="i-opp-ov" placeholder="Opp Overs" oninput="saveData()">
-            </div>
-            <div class="admin-row">
-                <input type="number" id="i-target" placeholder="Target" oninput="saveData()">
+                <input type="text" id="i-team" placeholder="Team Name" oninput="saveData()">
                 <input type="text" id="i-tour" placeholder="Tournament" oninput="saveData()">
             </div>
             <div class="admin-row">
-                <input type="text" id="i-bowl" placeholder="Bowler" oninput="saveData()">
-                <button class="btn-red" style="background:red" onclick="resetDB()">RESET</button>
-                <button class="btn-blue" onclick="logout()">LOCK</button>
+                <input type="text" id="i-opp" placeholder="Opponent" oninput="saveData()">
+                <input type="number" id="i-target" placeholder="Target" oninput="saveData()">
             </div>
+            <button class="btn-red" onclick="resetDB()">FULL RESET</button>
+            <button class="btn-blue" onclick="logout()">LOCK</button>
         </div>
     </div>
 
     <script>
         const pass = "ChhotuLive8718";
-        function checkPass(){ if(document.getElementById('pass-input').value===pass){ document.getElementById('admin-panel').style.display='grid'; document.getElementById('login-area').style.display='none'; } else { alert("Wrong Password!"); } }
-        function logout(){ document.getElementById('admin-panel').style.display='none'; document.getElementById('login-area').style.display='block'; document.getElementById('pass-input').value=""; }
+        function checkPass(){ if(document.getElementById('pass-input').value===pass){ document.getElementById('admin-panel').style.display='grid'; document.getElementById('login-area').style.display='none'; } }
+        function logout(){ document.getElementById('admin-panel').style.display='none'; document.getElementById('login-area').style.display='block'; }
 
         const firebaseConfig = { databaseURL: "Https://myscoreboard-b140f-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.database().ref("pro_v7_ultra");
+        const db = firebase.database().ref("pro_v8_summary");
 
-        let st = { r:0, w:0, b:0, o:0, b1r:0, b1b:0, b2r:0, b2b:0, strike:1, inn:1, t1:"T1", t2:"OPPONENT", b1:"B1", b2:"B2", bowl:"BOWL", tour:"TOUR NAME", target:0, oppR:0, oppW:0, oppOv:"0.0", anim:"", history:["","","","","",""] };
+        // Initial State for 11 Players
+        let players = [];
+        for(let i=1; i<=11; i++) {
+            players.push({ id: i, name: "Player "+i, runs: 0, balls: 0, status: "Yet to bat" });
+        }
+
+        let st = { 
+            r:0, w:0, b:0, o:0, strike:1, inn:1, 
+            t1:"TEAM 1", t2:"OPPONENT", bowl:"BOWLER", tour:"TOURNAMENT", 
+            target:0, oppR:0, oppW:0, oppOv:"0.0", 
+            anim:"", history:["","","","","",""], 
+            p1_idx: 0, p2_idx: 1, // Indexes of current strikers
+            players: players,
+            showSummary: false
+        };
+
+        // Generate Player Inputs in Admin
+        const pDiv = document.getElementById('player-inputs');
+        for(let i=0; i<11; i++) {
+            let inp = document.createElement('input');
+            inp.type = "text"; inp.placeholder = "P" + (i+1) + " Name";
+            inp.id = "pname-" + i;
+            inp.style.width = "45%";
+            inp.oninput = () => { st.players[i].name = inp.value; saveData(); };
+            pDiv.appendChild(inp);
+        }
+
+        function toggleSummary(val) { st.showSummary = val; db.set(st); }
+
+        function assignPlayer(strikePos) {
+            let val = parseInt(document.getElementById('sel-p'+strikePos).value);
+            if(strikePos === 1) st.p1_idx = val; else st.p2_idx = val;
+            st.players[val].status = "Batting";
+            saveData();
+        }
 
         function saveData() {
-            st.t1 = document.getElementById('i-team').value || "T1";
+            st.t1 = document.getElementById('i-team').value || "TEAM 1";
             st.t2 = document.getElementById('i-opp').value || "OPPONENT";
-            st.b1 = document.getElementById('i-b1').value || "B1";
-            st.b2 = document.getElementById('i-b2').value || "B2";
-            st.bowl = document.getElementById('i-bowl').value || "BOWL";
-            st.tour = document.getElementById('i-tour').value || "TOUR NAME";
+            st.tour = document.getElementById('i-tour').value || "TOURNAMENT";
             st.target = parseInt(document.getElementById('i-target').value) || 0;
-            st.oppR = parseInt(document.getElementById('i-opp-r').value) || 0;
-            st.oppW = parseInt(document.getElementById('i-opp-w').value) || 0;
-            st.oppOv = document.getElementById('i-opp-ov').value || "0.0";
             db.set(st);
         }
 
         function triggerAnim(txt, runs) {
             st.anim = txt; db.set(st); addRun(runs);
-            setTimeout(() => { st.anim = ""; db.set(st); }, 3500);
+            setTimeout(() => { st.anim = ""; db.set(st); }, 3000);
         }
 
         function addRun(v) {
-            st.r += v; if(st.r < 0) st.r = 0;
-            if(st.strike === 1) { st.b1r += v; if(st.b1r < 0) st.b1r = 0; }
-            else { st.b2r += v; if(st.b2r < 0) st.b2r = 0; }
-            
-            // MANUAL MODE: Strike auto-change logic removed
+            st.r += v;
+            let currentIdx = (st.strike === 1) ? st.p1_idx : st.p2_idx;
+            st.players[currentIdx].runs += v;
             saveData();
         }
 
-        function remWkt() { if(st.w > 0) st.w--; saveData(); }
-
         function nextBall(t) {
-            if(st.strike === 1) st.b1b++; else st.b2b++;
-            if(t==='w') { st.w++; st.history[st.b]="W"; } else { st.history[st.b]="Y"; }
+            let currentIdx = (st.strike === 1) ? st.p1_idx : st.p2_idx;
+            st.players[currentIdx].balls++;
+            if(t==='w') { 
+                st.w++; st.history[st.b]="W"; 
+                st.players[currentIdx].status = "Out";
+            } else { 
+                st.history[st.b]="Y"; 
+            }
             st.b++;
-            if(st.b>=6){ st.o++; st.b=0; st.history=["","","","","",""]; /* Auto strike change removed */ }
+            if(st.b>=6){ st.o++; st.b=0; st.history=["","","","","",""]; }
             saveData();
         }
 
         function setStrike(n){ st.strike = n; saveData(); }
-        function setInn(n){ st.inn = n; saveData(); }
-        function resetDB(){ if(confirm("Clear Match?")) db.set({ r:0, w:0, b:0, o:0, b1r:0, b1b:0, b2r:0, b2b:0, strike:1, inn:1, t1:"T1", t2:"OPPONENT", b1:"B1", b2:"B2", bowl:"BOWL", tour:"TOUR NAME", target:0, oppR:0, oppW:0, oppOv:"0.0", anim:"", history:["","","","","",""] }); }
+        function resetDB(){ if(confirm("Reset Match?")) db.set(st); }
 
         db.on("value", (snap) => {
             st = snap.val() || st;
+            
+            // Sync Admin UI
+            document.getElementById('i-team').value = st.t1;
+            document.getElementById('i-opp').value = st.t2;
+            document.getElementById('i-tour').value = st.tour;
+            document.getElementById('i-target').value = st.target;
+            
+            // Sync Select Boxes
+            const s1 = document.getElementById('sel-p1');
+            const s2 = document.getElementById('sel-p2');
+            s1.innerHTML = ""; s2.innerHTML = "";
+            st.players.forEach((p, i) => {
+                let opt = `<option value="${i}" ${st.p1_idx==i?'selected':''}>${p.name}</option>`;
+                s1.innerHTML += opt;
+                let opt2 = `<option value="${i}" ${st.p2_idx==i?'selected':''}>${p.name}</option>`;
+                s2.innerHTML += opt2;
+                document.getElementById('pname-'+i).value = p.name;
+            });
+
+            // Update Small Scoreboard
             document.getElementById('d-team').innerText = st.t1;
             document.getElementById('d-runs').innerText = st.r;
             document.getElementById('d-wkt').innerText = st.w;
             document.getElementById('d-ov').innerText = st.o + "." + st.b;
             
-            document.getElementById('d-b1').innerText = (st.strike===1 ? "★ " : "") + st.b1;
-            document.getElementById('d-b2').innerText = (st.strike===2 ? "★ " : "") + st.b2;
-            document.getElementById('d-b1r').innerText = st.b1r;
-            document.getElementById('d-b2r').innerText = st.b2r;
-            
-            document.getElementById('d-b1b').innerText = "(" + Math.floor(st.b1b/6) + "." + (st.b1b%6) + ")";
-            document.getElementById('d-b2b').innerText = "(" + Math.floor(st.b2b/6) + "." + (st.b2b%6) + ")";
+            let p1 = st.players[st.p1_idx];
+            let p2 = st.players[st.p2_idx];
+            document.getElementById('d-b1').innerText = (st.strike===1 ? "★ " : "") + p1.name;
+            document.getElementById('d-b2').innerText = (st.strike===2 ? "★ " : "") + p2.name;
+            document.getElementById('d-b1r').innerText = p1.runs;
+            document.getElementById('d-b2r').innerText = p2.runs;
+            document.getElementById('d-b1b').innerText = "(" + p1.balls + ")";
+            document.getElementById('d-b2b').innerText = "(" + p2.balls + ")";
 
+            // Update Summary Overlay
+            document.getElementById('summary-overlay').style.display = st.showSummary ? "flex" : "none";
+            document.getElementById('sum-tour').innerText = st.tour;
+            document.getElementById('sum-team').innerText = st.t1;
+            document.getElementById('sum-score').innerText = st.r + "-" + st.w + " (" + st.o + "." + st.b + ")";
+            
+            let listHtml = "";
+            st.players.forEach(p => {
+                let sr = p.balls > 0 ? ((p.runs/p.balls)*100).toFixed(1) : "0.0";
+                let rowClass = p.status === "Batting" ? "batting-now" : "";
+                listHtml += `<tr class="${rowClass}"><td>${p.name}</td><td>${p.status}</td><td>${p.runs}</td><td>${p.balls}</td><td>${sr}</td></tr>`;
+            });
+            document.getElementById('summary-list').innerHTML = listHtml;
+
+            // UI Styles & Dots
             document.getElementById('row-b1').className = st.strike===1 ? "batsman-row striker-active" : "batsman-row";
             document.getElementById('row-b2').className = st.strike===2 ? "batsman-row striker-active" : "batsman-row";
-
-            document.getElementById('d-opp-name').innerText = st.t2;
-            document.getElementById('d-opp-r').innerText = st.oppR;
-            document.getElementById('d-opp-w').innerText = st.oppW;
-            document.getElementById('d-opp-ov').innerText = st.oppOv;
-            document.getElementById('d-target-val').innerText = st.target;
-            document.getElementById('d-bowl').innerText = st.bowl.toUpperCase();
-            document.getElementById('d-tour').innerText = st.tour;
-            document.getElementById('txt-t1').innerText = st.t1;
-            document.getElementById('txt-t2').innerText = st.t2;
-
-            const animDiv = document.getElementById('boundary-anim');
-            if(st.anim) { animDiv.innerText = st.anim + "!"; animDiv.style.display = "flex"; } else { animDiv.style.display = "none"; }
+            document.getElementById('boundary-anim').style.display = st.anim ? "flex" : "none";
+            document.getElementById('boundary-anim').innerText = st.anim + "!";
 
             let ds = document.querySelectorAll('.dot');
             ds.forEach((d,i)=>{ 
@@ -261,20 +320,6 @@
                 if(i<st.b)d.classList.add('dot-active'); 
                 if(st.history[i]==="W")d.classList.add('dot-w'); 
             });
-            
-            let tb = st.o*6+st.b; let crr = (st.r/(tb/6||1)).toFixed(2);
-            let calc = document.getElementById('d-live-calc');
-            if(st.inn === 1){
-                let pr = Math.round(crr*20); calc.innerText = "PROJECTED: " + pr;
-                document.getElementById('d-status').innerText = "1ST INNINGS | CRR: " + crr;
-                let w1 = 50 + (st.r/10) - (st.w*5);
-                document.getElementById('bar-t1').style.width = w1 + "%"; document.getElementById('bar-t2').style.width = (100-w1) + "%";
-            } else {
-                let need = st.target - st.r; let bl = 120-tb; calc.innerText = `NEED ${need} IN ${bl}`;
-                document.getElementById('d-status').innerText = `2ND INNINGS | CRR: ${crr} | RRR: ${(need/(bl/6||1)).toFixed(2)}`;
-                let w1 = 100 - ((need/(bl/6||1))*7) - (st.w*5);
-                document.getElementById('bar-t1').style.width = w1 + "%"; document.getElementById('bar-t2').style.width = (100-w1) + "%";
-            }
         });
     </script>
 </body>
