@@ -1,258 +1,279 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chhotu Live Broadcast Scorer</title>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700;900&display=swap');
-        
-        :root { --primary: #fec309; --dark: #00122e; }
+<meta charset="UTF-8">
+<title>PRO TV CRICKET SCOREBOARD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body { background: #111; font-family: 'Roboto', sans-serif; color: white; margin: 0; padding: 0; }
+<!-- GOOGLE FONTS -->
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-        /* --- SLIM BROADCAST SCOREBOARD (Bottom Fixed) --- */
-        .broadcast-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            height: 55px; background: #000; display: flex; align-items: center;
-            border-top: 3px solid var(--primary); z-index: 9999;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.5); font-size: 13px;
-        }
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
-        .side-info { background: #222; height: 100%; padding: 0 10px; display: flex; flex-direction: column; justify-content: center; min-width: 90px; border-right: 1px solid #444; }
-        .clock-txt { font-size: 10px; color: var(--primary); }
-        .date-txt { font-size: 9px; opacity: 0.7; }
+<style>
+:root{
+  --bg:#06142f;
+  --gold:#fec309;
+  --red:#ff0040;
+  --blue:#004cff;
+  --white:#fff;
+}
 
-        .team-label { background: var(--primary); color: #000; font-weight: 900; padding: 0 15px; height: 100%; display: flex; align-items: center; font-size: 16px; }
-        
-        .score-main { padding: 0 15px; font-size: 24px; font-weight: 900; border-right: 1px solid #333; height: 100%; display: flex; align-items: center; }
-        .ov-txt { font-size: 14px; opacity: 0.7; margin-left: 5px; color: #ccc; }
+body{
+  margin:0;
+  background:black;
+  color:white;
+  font-family:'Inter',sans-serif;
+  overflow:hidden;
+}
 
-        .players-strip { flex-grow: 1; padding: 0 15px; display: flex; align-items: center; gap: 20px; overflow: hidden; white-space: nowrap; }
-        .p-row { display: flex; gap: 10px; font-weight: 700; }
-        .striker { color: var(--primary); }
+/* ===== TOP AUTO INFO STRIP ===== */
+#infoStrip{
+  height:26px;
+  background:black;
+  border-bottom:2px solid var(--gold);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:1px;
+  animation:slideIn .6s;
+}
 
-        .stats-strip { background: #1a1a1a; height: 100%; padding: 0 15px; display: flex; align-items: center; gap: 15px; font-size: 11px; }
-        .tag { color: var(--primary); font-weight: 900; }
+@keyframes slideIn{
+  from{transform:translateY(-100%)}
+  to{transform:translateY(0)}
+}
 
-        .dots-row { display: flex; gap: 4px; padding: 0 10px; }
-        .dot { width: 18px; height: 18px; background: #333; border-radius: 50%; font-size: 9px; display: flex; align-items: center; justify-content: center; font-weight: 900; }
-        .dot.active { background: var(--primary); color: #000; box-shadow: 0 0 5px var(--primary); }
+/* ===== MAIN SCOREBOARD ===== */
+#scoreboard{
+  position:relative;
+  background:linear-gradient(135deg,#06142f,#002b6b);
+  display:flex;
+  align-items:center;
+  height:110px;
+  border-bottom:4px solid var(--gold);
+  box-shadow:0 0 30px rgba(0,76,255,.7);
+}
 
-        /* --- UI PAGES --- */
-        .content { padding: 20px; padding-bottom: 80px; }
-        .admin-card { background: #1a1a1a; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; }
-        
-        input, button { padding: 12px; margin: 5px 0; border-radius: 5px; border: none; font-weight: 900; width: 100%; }
-        input { background: #000; color: #fff; border: 1px solid #444; }
-        .btn-blue { background: #0055ff; color: #fff; }
-        .btn-yel { background: var(--primary); color: #000; }
-        .btn-red { background: #ff0040; color: #fff; }
+/* TEAM */
+.teamBox{
+  width:150px;
+  background:var(--gold);
+  color:black;
+  font-family:'Teko',sans-serif;
+  font-size:30px;
+  font-weight:700;
+  text-align:center;
+}
 
-        #boundary-anim { position: fixed; top: 40%; left: 0; width: 100%; background: var(--primary); color: #000; text-align: center; font-size: 50px; font-weight: 900; display: none; z-index: 10000; padding: 10px 0; }
+/* SCORE */
+.scoreBox{
+  padding:0 20px;
+  font-family:'Teko',sans-serif;
+  font-size:64px;
+  font-weight:700;
+  letter-spacing:-2px;
+}
 
-        .sub-pages { display: none; margin-top: 15px; }
-    </style>
+.overs{
+  font-size:22px;
+  opacity:.8;
+}
+
+/* BATSMEN */
+.batsmen{
+  flex:1;
+  padding-left:20px;
+  font-size:18px;
+}
+.striker{color:var(--gold);font-weight:700}
+
+/* RIGHT INFO */
+.rightBox{
+  width:260px;
+  background:#111;
+  text-align:center;
+  border-left:2px solid var(--gold);
+}
+
+/* ===== BOTTOM STRIP ===== */
+#bottomStrip{
+  height:34px;
+  background:black;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 12px;
+  font-size:13px;
+  border-bottom:1px solid #333;
+}
+
+/* ===== BIG EVENT STRIP ===== */
+#bigEvent{
+  position:absolute;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  font-family:'Teko',sans-serif;
+  font-size:90px;
+  font-weight:700;
+  letter-spacing:8px;
+  background:linear-gradient(90deg,#fec309,#ff0040,#fec309);
+  color:black;
+  z-index:999;
+  animation:blast .25s infinite alternate;
+}
+
+@keyframes blast{
+  from{transform:scale(1);opacity:.9}
+  to{transform:scale(1.08);opacity:1}
+}
+
+/* ===== PLAYER CARD ===== */
+#playerCard{
+  position:absolute;
+  right:20px;
+  bottom:160px;
+  width:260px;
+  background:black;
+  border:2px solid var(--gold);
+  padding:12px;
+  display:none;
+  animation:fadeUp .5s;
+}
+
+@keyframes fadeUp{
+  from{transform:translateY(40px);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+
+/* ===== LIVE CLOCK ===== */
+#clock{
+  position:absolute;
+  top:6px;
+  right:10px;
+  font-size:11px;
+  opacity:.7;
+}
+</style>
 </head>
+
 <body>
 
-    <div id="boundary-anim">FOUR!</div>
+<div id="infoStrip">WELCOME TO LIVE MATCH</div>
 
-    <div class="content">
-        <div id="login-section" class="admin-card">
-            <h3 style="margin:0 0 10px 0; color:var(--primary);">ADMIN LOGIN</h3>
-            <input type="password" id="pass-input" placeholder="ENTER ADMIN PIN">
-            <button class="btn-yel" onclick="checkAuth()">LOGIN TO CONTROL PANEL</button>
-        </div>
+<div id="scoreboard">
+  <div id="bigEvent"></div>
 
-        <div id="admin-panel" style="display:none;">
-            <div class="admin-card">
-                <button class="btn-red" onclick="logout()">LOCK PANEL</button>
-                <div style="display:flex; gap:5px; margin-top:10px;">
-                    <button class="btn-blue" onclick="showSub('s-score')">SCORE</button>
-                    <button class="btn-blue" onclick="showSub('s-squad')">SQUAD</button>
-                    <button class="btn-blue" onclick="showSub('s-hist')">HISTORY</button>
-                </div>
-            </div>
+  <div class="teamBox" id="team">TEAM A</div>
 
-            <div id="s-score" class="sub-pages" style="display:block;">
-                <div class="admin-card">
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px;">
-                        <button class="btn-yel" onclick="addR(1)">+1</button>
-                        <button class="btn-yel" onclick="addR(2)">+2</button>
-                        <button class="btn-yel" onclick="addR(3)">+3</button>
-                        <button class="btn-yel" onclick="triggerAnim('FOUR',4)">4</button>
-                        <button class="btn-yel" onclick="triggerAnim('SIX',6)">6</button>
-                        <button class="btn-red" onclick="handleWkt()">WKT</button>
-                    </div>
-                    <button class="btn-blue" onclick="nextB()" style="margin-top:10px;">NEXT BALL</button>
-                    <button class="btn-blue" onclick="swap()" style="background:#555;">SWAP STRIKE</button>
-                </div>
-                <div class="admin-card">
-                    <label>CONFIG</label>
-                    <input type="text" id="i-b1" placeholder="Batsman 1" oninput="save()">
-                    <input type="text" id="i-b2" placeholder="Batsman 2" oninput="save()">
-                    <input type="text" id="i-bowl" placeholder="Bowler" oninput="save()">
-                    <input type="text" id="i-t1" placeholder="Team Name" oninput="save()">
-                    <input type="number" id="i-target" placeholder="Target" oninput="save()">
-                    <button class="btn-blue" onclick="toggleInn()">CHANGE INNINGS</button>
-                </div>
-                <button class="btn-red" onclick="resetAll()">RESET ALL DATA</button>
-            </div>
+  <div class="scoreBox">
+    <span id="runs">0</span>-<span id="wkts">0</span>
+    <span class="overs">(<span id="overs">0.0</span>)</span>
+  </div>
 
-            <div id="s-squad" class="sub-pages">
-                <div class="admin-card">
-                    <input type="text" id="sq-in" placeholder="Player Name">
-                    <button class="btn-blue" onclick="addSq()">ADD PLAYER</button>
-                    <div id="sq-list" style="margin-top:10px;"></div>
-                </div>
-            </div>
+  <div class="batsmen">
+    <div id="b1" class="striker">BATSMAN 1 0(0)</div>
+    <div id="b2">BATSMAN 2 0(0)</div>
+  </div>
 
-            <div id="s-hist" class="sub-pages">
-                <div class="admin-card">
-                    <button class="btn-blue" onclick="archiveMatch()">SAVE TO HISTORY</button>
-                    <div id="hist-list" style="margin-top:10px;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+  <div class="rightBox">
+    <div>TARGET</div>
+    <div style="font-size:26px;font-family:Teko" id="target">0</div>
+  </div>
 
-    <div class="broadcast-bar">
-        <div class="side-info">
-            <div class="clock-txt" id="live-time">00:00:00</div>
-            <div class="date-txt" id="live-day">DAY, DATE</div>
-        </div>
+  <div id="clock"></div>
+</div>
 
-        <div class="team-label" id="d-team">TEAM</div>
+<div id="bottomStrip">
+  <div id="bowler">BOWLER</div>
+  <div id="crr">CRR: 0.00</div>
+</div>
 
-        <div class="score-main">
-            <span id="d-runs">0</span>-<span id="d-wkt">0</span>
-            <span class="ov-txt">(<span id="d-ov">0.0</span>)</span>
-        </div>
+<div id="playerCard"></div>
 
-        <div class="players-strip">
-            <div class="p-row" id="p1-row"><span id="p1-s"></span> <span id="d-b1">B1</span> <span id="d-b1-r">0(0)</span></div>
-            <div class="p-row" id="p2-row"><span id="p2-s"></span> <span id="d-b2">B2</span> <span id="d-b2-r">0(0)</span></div>
-        </div>
+<script>
+/* ===== FIREBASE CONFIG ===== */
+firebase.initializeApp({
+  databaseURL:"YOUR_FIREBASE_DATABASE_URL"
+});
+const db = firebase.database().ref("tv_scoreboard");
 
-        <div class="stats-strip">
-            <div><span class="tag">INN:</span> <span id="d-inn">1ST</span></div>
-            <div><span class="tag">CRR:</span> <span id="d-crr">0.0</span></div>
-            <div><span class="tag">BOWL:</span> <span id="d-bowl">BOWLER</span></div>
-        </div>
+/* ===== STATE ===== */
+let st={
+ r:0,w:0,o:0,b:0,
+ team:"TEAM A",
+ target:0,
+ strike:1,
+ p1:{n:"BATSMAN 1",r:0,b:0},
+ p2:{n:"BATSMAN 2",r:0,b:0},
+ bowler:"BOWLER",
+ anim:"",
+ infoIndex:0
+};
 
-        <div class="dots-row" id="d-dots">
-            <div class="dot">1</div><div class="dot">2</div><div class="dot">3</div><div class="dot">4</div><div class="dot">5</div><div class="dot">6</div>
-        </div>
-    </div>
+/* ===== AUTO INFO ROTATION ===== */
+function rotateInfo(){
+ let arr=[
+  `${st.team} NEEDS ${st.target-st.r} RUNS`,
+  `CRR ${(st.r/((st.o*6+st.b)||1)*6).toFixed(2)}`,
+  `STRIKER ${st.strike===1?st.p1.n:st.p2.n}`,
+  `OVERS ${st.o}.${st.b}`
+ ];
+ infoStrip.innerText=arr[st.infoIndex%arr.length];
+ st.infoIndex++;
+}
+setInterval(rotateInfo,4000);
 
-    <script>
-        const myPin = "ChhotuLive8718";
-        const firebaseConfig = { databaseURL: "Https://myscoreboard-b140f-default-rtdb.firebaseio.com/" };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database().ref("pro_slim_v1");
+/* ===== CLOCK ===== */
+setInterval(()=>{
+ let d=new Date();
+ clock.innerText=d.toLocaleTimeString();
+},1000);
 
-        let st = { r:0, w:0, o:0, b:0, t1:"TEAM 1", bowl:"BOWLER", p1:{n:"B1",r:0,b:0}, p2:{n:"B2",r:0,b:0}, s:1, inn:"1ST INN", target:0, squad:[], anim:"" };
+/* ===== BIG EVENT ===== */
+function showEvent(txt){
+ bigEvent.innerText=txt;
+ bigEvent.style.display="flex";
+ setTimeout(()=>bigEvent.style.display="none",1800);
+}
 
-        // Real-time Clock
-        setInterval(() => {
-            const n = new Date();
-            document.getElementById('live-time').innerText = n.toLocaleTimeString();
-            document.getElementById('live-day').innerText = n.toLocaleDateString('hi-IN', {weekday:'short', day:'2-digit', month:'short'}).toUpperCase();
-        }, 1000);
+/* ===== PLAYER CARD ===== */
+function showPlayerCard(){
+ let p=st.strike===1?st.p1:st.p2;
+ playerCard.innerHTML=`<b>${p.n}</b><br>${p.r} (${p.b})`;
+ playerCard.style.display="block";
+ setTimeout(()=>playerCard.style.display="none",4000);
+}
 
-        function checkAuth() {
-            if(document.getElementById('pass-input').value === myPin) {
-                document.getElementById('admin-panel').style.display = 'block';
-                document.getElementById('login-section').style.display = 'none';
-            } else alert("WRONG PIN");
-        }
+/* ===== FIREBASE LISTENER ===== */
+db.on("value",s=>{
+ if(!s.val())return;
+ st=s.val();
 
-        function logout() {
-            document.getElementById('admin-panel').style.display = 'none';
-            document.getElementById('login-section').style.display = 'block';
-            document.getElementById('pass-input').value = "";
-        }
+ runs.innerText=st.r;
+ wkts.innerText=st.w;
+ overs.innerText=st.o+"."+st.b;
+ team.innerText=st.team;
+ target.innerText=st.target;
+ bowler.innerText=st.bowler;
 
-        function showSub(id) {
-            document.querySelectorAll('.sub-pages').forEach(p => p.style.display='none');
-            document.getElementById(id).style.display='block';
-        }
+ b1.innerText=`${st.p1.n} ${st.p1.r}(${st.p1.b})`;
+ b2.innerText=`${st.p2.n} ${st.p2.r}(${st.p2.b})`;
 
-        function addR(v) { 
-            st.r += v; 
-            if(st.s === 1) st.p1.r += v; else st.p2.r += v;
-            save(); 
-        }
+ b1.className=st.strike===1?"striker":"";
+ b2.className=st.strike===2?"striker":"";
 
-        function nextB() {
-            if(st.s === 1) st.p1.b++; else st.p2.b++;
-            st.b++; if(st.b >= 6) { st.o++; st.b = 0; }
-            save();
-        }
+ if(st.anim){
+   showEvent(st.anim);
+ }
+});
+</script>
 
-        function handleWkt() {
-            let n = prompt("New Batsman Name:");
-            if(n) {
-                if(st.s === 1) st.p1 = {n:n, r:0, b:0}; else st.p2 = {n:n, r:0, b:0};
-                st.w++; nextB();
-            }
-        }
-
-        function swap() { st.s = st.s === 1 ? 2 : 1; save(); }
-        
-        function toggleInn() { st.inn = (st.inn === "1ST INN") ? "2ND INN" : "1ST INN"; save(); }
-
-        function triggerAnim(txt, r) {
-            st.anim = txt; db.set(st); addR(r);
-            setTimeout(() => { st.anim = ""; db.set(st); }, 2000);
-        }
-
-        function save() {
-            if(document.getElementById('i-b1')) {
-                st.p1.n = document.getElementById('i-b1').value || st.p1.n;
-                st.p2.n = document.getElementById('i-b2').value || st.p2.n;
-                st.t1 = document.getElementById('i-t1').value || st.t1;
-                st.bowl = document.getElementById('i-bowl').value || st.bowl;
-                st.target = document.getElementById('i-target').value || st.target;
-            }
-            db.set(st);
-        }
-
-        function resetAll() { if(confirm("Reset?")) { db.set({ r:0, w:0, o:0, b:0, t1:"TEAM 1", bowl:"BOWLER", p1:{n:"B1",r:0,b:0}, p2:{n:"B2",r:0,b:0}, s:1, inn:"1ST INN", target:0, squad:[], anim:"" }).then(()=>location.reload()); } }
-
-        db.on("value", snap => {
-            const data = snap.val(); if(!data) return; st = data;
-            document.getElementById('d-runs').innerText = st.r;
-            document.getElementById('d-wkt').innerText = st.w;
-            document.getElementById('d-ov').innerText = st.o + "." + st.b;
-            document.getElementById('d-team').innerText = st.t1.substring(0,6);
-            document.getElementById('d-b1').innerText = st.p1.n;
-            document.getElementById('d-b1-r').innerText = st.p1.r + "(" + st.p1.b + ")";
-            document.getElementById('d-b2').innerText = st.p2.n;
-            document.getElementById('d-b2-r').innerText = st.p2.r + "(" + st.p2.b + ")";
-            document.getElementById('d-bowl').innerText = st.bowl;
-            document.getElementById('d-inn').innerText = st.inn;
-            
-            document.getElementById('p1-row').className = st.s === 1 ? "p-row striker" : "p-row";
-            document.getElementById('p1-s').innerText = st.s === 1 ? "★" : "";
-            document.getElementById('p2-row').className = st.s === 2 ? "p-row striker" : "p-row";
-            document.getElementById('p2-s').innerText = st.s === 2 ? "★" : "";
-
-            let crr = (st.o + (st.b/6)) > 0 ? (st.r / (st.o + (st.b/6))).toFixed(2) : "0.0";
-            document.getElementById('d-crr').innerText = crr;
-
-            let dots = document.querySelectorAll('.dot');
-            dots.forEach((d, i) => d.className = i < st.b ? "dot active" : "dot");
-
-            document.getElementById('boundary-anim').innerText = st.anim + "!";
-            document.getElementById('boundary-anim').style.display = st.anim ? "block" : "none";
-        });
-    </script>
 </body>
-    </html>
-                        
+</html>
