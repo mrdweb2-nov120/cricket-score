@@ -45,7 +45,16 @@
         }
 
         .live-score { font-size: 42px; font-weight: 900; padding: 0 15px; font-family: 'Orbitron'; letter-spacing: -2px; }
-        .overs-small { font-size: 16px; opacity: 0.7; color: #ccc; margin-left: 5px; }
+        
+        /* --- OVER SPACING FIXED HERE --- */
+        .overs-small { 
+            font-size: 18px; 
+            opacity: 0.8; 
+            color: #ccc; 
+            margin-left: 15px; 
+            letter-spacing: 2px; 
+            font-weight: bold;
+        }
 
         .batsmen-section { flex-grow: 1; padding: 0 20px; border-left: 1px solid rgba(255,255,255,0.1); }
         .b-row { font-size: 18px; display: flex; justify-content: space-between; margin: 2px 0; }
@@ -104,7 +113,7 @@
             <div class="team-tag" id="d-team">TEAM A</div>
             <div class="live-score">
                 <span id="d-runs">0</span>-<span id="d-wkt">0</span>
-                <span class="overs-small">(<span id="d-ov">0.0</span>)</span>
+                <span class="overs-small">(<span id="d-ov">0 . 0</span>)</span>
             </div>
             <div class="batsmen-section">
                 <div id="p1-row" class="b-row active-bat">
@@ -179,7 +188,6 @@
     </div>
 
     <script>
-        // Firebase Config
         const firebaseConfig = { databaseURL: "Https://myscoreboard-b140f-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database().ref("broadcast_master_v3");
@@ -191,7 +199,6 @@
             inn:1, anim:"", squad: Array(11).fill("")
         };
 
-        // --- AUTH LOGIC (localStorage) ---
         function checkAuth() {
             const inputPin = document.getElementById('pass-input').value;
             if(inputPin === "ChhotuLive8718") {
@@ -213,7 +220,6 @@
         }
 
         function initApp() {
-            // Check Auto-Login
             if(localStorage.getItem("admin_login") === "true") showAdmin();
             document.getElementById("pass-input").addEventListener("keypress", (e) => { if (e.key === "Enter") checkAuth(); });
 
@@ -226,7 +232,6 @@
             });
         }
 
-        // --- UPDATED TRIGGERS ---
         function addRun(v) {
             state.r += v;
             if(v === 4) state.anim = "FOUR";
@@ -276,7 +281,10 @@
         function updateUI() {
             document.getElementById('d-runs').innerText = state.r;
             document.getElementById('d-wkt').innerText = state.w;
-            document.getElementById('d-ov').innerText = `${state.o}.${state.b}`;
+            
+            /* --- OVER LOGIC UPDATED FOR BETTER SPACING --- */
+            document.getElementById('d-ov').innerText = state.o + " . " + state.b;
+
             document.getElementById('d-team').innerText = state.t1.toUpperCase();
             document.getElementById('d-tour').innerText = state.tour.toUpperCase();
             document.getElementById('d-b1').innerText = state.p1.n;
@@ -286,7 +294,6 @@
             document.getElementById('d-bowl').innerText = state.bowl.toUpperCase();
             document.getElementById('d-target').innerText = state.target;
 
-            // --- PROJECTED & WIN BAR LOGIC ---
             let totalBalls = (state.o * 6) + state.b;
             if (state.inn === 1 && totalBalls > 0) {
                 let prj = Math.round((state.r / totalBalls) * 120);
@@ -300,7 +307,6 @@
             document.getElementById('win-p1').style.width = winP1 + "%";
             document.getElementById('win-p2').style.width = (100 - winP1) + "%";
 
-            // --- ANIMATION SIGNAL LOGIC ---
             const mainBoard = document.querySelector('.master-container'); 
             mainBoard.classList.remove('animate-four-six', 'animate-wicket');
             
@@ -314,11 +320,9 @@
                 animDiv.style.display = 'none';
             }
 
-            // Striker Highlight
             document.getElementById('p1-row').className = state.s === 1 ? "b-row active-bat" : "b-row";
             document.getElementById('p2-row').className = state.s === 2 ? "b-row active-bat" : "b-row";
             
-            // Dots
             const dots = document.querySelectorAll('.b-dot');
             dots.forEach((d, i) => d.className = i < state.b ? "b-dot active" : "b-dot");
         }
