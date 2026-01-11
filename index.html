@@ -43,27 +43,35 @@
 
         .top-info-bar { 
             background: #000; 
-            color: #ccc; 
+            color: #fff; 
             font-family: 'Orbitron'; 
-            font-size: 10px; 
-            padding: 5px 15px; 
+            font-size: 11px; 
+            padding: 7px 15px; 
             display: flex; 
             justify-content: space-between; 
             border-bottom: 1px solid #222;
             letter-spacing: 1px;
+            font-weight: 900; /* Bold */
         }
 
         .main-board { 
-            height: 95px; 
+            height: 100px; 
             background: linear-gradient(90deg, #001a3d 0%, #003366 50%, #001a3d 100%);
             display: flex; 
             align-items: center; 
             position: relative; 
             overflow: hidden;
-            border-bottom: 4px solid var(--primary);
+            border-bottom: 5px solid var(--primary);
         }
 
-        /* --- NEW ANIMATION BANNER (पट्टी के अंदर) --- */
+        /* Number Update Animation */
+        @keyframes scoreUpdate {
+            0% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.3); filter: brightness(2); color: var(--primary); }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
+        .animate-score { animation: scoreUpdate 0.5s ease-in-out; }
+
         #fx-banner {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -73,10 +81,10 @@
             align-items: center;
             justify-content: center;
             font-family: 'Orbitron';
-            font-size: 50px;
+            font-size: 55px;
             font-weight: 900;
             z-index: 10;
-            text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
+            text-shadow: 3px 3px 0px rgba(255,255,255,0.5);
             animation: slideIn 0.3s ease-out;
         }
 
@@ -89,107 +97,125 @@
             background: var(--primary); 
             color: #000; 
             font-weight: 900; 
-            font-size: 24px;
-            padding: 0 30px; 
+            font-size: 26px;
+            padding: 0 35px; 
             height: 100%; 
             display: flex; 
             align-items: center;
             clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%); 
             font-family: 'Orbitron'; 
-            min-width: 120px;
+            min-width: 130px;
         }
 
         .score-display { 
-            font-size: 48px; 
+            font-size: 52px; 
             font-weight: 900; 
             padding: 0 20px; 
             font-family: 'Orbitron'; 
             display: flex; 
             align-items: baseline;
+            min-width: 180px;
         }
 
-        .ov-tag { font-size: 18px; opacity: 0.8; margin-left: 10px; }
+        .ov-tag { font-size: 20px; opacity: 1; margin-left: 10px; font-weight: 900; color: #fff; }
 
         .batsmen-info { 
             flex-grow: 1; 
             padding: 0 20px; 
-            border-left: 1px solid rgba(255,255,255,0.1);
+            border-left: 2px solid rgba(255,255,255,0.2);
         }
 
         .player-row { 
-            font-size: 14px; 
+            font-size: 16px; 
             display: flex; 
             justify-content: space-between; 
-            margin: 4px 0; 
+            margin: 6px 0; 
             font-family: 'Orbitron';
+            font-weight: 900;
+            letter-spacing: 0.5px;
         }
 
-        .striker-active { color: var(--primary); border-left: 3px solid var(--primary); padding-left: 8px; }
+        .striker-active { color: var(--primary); border-left: 4px solid var(--primary); padding-left: 10px; }
 
         .opp-summary { 
-            background: rgba(0,225,255,0.05); 
+            background: rgba(0,225,255,0.08); 
             height: 100%; 
             padding: 0 15px; 
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
             text-align: right; 
-            min-width: 130px; 
-            border-left: 1px solid rgba(0,225,255,0.2);
+            min-width: 140px; 
+            border-left: 2px solid rgba(0,225,255,0.3);
         }
 
         .bottom-nav-strip { 
             background: #000; 
-            padding: 12px 20px; 
+            padding: 15px 20px; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
         }
 
         /* --- BALL TRACKER --- */
-        .ball-tracker { display: flex; gap: 6px; }
+        .ball-tracker { display: flex; gap: 8px; }
         .ball-circle { 
-            width: 26px; height: 26px; background: #1a1a1a; 
+            width: 30px; height: 30px; background: #1a1a1a; 
             border-radius: 50%; display: flex; align-items: center; 
-            justify-content: center; font-size: 11px; border: 1px solid #333; 
-            color: #555; font-family: 'Orbitron';
+            justify-content: center; font-size: 13px; border: 2px solid #333; 
+            color: #777; font-family: 'Orbitron'; font-weight: 900;
         }
         .ball-circle.filled { 
             background: var(--primary); color: #000; 
-            box-shadow: 0 0 10px var(--primary); font-weight: 900; border:none;
+            box-shadow: 0 0 15px var(--primary); font-weight: 900; border:none;
         }
 
         /* --- ADMIN DASHBOARD --- */
-        .admin-main { padding: 20px; max-width: 1100px; margin: auto; }
+        .admin-main { padding: 25px; max-width: 1200px; margin: auto; }
         .admin-card { 
-            background: var(--card-bg); padding: 25px; border-radius: 15px; 
-            border: 1px solid #1a2a44; margin-bottom: 20px;
+            background: var(--card-bg); padding: 30px; border-radius: 20px; 
+            border: 1px solid #1a2a44; margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
 
-        .btn-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+        .btn-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
         button { 
-            padding: 15px 5px; font-weight: 900; border: none; border-radius: 8px; 
+            padding: 18px 5px; font-weight: 900; border: none; border-radius: 10px; 
             cursor: pointer; font-family: 'Oswald'; text-transform: uppercase;
+            font-size: 16px;
+            transition: all 0.2s;
         }
-        button:active { transform: scale(0.95); }
+        button:active { transform: scale(0.92); }
 
-        .btn-blue { background: #1a73e8; color: white; box-shadow: 0 4px #0d47a1; }
-        .btn-yellow { background: var(--primary); color: #000; box-shadow: 0 4px #b78a00; }
-        .btn-red { background: var(--neon-red); color: white; box-shadow: 0 4px #a00028; }
-        .btn-green { background: #00c853; color: white; box-shadow: 0 4px #007e33; }
+        .btn-blue { background: #1a73e8; color: white; box-shadow: 0 5px #0d47a1; }
+        .btn-yellow { background: var(--primary); color: #000; box-shadow: 0 5px #b78a00; }
+        .btn-red { background: var(--neon-red); color: white; box-shadow: 0 5px #a00028; }
+        .btn-green { background: #00c853; color: white; box-shadow: 0 5px #007e33; }
         .btn-dark { background: #1e2a44; color: #cbd5e1; }
 
         input { 
-            width: 95%; padding: 12px; margin-bottom: 12px; 
+            width: 96%; padding: 14px; margin-bottom: 15px; 
             background: #050b16; border: 1px solid #1e2a44; 
-            color: white; border-radius: 8px; font-family: 'Orbitron';
+            color: white; border-radius: 10px; font-family: 'Orbitron';
+            font-weight: 700;
         }
 
         .hidden { display: none !important; }
 
         /* Over History Chips */
-        .over-history-flex { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-        .ball-chip { background: #1a2a44; padding: 5px 12px; border-radius: 20px; font-size: 12px; color: var(--primary); border: 1px solid #333; }
+        .over-history-flex { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 15px; }
+        .ball-chip { background: #1a2a44; padding: 8px 15px; border-radius: 25px; font-size: 14px; color: var(--primary); border: 1px solid #333; font-weight: 900; }
+
+        /* Next Ball Button Style */
+        .next-ball-btn {
+            background: linear-gradient(135deg, #00c853 0%, #007e33 100%);
+            color: white;
+            font-size: 22px !important;
+            padding: 20px !important;
+            margin-top: 10px;
+            box-shadow: 0 6px 0px #004d40, 0 10px 20px rgba(0,200,83,0.3);
+            border: 2px solid #00e676;
+        }
 
     </style>
 </head>
@@ -220,16 +246,16 @@
             </div>
 
             <div class="opp-summary">
-                <span style="font-size: 9px; color: var(--neon-blue); letter-spacing: 1px;">OPPONENT</span>
-                <span id="d-opp-score" style="font-size: 16px; font-weight: 900;">0-0 (0.0)</span>
-                <span style="font-size: 10px; opacity: 0.8; margin-top: 4px;">TGT: <span id="d-target" style="color:var(--primary)">0</span></span>
+                <span style="font-size: 11px; color: var(--neon-blue); letter-spacing: 1px; font-weight: 900;">OPPONENT</span>
+                <span id="d-opp-score" style="font-size: 18px; font-weight: 900;">0-0 (0.0)</span>
+                <span style="font-size: 11px; font-weight: 900; margin-top: 4px;">TGT: <span id="d-target" style="color:var(--primary)">0</span></span>
             </div>
         </div>
 
         <div class="bottom-nav-strip">
-            <div style="font-family:'Orbitron'; font-size:11px; color:#aaa;" id="d-status">LIVE MATCH</div>
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <span style="font-family:'Orbitron'; font-size:11px; color:var(--primary);">BWL: <span id="d-bowl" style="color:white">WAITING</span></span>
+            <div style="font-family:'Orbitron'; font-size:12px; color:#fff; font-weight: 900;" id="d-status">LIVE MATCH</div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <span style="font-family:'Orbitron'; font-size:12px; color:var(--primary); font-weight: 900;">BWL: <span id="d-bowl" style="color:white">WAITING</span></span>
                 <div class="ball-tracker" id="d-dots">
                     <div class="ball-circle">1</div><div class="ball-circle">2</div><div class="ball-circle">3</div>
                     <div class="ball-circle">4</div><div class="ball-circle">5</div><div class="ball-circle">6</div>
@@ -241,21 +267,21 @@
     <div class="admin-main">
         
         <div id="login-section" class="admin-card" style="text-align: center; max-width: 500px; margin: 40px auto;">
-            <h2 style="font-family:'Orbitron'; color:var(--primary)">ADMIN LOGIN</h2>
-            <input type="password" id="pass-input" placeholder="ENTER ACCESS PIN" style="text-align:center; font-size: 20px;">
+            <h2 style="font-family:'Orbitron'; color:var(--primary); font-weight: 900;">ADMIN LOGIN</h2>
+            <input type="password" id="pass-input" placeholder="ENTER ACCESS PIN" style="text-align:center; font-size: 24px;">
             <button class="btn-yellow" onclick="checkAuth()" style="width:100%">UNLOCK SYSTEM</button>
         </div>
 
         <div id="dashboard-section" class="hidden">
             <div class="admin-card" style="display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-family:'Orbitron'; color:var(--primary)">CONTROL PANEL v3.0</h3>
-                <button class="btn-red" onclick="lockPanel()" style="padding:5px 15px; font-size:12px;">LOGOUT</button>
+                <h3 style="margin:0; font-family:'Orbitron'; color:var(--primary); font-weight: 900;">CONTROL PANEL v4.0</h3>
+                <button class="btn-red" onclick="lockPanel()" style="padding:8px 20px; font-size:14px;">LOGOUT</button>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px;">
                 
                 <div class="admin-card">
-                    <div style="color:#666; font-size:11px; margin-bottom:10px; text-transform:uppercase;">Scoring Engine</div>
+                    <div style="color:#aaa; font-size:12px; margin-bottom:12px; text-transform:uppercase; font-weight: 900;">Scoring Engine</div>
                     <div class="btn-row">
                         <button class="btn-blue" onclick="addRun(1)">+1</button>
                         <button class="btn-blue" onclick="addRun(2)">+2</button>
@@ -273,38 +299,40 @@
                         <button class="btn-dark" onclick="addExtra('BYE')">BYE</button>
                         <button class="btn-dark" onclick="swapStrike()">SWAP</button>
                     </div>
-                    <button class="btn-green" onclick="nextBall()" style="width:100%; font-size:18px; margin-bottom:10px;">DOT BALL</button>
                     
-                    <div style="display:flex; gap:10px;">
+                    <button class="btn-green" onclick="addRun(0)" style="width:100%; font-size:18px; margin-bottom:10px;">DOT BALL</button>
+                    <button class="next-ball-btn" onclick="nextBall()" style="width:100%;">NEXT BALL</button>
+                    
+                    <div style="display:flex; gap:12px; margin-top: 15px;">
                         <button id="auto-btn" class="btn-dark" onclick="toggleAutoStrike()" style="flex:1">AUTO: ON</button>
-                        <button id="inn-btn" class="btn-yellow" onclick="toggleInn()" style="width:80px;">INN 1</button>
+                        <button id="inn-btn" class="btn-yellow" onclick="toggleInn()" style="width:100px;">INN 1</button>
                     </div>
                 </div>
 
                 <div class="admin-card">
-                    <div style="color:#666; font-size:11px; margin-bottom:10px; text-transform:uppercase;">Configuration</div>
+                    <div style="color:#aaa; font-size:12px; margin-bottom:12px; text-transform:uppercase; font-weight: 900;">Match Configuration</div>
                     <input type="text" id="i-tour" placeholder="Tournament Name" oninput="pushConfig()">
                     <input type="text" id="i-t1" placeholder="Team Name" oninput="pushConfig()">
-                    <input type="text" id="i-b1" placeholder="Striker" oninput="pushConfig()">
-                    <input type="text" id="i-b2" placeholder="Non-Striker" oninput="pushConfig()">
-                    <input type="text" id="i-bowl" placeholder="Bowler" oninput="pushConfig()">
-                    <div style="display:flex; gap:10px;">
+                    <input type="text" id="i-b1" placeholder="Striker Name" oninput="pushConfig()">
+                    <input type="text" id="i-b2" placeholder="Non-Striker Name" oninput="pushConfig()">
+                    <input type="text" id="i-bowl" placeholder="Current Bowler" oninput="pushConfig()">
+                    <div style="display:flex; gap:12px;">
                         <input type="number" id="i-target" placeholder="Target" oninput="pushConfig()">
-                        <input type="number" id="i-max-ov" placeholder="Overs" oninput="pushConfig()">
+                        <input type="number" id="i-max-ov" placeholder="Total Overs" oninput="pushConfig()">
                     </div>
-                    <input type="text" id="i-opp-score" placeholder="Opponent Info" oninput="pushConfig()">
+                    <input type="text" id="i-opp-score" placeholder="Opponent Stats (e.g. 150-5 20.0)" oninput="pushConfig()">
                 </div>
             </div>
 
             <div class="admin-card">
-                <div style="color:#666; font-size:11px; margin-bottom:10px; text-transform:uppercase;">Recent Balls (Current Over)</div>
+                <div style="color:#aaa; font-size:12px; margin-bottom:12px; text-transform:uppercase; font-weight: 900;">Current Over Timeline</div>
                 <div id="over-analysis" class="over-history-flex"></div>
-                <button class="btn-red" onclick="clearOverLog()" style="margin-top:15px; padding:5px 15px; font-size:10px;">CLEAR LOG</button>
+                <button class="btn-red" onclick="clearOverLog()" style="margin-top:20px; padding:8px 20px; font-size:12px;">RESET OVER LOG</button>
             </div>
 
-            <div class="admin-card" style="border-top: 4px solid var(--neon-red);">
-                <button class="btn-red" onclick="archiveMatch()" style="width:100%; font-size:18px;">FINISH MATCH & ARCHIVE</button>
-                <div id="history-log" style="margin-top:20px;"></div>
+            <div class="admin-card" style="border-top: 6px solid var(--neon-red);">
+                <button class="btn-red" onclick="archiveMatch()" style="width:100%; font-size:20px; padding: 25px;">FINISH MATCH & ARCHIVE</button>
+                <div id="history-log" style="margin-top:30px;"></div>
             </div>
 
         </div>
@@ -328,12 +356,12 @@
             overLog: [] 
         };
 
-        // AUTH SYSTEM
+        // --- AUTH ---
         function checkAuth() {
             if(document.getElementById('pass-input').value === "ChhotuLive8718") {
                 localStorage.setItem("admin_v4", "true");
                 showDashboard();
-            } else { alert("WRONG PIN!"); }
+            } else { alert("WRONG PIN! ACCESS DENIED."); }
         }
 
         function showDashboard() {
@@ -346,7 +374,7 @@
             location.reload();
         }
 
-        // INIT
+        // --- CORE ---
         function initApp() {
             if(localStorage.getItem("admin_v4") === "true") showDashboard();
             
@@ -356,25 +384,47 @@
 
             db.on('value', snap => {
                 if(snap.val()) {
+                    let oldR = state.r;
+                    let oldW = state.w;
                     state = snap.val();
+                    
                     renderUI();
+                    
+                    // Trigger Animation if score changed
+                    if(oldR !== state.r) triggerScoreAnim('d-runs');
+                    if(oldW !== state.w) triggerScoreAnim('d-wkt');
+
                     if(localStorage.getItem("admin_v4") === "true") syncInputs();
                 }
             });
             loadHistory();
         }
 
-        // SCORING LOGIC
+        function triggerScoreAnim(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('animate-score');
+            void el.offsetWidth; // Trigger reflow
+            el.classList.add('animate-score');
+        }
+
+        // --- SCORING ---
         function addRun(v) {
             state.r += v;
-            if(state.s === 1) state.p1.r += v; else state.p2.r += v;
+            if(state.s === 1) { state.p1.r += v; state.p1.b++; } 
+            else { state.p2.r += v; state.p2.b++; }
             
             if(v === 4) triggerFX("FOUR");
             if(v === 6) triggerFX("SIX");
 
             if(state.autoS && (v === 1 || v === 3)) swapStrike();
             
-            // Log to over log
+            state.b++;
+            if(state.b >= 6) {
+                state.o++; state.b = 0;
+                if(state.autoS) swapStrike();
+                state.overLog = [];
+            }
+            
             if(v >= 0) state.overLog.push(v);
             save();
         }
@@ -383,17 +433,20 @@
             state.r += 1;
             state.overLog.push(type);
             if(type === 'NB') triggerFX("FREE HIT");
+            if(type === 'WD') triggerFX("WIDE");
             save();
         }
 
         function nextBall() {
+            // Function specially for "NEXT BALL" button click
+            // Just increments ball count without adding runs (Dot logic)
             if(state.s === 1) state.p1.b++; else state.p2.b++;
             state.b++;
             state.overLog.push(0);
             if(state.b >= 6) {
                 state.o++; state.b = 0;
                 if(state.autoS) swapStrike();
-                state.overLog = []; // Clear current over log on over end
+                state.overLog = []; 
             }
             save();
         }
@@ -421,132 +474,7 @@
         function toggleInn() { state.inn = (state.inn === 1) ? 2 : 1; save(); }
         function clearOverLog() { state.overLog = []; save(); }
 
-        // PUSH CONFIG
+        // --- SYNC ---
         function pushConfig() {
             if(localStorage.getItem("admin_v4") !== "true") return;
-            state.tour = document.getElementById('i-tour').value || state.tour;
-            state.t1 = document.getElementById('i-t1').value || state.t1;
-            state.p1.n = document.getElementById('i-b1').value || state.p1.n;
-            state.p2.n = document.getElementById('i-b2').value || state.p2.n;
-            state.bowl = document.getElementById('i-bowl').value || state.bowl;
-            state.target = parseInt(document.getElementById('i-target').value) || 0;
-            state.maxO = parseInt(document.getElementById('i-max-ov').value) || 20;
-            state.oppS = document.getElementById('i-opp-score').value || state.oppS;
-            save();
-        }
-
-        function save() { db.set(state); }
-
-        function syncInputs() {
-            document.getElementById('i-tour').value = state.tour;
-            document.getElementById('i-t1').value = state.t1;
-            document.getElementById('i-b1').value = state.p1.n;
-            document.getElementById('i-b2').value = state.p2.n;
-            document.getElementById('i-bowl').value = state.bowl;
-            document.getElementById('i-target').value = state.target;
-            document.getElementById('i-max-ov').value = state.maxO;
-            document.getElementById('i-opp-score').value = state.oppS;
-            document.getElementById('auto-btn').innerText = "AUTO: " + (state.autoS ? "ON" : "OFF");
-            document.getElementById('inn-btn').innerText = "INN " + state.inn;
-            
-            // Over log UI
-            const logArea = document.getElementById('over-analysis');
-            logArea.innerHTML = "";
-            (state.overLog || []).forEach(val => {
-                logArea.innerHTML += `<span class="ball-chip">${val}</span>`;
-            });
-        }
-
-        // RENDER UI
-        function renderUI() {
-            document.getElementById('d-runs').innerText = state.r;
-            document.getElementById('d-wkt').innerText = state.w;
-            document.getElementById('d-ov').innerText = state.o + "." + state.b;
-            document.getElementById('d-team').innerText = state.t1.toUpperCase();
-            document.getElementById('d-tour').innerText = state.tour.toUpperCase();
-            document.getElementById('d-bowl').innerText = state.bowl;
-            document.getElementById('d-opp-score').innerText = state.oppS;
-            document.getElementById('d-target').innerText = state.target;
-
-            document.getElementById('d-b1').innerText = state.p1.n;
-            document.getElementById('d-b1-r').innerText = `${state.p1.r}(${state.p1.b})`;
-            document.getElementById('d-b2').innerText = state.p2.n;
-            document.getElementById('d-b2-r').innerText = `${state.p2.r}(${state.p2.b})`;
-
-            document.getElementById('p1-row').className = (state.s === 1) ? "player-row striker-active" : "player-row";
-            document.getElementById('p2-row').className = (state.s === 2) ? "player-row striker-active" : "player-row";
-
-            // Ball circles
-            const circles = document.querySelectorAll('.ball-circle');
-            circles.forEach((c, i) => {
-                if(i < state.b) c.classList.add('filled');
-                else c.classList.remove('filled');
-            });
-
-            // Innings status
-            if(state.inn === 2 && state.target > 0) {
-                let diff = state.target - state.r;
-                let remB = (state.maxO * 6) - ((state.o * 6) + state.b);
-                document.getElementById('d-status').innerText = `NEED ${diff} RUNS IN ${remB} BALLS`;
-            } else {
-                document.getElementById('d-status').innerText = "1ST INNINGS IN PROGRESS";
-            }
-
-            // FX BANNER SYSTEM (Patti ke andar)
-            const banner = document.getElementById('fx-banner');
-            if(state.anim) {
-                banner.innerText = state.anim + "!";
-                banner.style.display = 'flex';
-            } else {
-                banner.style.display = 'none';
-            }
-
-            // Projected
-            let totalB = (state.o * 6) + state.b;
-            if(totalB > 0) {
-                let crr = (state.r / totalB) * 6;
-                document.getElementById('d-proj').innerText = "PROJ: " + Math.round(crr * state.maxO);
-            }
-        }
-
-        // ARCHIVE MATCH
-        function archiveMatch() {
-            if(confirm("SAVE THIS MATCH TO HISTORY?")) {
-                const data = {
-                    title: state.t1 + " Match",
-                    score: `${state.r}-${state.w} (${state.o}.${state.b})`,
-                    tour: state.tour,
-                    date: new Date().toLocaleDateString()
-                };
-                histDb.push(data);
-                alert("Match Archived Successfully!");
-                db.set({
-                    r: 0, w: 0, o: 0, b: 0, t1: "TEAM A", tour: "TOURNAMENT", oppS: "0-0 (0.0)", target: 0, s: 1,
-                    p1: { n: "BATSMAN 1", r: 0, b: 0 }, p2: { n: "BATSMAN 2", r: 0, b: 0 }, bowl: "WAITING", inn: 1, maxO: 20, autoS: true, anim: "", overLog: []
-                });
-            }
-        }
-
-        function loadHistory() {
-            histDb.on('value', snap => {
-                const log = document.getElementById('history-log');
-                log.innerHTML = "";
-                const val = snap.val();
-                if(val) {
-                    Object.values(val).reverse().forEach(m => {
-                        log.innerHTML += `
-                            <div style="background:#050b16; padding:10px; border-radius:8px; margin-bottom:10px; border-left:4px solid var(--primary);">
-                                <div style="display:flex; justify-content:space-between">
-                                    <strong>${m.title}</strong>
-                                    <span>${m.score}</span>
-                                </div>
-                                <div style="font-size:10px; color:#666">${m.tour} | ${m.date}</div>
-                            </div>
-                        `;
-                    });
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+            state.tour = document.getElementById('i-tour').value 
