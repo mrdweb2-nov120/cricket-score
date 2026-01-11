@@ -1,803 +1,1261 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CHHOTU LIVE BROADCAST PRO | THE 5000+ LINE ARCHITECTURE EDITION</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&family=Oswald:wght@300;400;700&family=Rajdhani:wght@300;500;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
-    <style>
-        /* BROADCAST DESIGN SYSTEM - LAYER 1: FUNDAMENTALS 
-           --------------------------------------------------
-        */
-        :root { 
-            --primary: #fec309; 
-            --primary-glow: rgba(254, 195, 9, 0.4);
-            --secondary: #00e1ff; 
-            --secondary-glow: rgba(0, 225, 255, 0.4);
-            --danger: #ff0040; 
-            --success: #00c853;
-            --bg-dark: #01040a; 
-            --panel-bg: #0d1526;
-            --overlay-bg: rgba(0,0,0,0.85);
-            --broadcast-font: 'Orbitron', sans-serif;
-            --ui-font: 'Rajdhani', sans-serif;
-            --mono-font: 'Roboto Mono', monospace;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border-light: rgba(255, 255, 255, 0.1);
-            --card-radius: 20px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+    <title>Cricket Live Scoreboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        /* BROADCAST DESIGN SYSTEM - LAYER 2: ANIMATIONS 
-           --------------------------------------------------
-        */
-        @keyframes live-pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
-        @keyframes scanline { 0% { bottom: 100%; } 100% { bottom: 0%; } }
-        @keyframes glow-border { 0% { border-color: var(--primary); } 50% { border-color: var(--secondary); } 100% { border-color: var(--primary); } }
-        @keyframes bg-pan { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
-
-        .live-indicator { animation: live-pulse 1.5s infinite; background: var(--danger); color: white; padding: 2px 12px; border-radius: 50px; font-size: 10px; font-weight: 900; letter-spacing: 1px; }
-        .anim-slide-up { animation: fadeInUp 0.8s both; }
-        .anim-fade { animation: fadeIn 1s both; }
-
-        /* BROADCAST DESIGN SYSTEM - LAYER 3: GLOBAL RESET & BASE
-           --------------------------------------------------
-        */
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
-        
-        body { 
-            background: var(--bg-dark); 
-            color: #ffffff; 
-            font-family: var(--ui-font); 
-            margin: 0; 
-            padding: 0; 
-            overflow-x: hidden;
-            background-image: radial-gradient(circle at 50% 50%, #0d1526 0%, #01040a 100%);
-        }
-
-        /* BROADCAST DESIGN SYSTEM - LAYER 4: TOP OVERLAY SCOREBOARD
-           --------------------------------------------------
-        */
-        .broadcast-container {
-            width: 100%;
-            max-width: 1600px;
-            margin: 0 auto;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: #000;
-            border-bottom: 4px solid var(--primary);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-        }
-
-        .ticker-top {
-            height: 35px;
-            background: #000;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            font-family: var(--broadcast-font);
-            font-size: 11px;
-            justify-content: space-between;
-            border-bottom: 1px solid #222;
-        }
-
-        .main-score-area {
-            display: flex;
-            height: 150px;
-            background: linear-gradient(90deg, #000 0%, #050b17 50%, #000 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* FEATURE: PLAYER PHOTO MODULE (AS REQUESTED)
-           --------------------------------------------------
-        */
-        .player-visual {
-            width: 130px;
-            height: 100%;
-            background: #111;
-            border-right: 2px solid var(--primary);
-            position: relative;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-        .player-visual img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top;
-            filter: grayscale(20%) contrast(1.2);
-            transition: var(--transition);
-        }
-        .strike-tag {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            background: var(--primary);
-            color: #000;
-            font-weight: 900;
-            font-size: 10px;
-            text-align: center;
-            padding: 4px 0;
-            font-family: var(--broadcast-font);
-            text-transform: uppercase;
-        }
-
-        /* FEATURE: CORE SCORE MODULE
-           --------------------------------------------------
-        */
-        .team-identity {
-            padding: 0 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-width: 250px;
-            border-right: 1px solid var(--border-light);
-        }
-        .team-identity .label { font-size: 10px; letter-spacing: 3px; color: var(--secondary); margin-bottom: 5px; }
-        .team-identity .name { font-size: 42px; font-weight: 900; font-family: var(--broadcast-font); color: #fff; line-height: 1; }
-
-        .score-display {
-            display: flex;
-            align-items: baseline;
-            padding: 0 40px;
-            gap: 15px;
-            position: relative;
-        }
-        .score-display .total { font-size: 90px; font-weight: 900; font-family: var(--broadcast-font); text-shadow: var(--accent-glow); color: var(--primary); }
-        .score-display .separator { font-size: 60px; color: #444; font-weight: 300; }
-        .score-display .wickets { font-size: 70px; font-weight: 900; color: #fff; }
-        .score-display .overs-container { margin-left: 20px; }
-        .score-display .overs-val { font-size: 32px; color: var(--secondary); font-weight: 700; font-family: var(--broadcast-font); }
-
-        .batsmen-table {
-            flex-grow: 1;
-            padding: 20px 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 10px;
-        }
-        .batsman-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 10px;
-            border: 1px solid transparent;
-            transition: var(--transition);
-        }
-        .batsman-row.active {
-            background: rgba(0, 225, 255, 0.08);
-            border-color: var(--secondary);
-            transform: translateX(10px);
-        }
-        .batsman-row .b-name { font-family: var(--broadcast-font); font-size: 18px; text-transform: uppercase; }
-        .batsman-row .b-stats { font-family: var(--mono-font); font-size: 20px; font-weight: 700; color: var(--primary); }
-
-        .opponent-summary {
-            width: 300px;
-            background: rgba(255,255,255,0.02);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-left: 5px solid var(--secondary);
-        }
-
-        /* BROADCAST DESIGN SYSTEM - LAYER 5: VISUAL ANALYTICS (GRAPHS)
-           --------------------------------------------------
-        */
-        .analytics-grid {
-            max-width: 1600px;
-            margin: 30px auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
-        }
-
-        .chart-card {
-            background: var(--panel-bg);
-            border-radius: var(--card-radius);
-            padding: 30px;
-            border: 1px solid var(--border-light);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-            position: relative;
-        }
-
-        .fow-card {
-            background: var(--panel-bg);
-            border-radius: var(--card-radius);
-            padding: 30px;
-            border: 1px solid var(--border-light);
-            max-height: 450px;
-            overflow-y: auto;
-        }
-
-        /* BROADCAST DESIGN SYSTEM - LAYER 6: ADMIN CONSOLE
-           --------------------------------------------------
-        */
-        .admin-dashboard {
-            max-width: 1600px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
-
-        .console-box {
-            background: #0a0f1d;
-            border-radius: 30px;
-            padding: 40px;
-            border: 1px solid #1a2a44;
-            display: none; /* Hidden until auth */
-        }
-
-        .control-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
-        }
-
-        .action-btns {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-        }
-
-        button {
-            padding: 20px;
-            border: none;
-            border-radius: 18px;
-            font-family: var(--ui-font);
-            font-weight: 900;
-            font-size: 16px;
-            cursor: pointer;
-            transition: var(--transition);
-            text-transform: uppercase;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
-        }
-        button:active { transform: translateY(4px); box-shadow: none; }
-
-        .btn-run { background: #2563eb; color: #fff; }
-        .btn-boundary { background: var(--primary); color: #000; }
-        .btn-wicket { background: var(--danger); color: #fff; }
-        .btn-extra { background: #334155; color: #fff; }
-        .btn-giant { height: 120px; font-size: 28px; grid-column: span 4; background: var(--success); color: #fff; }
-
-        .input-group { margin-bottom: 25px; }
-        label { display: block; font-size: 12px; color: var(--secondary); margin-bottom: 8px; font-weight: 700; text-transform: uppercase; }
-        input {
-            width: 100%;
-            background: #01040a;
-            border: 2px solid #1e293b;
-            padding: 15px;
-            border-radius: 12px;
-            color: #fff;
-            font-family: var(--ui-font);
-            font-size: 16px;
-            transition: var(--transition);
-        }
-        input:focus { border-color: var(--secondary); background: #050b17; }
-
-        /* DATA BOXES */
-        .stat-card {
-            background: #01040a;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 4px solid var(--primary);
-        }
-        .stat-card .val { font-size: 36px; font-family: var(--broadcast-font); color: var(--secondary); }
-        .stat-card .lab { font-size: 11px; opacity: 0.5; margin-top: 5px; }
-
-        /* RESPONSIVE LAYER
-           --------------------------------------------------
-        */
-        @media (max-width: 1200px) {
-            .main-score-area { flex-direction: column; height: auto; }
-            .player-visual { width: 100%; height: 200px; border-right: none; border-bottom: 3px solid var(--primary); }
-            .analytics-grid, .control-grid { grid-template-columns: 1fr; }
-            .score-display { padding: 20px; justify-content: center; }
-            .total { font-size: 60px; }
-        }
-
-    </style>
+    <!-- PART 1 ONLY: HTML STRUCTURE -->
 </head>
-<body onload="initializeBroadcast()">
+<body>
 
-    <div class="broadcast-container anim-fade">
-        <div class="ticker-top">
-            <div>
-                <span class="live-indicator">● LIVE BROADCAST</span>
-                <span id="ui-tour-name" style="margin-left: 15px; opacity: 0.8;">TOURNAMENT ENGINE V.2026</span>
-            </div>
-            <div id="ui-clock" style="font-family: var(--mono-font);">00:00:00</div>
+<!-- ================= TOP SCOREBOARD ================= -->
+<header class="scoreboard-header">
+
+    <div class="league-bar">
+        <span class="league-name">CHHOTU PREMIER LEAGUE</span>
+        <span class="match-time" id="matchClock">00:00</span>
+    </div>
+
+    <div class="score-main">
+
+        <div class="team-box left-team">
+            <div class="team-name" id="teamA">TEAM A</div>
         </div>
 
-        <div class="main-score-area">
-            <div class="player-visual">
-                <img id="ui-striker-img" src="https://www.w3schools.com/howto/img_avatar.png" alt="Striker">
-                <div class="strike-tag">ON STRIKE</div>
-            </div>
+        <div class="score-box">
+            <div class="total-score" id="totalScore">0-0</div>
+            <div class="overs" id="overs">(0.0)</div>
+        </div>
 
-            <div class="team-identity">
-                <span class="label">BATTING TEAM</span>
-                <span class="name" id="ui-team-name">INDIA</span>
+        <div class="batsmen-box">
+            <div class="batsman active" id="bat1">
+                <span class="name">PLAYER 1</span>
+                <span class="runs">0 (0)</span>
             </div>
-
-            <div class="score-display">
-                <span class="total" id="ui-runs">0</span>
-                <span class="separator">/</span>
-                <span class="wickets" id="ui-wkts">0</span>
-                <div class="overs-container">
-                    <div class="overs-val"><span id="ui-overs">0.0</span></div>
-                    <div style="font-size: 10px; opacity:0.5; letter-spacing: 1px;">OVERS</div>
-                </div>
-            </div>
-
-            <div class="batsmen-table">
-                <div class="batsman-row" id="row-p1">
-                    <span class="b-name" id="ui-p1-name">BATSMAN 1</span>
-                    <span class="b-stats" id="ui-p1-score">0 (0)</span>
-                </div>
-                <div class="batsman-row" id="row-p2">
-                    <span class="b-name" id="ui-p2-name">BATSMAN 2</span>
-                    <span class="b-stats" id="ui-p2-score">0 (0)</span>
-                </div>
-            </div>
-
-            <div class="opponent-summary">
-                <div style="font-size: 10px; color: var(--secondary); font-weight: 900; margin-bottom: 5px;">OPPONENT TARGET</div>
-                <div style="font-size: 22px; font-weight: 900; font-family: var(--broadcast-font);" id="ui-opp-name">OPPONENT</div>
-                <div style="font-size: 18px; color: var(--primary);" id="ui-target-val">TARGET: 000</div>
-                <div style="font-size: 11px; margin-top: 8px; opacity: 0.7;" id="ui-rrr">REQ. RATE: 0.00</div>
+            <div class="batsman" id="bat2">
+                <span class="name">PLAYER 2</span>
+                <span class="runs">0 (0)</span>
             </div>
         </div>
 
-        <div style="height: 45px; background: rgba(0,0,0,0.9); display: flex; align-items: center; padding: 0 30px; border-top: 1px solid #222;">
-            <div style="font-size: 14px; font-weight: 700;">
-                <span style="color: #666;">BOWLER:</span> <span id="ui-bowler" style="color: var(--primary);">WAITING...</span>
+        <div class="team-box right-team">
+            <div class="opponent-info">
+                <div id="oppScore">160-5 (16.2)</div>
+                <div id="target">TARGET: 161</div>
             </div>
-            <div style="margin-left: auto; display: flex; gap: 8px;" id="ui-ball-dots">
-                </div>
+        </div>
+
+    </div>
+
+    <div class="bowler-strip">
+        <span>BOWLER:</span>
+        <span id="bowlerName">NOT SET</span>
+
+        <div class="balls">
+            <span class="ball"></span>
+            <span class="ball"></span>
+            <span class="ball"></span>
+            <span class="ball"></span>
+            <span class="ball"></span>
+            <span class="ball"></span>
         </div>
     </div>
 
-    <div class="analytics-grid">
-        <div class="chart-card">
-            <h3 style="font-family: var(--broadcast-font); font-size: 14px; color: var(--secondary); margin-bottom: 20px;">
-                PERFORMANCE WORM (RUNS PER OVER)
-            </h3>
-            <div style="height: 300px;">
-                <canvas id="wormChart"></canvas>
-            </div>
+</header>
+
+<!-- ================= CONTROL PANEL ================= -->
+<main class="control-panel">
+
+    <section class="panel scoring-panel">
+
+        <h2>SCORING CONTROLLER</h2>
+
+        <button class="btn big green" id="dotBall">NEXT BALL (DOT)</button>
+
+        <div class="btn-grid">
+            <button class="btn blue">+1 RUN</button>
+            <button class="btn blue">+2 RUNS</button>
+            <button class="btn blue">+3 RUNS</button>
+            <button class="btn gray">UNDO</button>
+
+            <button class="btn yellow">FOUR</button>
+            <button class="btn yellow">SIX</button>
+            <button class="btn red">WICKET</button>
+            <button class="btn dark">SWAP</button>
+
+            <button class="btn dark">WD</button>
+            <button class="btn dark">NB</button>
+            <button class="btn dark">LB</button>
+            <button class="btn green">SAVE MATCH</button>
         </div>
-        <div class="fow-card">
-            <h3 style="font-family: var(--broadcast-font); font-size: 14px; color: var(--danger); margin-bottom: 20px;">
-                FALL OF WICKETS (TIMELINE)
-            </h3>
-            <div id="ui-fow-list">
-                <div style="opacity: 0.3; text-align: center; margin-top: 50px;">NO DATA AVAILABLE</div>
-            </div>
-        </div>
+
+    </section>
+
+    <section class="panel config-panel">
+        <h2>MATCH CONFIG</h2>
+
+        <input type="text" placeholder="Tournament Name">
+        <input type="text" placeholder="Batting Team">
+        <input type="text" placeholder="Player 1">
+        <input type="text" placeholder="Player 2">
+        <input type="text" placeholder="Bowler">
+        <input type="number" placeholder="Target">
+        <input type="text" placeholder="Opponent Score">
+
+        <button class="btn big yellow">SWITCH INNINGS</button>
+    </section>
+
+</main>
+
+<!-- ================= ANALYTICS ================= -->
+<section class="analytics">
+
+    <div class="stat">
+        <span class="label">PARTNERSHIP</span>
+        <span class="value" id="partnership">0 (0)</span>
     </div>
 
-    <div class="admin-dashboard">
-        
-        <div id="auth-panel" class="chart-card" style="max-width: 600px; margin: 0 auto; text-align: center;">
-            <h2 style="font-family: var(--broadcast-font); color: var(--primary);">MASTER KEY REQUIRED</h2>
-            <p style="opacity: 0.6; margin-bottom: 30px;">Accessing the core scoring engine requires professional clearance.</p>
-            <input type="password" id="master-key" placeholder="ENTER ACCESS CODE" style="text-align: center; font-size: 24px; letter-spacing: 10px;">
-            <button class="btn-boundary" style="width: 100%; margin-top: 20px;" onclick="validateAccess()">UNLOCK BROADCAST CONSOLE</button>
-        </div>
-
-        <div id="master-console" class="console-box anim-slide-up">
-            <div class="control-grid">
-                
-                <div class="glass-panel">
-                    <h4 style="color: var(--primary); border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 20px;">SCORING ENGINE</h4>
-                    <button class="btn-giant" onclick="processBall(0)">DOT BALL</button>
-                    <div class="action-btns" style="margin: 15px 0;">
-                        <button class="btn-run" onclick="processBall(1)">1</button>
-                        <button class="btn-run" onclick="processBall(2)">2</button>
-                        <button class="btn-run" onclick="processBall(3)">3</button>
-                        <button class="btn-extra" onclick="undoStep()">UNDO</button>
-                    </div>
-                    <div class="action-btns">
-                        <button class="btn-boundary" onclick="processBall(4)">FOUR</button>
-                        <button class="btn-boundary" onclick="processBall(6)">SIX</button>
-                        <button class="btn-wicket" onclick="processWicket()" style="grid-column: span 2;">WICKET</button>
-                    </div>
-                    <div class="action-btns" style="margin-top: 15px;">
-                        <button class="btn-extra" onclick="processExtra('WD')">WD</button>
-                        <button class="btn-extra" onclick="processExtra('NB')">NB</button>
-                        <button class="btn-extra" onclick="processExtra('LB')">LB</button>
-                        <button class="btn-extra" onclick="toggleStrike()" style="background: var(--secondary); color:#000;">SWAP</button>
-                    </div>
-                </div>
-
-                <div class="glass-panel">
-                    <h4 style="color: var(--secondary); border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 20px;">MATCH CONFIG</h4>
-                    <div class="input-group">
-                        <label>Tournament Name</label>
-                        <input type="text" id="in-tour" oninput="syncToCloud()">
-                    </div>
-                    <div class="input-group">
-                        <label>Batting Team</label>
-                        <input type="text" id="in-team" oninput="syncToCloud()">
-                    </div>
-                    <div class="input-group">
-                        <label>Opponent Name</label>
-                        <input type="text" id="in-opp-n" oninput="syncToCloud()">
-                    </div>
-                    <div class="input-group">
-                        <label>Target Runs</label>
-                        <input type="number" id="in-target" oninput="syncToCloud()">
-                    </div>
-                </div>
-
-                <div class="glass-panel">
-                    <h4 style="color: var(--success); border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 20px;">MEDIA ENGINE</h4>
-                    <div class="input-group">
-                        <label>Striker Name & Image URL</label>
-                        <input type="text" id="in-p1-n" placeholder="Name" oninput="syncToCloud()">
-                        <input type="text" id="in-p1-i" placeholder="Image URL" style="margin-top:5px;" oninput="syncToCloud()">
-                    </div>
-                    <div class="input-group">
-                        <label>Non-Striker Name & Image URL</label>
-                        <input type="text" id="in-p2-n" placeholder="Name" oninput="syncToCloud()">
-                        <input type="text" id="in-p2-i" placeholder="Image URL" style="margin-top:5px;" oninput="syncToCloud()">
-                    </div>
-                    <div class="input-group">
-                        <label>Current Bowler</label>
-                        <input type="text" id="in-bowler" oninput="syncToCloud()">
-                    </div>
-                </div>
-            </div>
-
-            <div style="margin-top: 40px; border-top: 1px solid #222; padding-top: 30px;">
-                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
-                    <div class="stat-card">
-                        <div class="val" id="stat-rr">0.00</div>
-                        <div class="lab">CURR. RUN RATE</div>
-                    </div>
-                    <div class="stat-card" style="border-color: var(--secondary);">
-                        <div class="val" id="stat-rrr">0.00</div>
-                        <div class="lab">REQ. RUN RATE</div>
-                    </div>
-                    <div class="stat-card" style="border-color: var(--success);">
-                        <div class="val" id="stat-proj">0</div>
-                        <div class="lab">PROJECTED (20 OV)</div>
-                    </div>
-                    <div class="stat-card" style="border-color: var(--danger);">
-                        <div class="val" id="stat-pship">0(0)</div>
-                        <div class="lab">PARTNERSHIP</div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="margin-top: 30px; text-align: center;">
-                <button class="btn-wicket" style="width: 100%; max-width: 400px; height: 50px; font-size: 14px;" onclick="resetMatchEngine()">HARD SYSTEM RESET</button>
-            </div>
-        </div>
+    <div class="stat">
+        <span class="label">RUN RATE</span>
+        <span class="value" id="crr">0.00</span>
     </div>
 
+    <div class="stat">
+        <span class="label">REQ RATE</span>
+        <span class="value" id="rrr">0.00</span>
+    </div>
+
+    <div class="stat">
+        <span class="label">EXTRAS</span>
+        <span class="value" id="extras">0</span>
+    </div>
+
+</section>
+
+<!-- PART 2 CSS WILL BE PASTED BELOW -->
+    <style>
+/* =========================================================
+   PART 2 : PROFESSIONAL DARK UI CSS
+   CRICKET SCOREBOARD + CONTROL PANEL
+   ========================================================= */
+
+/* ---------------- RESET ---------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: radial-gradient(circle at top, #0a1428, #02060f 70%);
+    color: #e6edf3;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    min-height: 100vh;
+}
+
+/* ---------------- TOP SCOREBOARD ---------------- */
+.scoreboard-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: linear-gradient(180deg, #0b1730, #02060f);
+    border-bottom: 3px solid #f5c400;
+    z-index: 1000;
+}
+
+/* League bar */
+.league-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #02060f;
+    color: #f5c400;
+}
+
+/* Main score area */
+.score-main {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1.4fr 1fr;
+    align-items: center;
+    padding: 10px;
+    gap: 8px;
+}
+
+/* Teams */
+.team-box {
+    background: #f5c400;
+    color: #000;
+    padding: 8px;
+    text-align: center;
+    font-weight: 800;
+    border-radius: 6px;
+}
+
+.left-team {
+    clip-path: polygon(0 0, 95% 0, 100% 100%, 0 100%);
+}
+
+.right-team {
+    clip-path: polygon(5% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* Score */
+.score-box {
+    text-align: center;
+}
+
+.total-score {
+    font-size: 34px;
+    font-weight: 900;
+}
+
+.overs {
+    font-size: 14px;
+    color: #9ba3af;
+}
+
+/* Batsmen */
+.batsmen-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.batsman {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.batsman.active {
+    border-left: 4px solid #f5c400;
+    color: #f5c400;
+    background: rgba(245,196,0,0.12);
+}
+
+/* Opponent */
+.opponent-info {
+    text-align: right;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Bowler strip */
+.bowler-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 12px;
+    border-top: 1px solid #1f2937;
+    font-size: 12px;
+}
+
+.balls {
+    display: flex;
+    gap: 6px;
+}
+
+.ball {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #1f2937;
+    border: 1px solid #374151;
+}
+
+/* ---------------- CONTROL PANEL ---------------- */
+.control-panel {
+    margin-top: 230px;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.panel {
+    background: linear-gradient(180deg, #0b1224, #02060f);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.7);
+    border: 1px solid #1f2937;
+}
+
+.panel h2 {
+    font-size: 14px;
+    color: #f5c400;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+
+/* Buttons */
+.btn {
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #fff;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+}
+
+.btn.big {
+    width: 100%;
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+/* Button colors */
+.green { background: #00c853; color: #000; }
+.blue { background: #2563eb; }
+.yellow { background: #f5c400; color: #000; }
+.red { background: #dc2626; }
+.gray { background: #374151; }
+.dark { background: #111827; }
+
+/* Button grid */
+.btn-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+/* ---------------- CONFIG PANEL ---------------- */
+.config-panel input {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #02060f;
+    border: 1px solid #374151;
+    color: #fff;
+    font-size: 14px;
+}
+
+.config-panel input:focus {
+    outline: none;
+    border-color: #f5c400;
+}
+
+/* ---------------- ANALYTICS ---------------- */
+.analytics {
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.stat {
+    background: linear-gradient(180deg, #0b1224, #02060f);
+    border-radius: 14px;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #1f2937;
+}
+
+.stat .label {
+    font-size: 11px;
+    color: #9ba3af;
+}
+
+.stat .value {
+    font-size: 20px;
+    font-weight: 800;
+    margin-top: 6px;
+}
+
+/* ---------------- DESKTOP ---------------- */
+@media (min-width: 900px) {
+    .control-panel {
+        grid-template-columns: 1.5fr 1fr;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .analytics {
+        grid-template-columns: repeat(4, 1fr);
+        max-width: 1200px;
+        margin: auto;
+    }
+}
+</style>
+<!-- PART 3 JS WILL BE PASTED BELOW -->
     <script>
-        /* CORE ENGINE JS - 5000 LINE ARCHITECTURE SIMULATION
-           --------------------------------------------------
-        */
+/* =========================================================
+   PART 3 : CORE SCORING ENGINE (JAVASCRIPT)
+   Handles:
+   - Runs / Wickets
+   - Overs & Balls
+   - Strike Change
+   - UI Sync
+   ========================================================= */
 
-        // Firebase Setup
-        const firebaseConfig = { databaseURL: "https://myscoreboard-b140f-default-rtdb.firebaseio.com/" };
-        firebase.initializeApp(firebaseConfig);
-        const engineDB = firebase.database().ref("broadcast_v2026_mega_engine");
+/* ---------------- GLOBAL MATCH STATE ---------------- */
+const match = {
+    team: "TEAM A",
+    score: 0,
+    wickets: 0,
+    overs: 0,
+    balls: 0,
+    extras: 0,
 
-        // Global Application State
-        let matchState = {
-            meta: { tour: "PREMIER LEAGUE", timestamp: Date.now() },
-            score: { runs: 0, wkts: 0, overs: 0, balls: 0, target: 0 },
-            teams: { batting: "INDIA", bowling: "AUSTRALIA" },
-            players: {
-                p1: { name: "PLAYER 1", runs: 0, balls: 0, img: "" },
-                p2: { name: "PLAYER 2", runs: 0, balls: 0, img: "" },
-                bowler: "NOT SET",
-                strike: 1
-            },
-            analytics: {
-                graphData: [0],
-                fow: [],
-                partnership: { r: 0, b: 0 }
-            },
-            history: [] // For professional Undo feature
-        };
+    batsmen: [
+        { name: "PLAYER 1", runs: 0, balls: 0, strike: true },
+        { name: "PLAYER 2", runs: 0, balls: 0, strike: false }
+    ],
 
-        let graphWidget;
+    bowler: "NOT SET",
+    target: 161,
+    opponent: "160-5 (16.2)",
 
-        // Initialization
-        function initializeBroadcast() {
-            setupChart();
-            startClock();
-            
-            if(localStorage.getItem("admin_auth") === "CLEARED") {
-                showConsole();
-            }
+    partnership: { runs: 0, balls: 0 }
+};
 
-            // Real-time Cloud Sync Listener
-            engineDB.on('value', (snapshot) => {
-                const data = snapshot.val();
-                if(data) {
-                    matchState = data;
-                    renderBroadcastUI();
-                    renderAdminDashboard();
-                }
-            });
+/* ---------------- DOM REFERENCES ---------------- */
+const ui = {
+    totalScore: document.getElementById("totalScore"),
+    overs: document.getElementById("overs"),
+
+    bat1: document.querySelector("#bat1 .name"),
+    bat1Runs: document.querySelector("#bat1 .runs"),
+    bat2: document.querySelector("#bat2 .name"),
+    bat2Runs: document.querySelector("#bat2 .runs"),
+
+    bat1Box: document.getElementById("bat1"),
+    bat2Box: document.getElementById("bat2"),
+
+    partnership: document.getElementById("partnership"),
+    extras: document.getElementById("extras"),
+    crr: document.getElementById("crr"),
+
+    bowlerName: document.getElementById("bowlerName"),
+    ballsUI: document.querySelectorAll(".ball")
+};
+
+/* ---------------- INITIAL RENDER ---------------- */
+renderAll();
+
+/* ---------------- BUTTON WIRING ---------------- */
+document.getElementById("dotBall").onclick = () => addBall(0);
+
+document.querySelectorAll(".btn.blue").forEach(btn => {
+    btn.onclick = () => addBall(parseInt(btn.innerText));
+});
+
+document.querySelector(".btn.yellow").onclick = () => addBall(4);
+document.querySelectorAll(".btn.yellow")[1].onclick = () => addBall(6);
+
+document.querySelector(".btn.red").onclick = wicket;
+document.querySelector(".btn.dark").onclick = swapStrike;
+
+document.querySelectorAll(".btn.dark")[1].onclick = () => extra("WD");
+document.querySelectorAll(".btn.dark")[2].onclick = () => extra("NB");
+document.querySelectorAll(".btn.dark")[3].onclick = () => extra("LB");
+
+/* ---------------- CORE FUNCTIONS ---------------- */
+function addBall(runs) {
+    const striker = match.batsmen.find(b => b.strike);
+
+    striker.runs += runs;
+    striker.balls += 1;
+
+    match.score += runs;
+    match.balls += 1;
+
+    match.partnership.runs += runs;
+    match.partnership.balls += 1;
+
+    if (runs % 2 === 1) swapStrike(false);
+
+    if (match.balls === 6) {
+        match.overs += 1;
+        match.balls = 0;
+        swapStrike(false);
+    }
+
+    updateCRR();
+    renderAll();
+}
+
+function wicket() {
+    const out = match.batsmen.find(b => b.strike);
+    const newName = prompt(out.name + " is OUT. New batsman:");
+
+    if (!newName) return;
+
+    match.wickets += 1;
+    out.name = newName.toUpperCase();
+    out.runs = 0;
+    out.balls = 0;
+
+    match.partnership = { runs: 0, balls: 0 };
+    renderAll();
+}
+
+function extra(type) {
+    match.extras += 1;
+    match.score += 1;
+
+    if (type === "LB") {
+        match.balls += 1;
+        match.partnership.balls += 1;
+
+        if (match.balls === 6) {
+            match.overs += 1;
+            match.balls = 0;
+            swapStrike(false);
         }
+    }
 
-        // Feature: Professional Chart Engine
-        function setupChart() {
-            const ctx = document.getElementById('wormChart').getContext('2d');
-            graphWidget = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: matchState.analytics.graphData.map((_, i) => "OV " + i),
-                    datasets: [{
-                        label: 'Runs Progression',
-                        data: matchState.analytics.graphData,
-                        borderColor: '#fec309',
-                        borderWidth: 4,
-                        backgroundColor: 'rgba(254, 195, 9, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 5,
-                        pointBackgroundColor: '#00e1ff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888' } },
-                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888' } }
-                    },
-                    plugins: { legend: { display: false } }
-                }
-            });
-        }
+    updateCRR();
+    renderAll();
+}
 
-        // Feature: Scoring Logic (Core Engine)
-        function processBall(runCount) {
-            recordHistory();
-            matchState.score.runs += runCount;
-            matchState.analytics.partnership.r += runCount;
+function swapStrike(render = true) {
+    match.batsmen.forEach(b => b.strike = !b.strike);
+    if (render) renderAll();
+}
 
-            if(matchState.players.strike === 1) {
-                matchState.players.p1.runs += runCount;
-                matchState.players.p1.balls++;
-            } else {
-                matchState.players.p2.runs += runCount;
-                matchState.players.p2.balls++;
-            }
+/* ---------------- CALCULATIONS ---------------- */
+function updateCRR() {
+    const totalBalls = match.overs * 6 + match.balls;
+    const rate = totalBalls ? (match.score / totalBalls) * 6 : 0;
+    ui.crr.innerText = rate.toFixed(2);
+}
 
-            matchState.score.balls++;
-            matchState.analytics.partnership.b++;
+/* ---------------- RENDER ENGINE ---------------- */
+function renderAll() {
+    ui.totalScore.innerText = `${match.score}-${match.wickets}`;
+    ui.overs.innerText = `(${match.overs}.${match.balls})`;
 
-            if(matchState.score.balls >= 6) {
-                matchState.score.overs++;
-                matchState.score.balls = 0;
-                matchState.analytics.graphData.push(matchState.score.runs);
-                toggleStrike();
-            }
+    ui.bat1.innerText = match.batsmen[0].name;
+    ui.bat1Runs.innerText = `${match.batsmen[0].runs} (${match.batsmen[0].balls})`;
 
-            if(runCount === 1 || runCount === 3) toggleStrike();
-            syncToCloud();
-        }
+    ui.bat2.innerText = match.batsmen[1].name;
+    ui.bat2Runs.innerText = `${match.batsmen[1].runs} (${match.batsmen[1].balls})`;
 
-        function processWicket() {
-            let nextMan = prompt("WICKET FALL! ENTER NEXT BATSMAN NAME:");
-            if(nextMan) {
-                recordHistory();
-                // Record Fall of Wicket
-                matchState.analytics.fow.push({
-                    w: matchState.score.wkts + 1,
-                    r: matchState.score.runs,
-                    o: matchState.score.overs + "." + matchState.score.balls,
-                    p: matchState.players.strike === 1 ? matchState.players.p1.name : matchState.players.p2.name
-                });
+    ui.bat1Box.classList.toggle("active", match.batsmen[0].strike);
+    ui.bat2Box.classList.toggle("active", match.batsmen[1].strike);
 
-                matchState.score.wkts++;
-                matchState.analytics.partnership = { r: 0, b: 0 };
+    ui.partnership.innerText =
+        `${match.partnership.runs} (${match.partnership.balls})`;
 
-                if(matchState.players.strike === 1) {
-                    matchState.players.p1 = { name: nextMan.toUpperCase(), runs: 0, balls: 0, img: matchState.players.p1.img };
-                } else {
-                    matchState.players.p2 = { name: nextMan.toUpperCase(), runs: 0, balls: 0, img: matchState.players.p2.img };
-                }
-                syncToCloud();
-            }
-        }
+    ui.extras.innerText = match.extras;
 
-        function processExtra(type) {
-            recordHistory();
-            matchState.score.runs++;
-            if(type === 'LB' || type === 'B') {
-                matchState.score.balls++;
-                if(matchState.score.balls >= 6) {
-                    matchState.score.overs++;
-                    matchState.score.balls = 0;
-                    matchState.analytics.graphData.push(matchState.score.runs);
-                    toggleStrike();
-                }
-            }
-            syncToCloud();
-        }
+    ui.bowlerName.innerText = match.bowler;
 
-        function toggleStrike() {
-            matchState.players.strike = matchState.players.strike === 1 ? 2 : 1;
-            syncToCloud();
-        }
+    updateBallsUI();
+}
 
-        // Feature: Professional Undo
-        function recordHistory() {
-            if(!matchState.history) matchState.history = [];
-            matchState.history.push(JSON.parse(JSON.stringify(matchState)));
-            if(matchState.history.length > 20) matchState.history.shift();
-        }
+/* ---------------- BALL DOTS ---------------- */
+function updateBallsUI() {
+    ui.ballsUI.forEach((ball, i) => {
+        ball.style.background =
+            i < match.balls ? "#f5c400" : "#1f2937";
+    });
+}
 
-        function undoStep() {
-            if(matchState.history && matchState.history.length > 0) {
-                const prevState = matchState.history.pop();
-                matchState = prevState;
-                syncToCloud();
-            } else {
-                alert("SYSTEM: NO MORE HISTORY TO REVERT.");
-            }
-        }
+/* ---------------- MATCH CLOCK ---------------- */
+setInterval(() => {
+    const now = new Date();
+    document.getElementById("matchClock").innerText =
+        now.toLocaleTimeString();
+}, 1000);
+</script>
+<!-- PART 4 ADVANCED LOGIC BELOW -->
+    <script>
+/* =========================================================
+   PART 4 : ADVANCED MATCH LOGIC & STORAGE
+   Features:
+   - Required Run Rate
+   - Remaining Balls
+   - Undo System
+   - Innings Switch
+   - Save / Load Match
+   ========================================================= */
 
-        // UI RENDERERS
-        function renderBroadcastUI() {
-            document.getElementById('ui-runs').innerText = matchState.score.runs;
-            document.getElementById('ui-wkts').innerText = matchState.score.wkts;
-            document.getElementById('ui-overs').innerText = matchState.score.overs + "." + matchState.score.balls;
-            document.getElementById('ui-team-name').innerText = matchState.teams.batting;
-            document.getElementById('ui-tour-name').innerText = matchState.meta.tour;
-            
-            document.getElementById('ui-p1-name').innerText = matchState.players.p1.name;
-            document.getElementById('ui-p1-score').innerText = matchState.players.p1.runs + " (" + matchState.players.p1.balls + ")";
-            document.getElementById('ui-p2-name').innerText = matchState.players.p2.name;
-            document.getElementById('ui-p2-score').innerText = matchState.players.p2.runs + " (" + matchState.players.p2.balls + ")";
-            
-            document.getElementById('ui-opp-name').innerText = matchState.teams.bowling;
-            document.getElementById('ui-target-val').innerText = "TARGET: " + matchState.score.target;
-            document.getElementById('ui-bowler').innerText = matchState.players.bowler;
+/* ---------------- HISTORY STACK (UNDO) ---------------- */
+let historyStack = [];
 
-            // Handle Photo Strike Logic
-            const activePhoto = matchState.players.strike === 1 ? matchState.players.p1.img : matchState.players.p2.img;
-            document.getElementById('ui-striker-img').src = activePhoto || "https://www.w3schools.com/howto/img_avatar.png";
-            
-            document.getElementById('row-p1').className = matchState.players.strike === 1 ? "batsman-row active" : "batsman-row";
-            document.getElementById('row-p2').className = matchState.players.strike === 2 ? "batsman-row active" : "batsman-row";
+/* --------- OVERRIDE CORE FUNCTIONS SAFELY --------- */
+const originalAddBall = addBall;
+const originalWicket = wicket;
+const originalExtra = extra;
 
-            // Render Over Dots
-            let dots = "";
-            for(let i=1; i<=6; i++) {
-                let active = i <= matchState.score.balls ? 'background:var(--primary); box-shadow:0 0 10px var(--primary);' : 'border:1px solid #333';
-                dots += `<div style="width:10px; height:10px; border-radius:50%; transition:0.3s; ${active}"></div>`;
-            }
-            document.getElementById('ui-ball-dots').innerHTML = dots;
+/* ---------------- SAVE STATE ---------------- */
+function saveState() {
+    historyStack.push(JSON.stringify(match));
+    if (historyStack.length > 50) historyStack.shift();
+}
 
-            // Render Graph
-            if(graphWidget) {
-                graphWidget.data.labels = matchState.analytics.graphData.map((_, i) => "OV " + i);
-                graphWidget.data.datasets[0].data = matchState.analytics.graphData;
-                graphWidget.update();
-            }
+/* ---------------- UNDO ---------------- */
+function undoLast() {
+    if (historyStack.length === 0) return alert("Nothing to undo");
+    const last = historyStack.pop();
+    Object.assign(match, JSON.parse(last));
+    renderAll();
+    updateRRR();
+}
 
-            // Render FOW
-            let fowHtml = "";
-            matchState.analytics.fow.forEach(item => {
-                fowHtml += `<div style="padding:10px; border-left:3px solid var(--danger); background:rgba(255,0,0,0.05); margin-bottom:10px; border-radius:0 10px 10px 0;">
-                    <span style="color:var(--danger); font-weight:900;">${item.w}-${item.r}</span> 
-                    <small style="opacity:0.6;">(${item.o} ov) - ${item.p}</small>
-                </div>`;
-            });
-            document.getElementById('ui-fow-list').innerHTML = fowHtml || '<div style="opacity:0.3; text-align:center; margin-top:50px;">NO DATA</div>';
-        }
+/* ---------------- OVERRIDE FUNCTIONS ---------------- */
+addBall = function(runs) {
+    saveState();
+    originalAddBall(runs);
+    updateRRR();
+};
 
-        function renderAdminDashboard() {
-            // Stats Calculations
-            let totalBalls = (matchState.score.overs * 6) + matchState.score.balls;
-            let crr = totalBalls > 0 ? (matchState.score.runs / totalBalls) * 6 : 0;
-            document.getElementById('stat-rr').innerText = crr.toFixed(2);
-            document.getElementById('stat-proj').innerText = Math.round(crr * 20);
-            document.getElementById('stat-pship').innerText = matchState.analytics.partnership.r + "(" + matchState.analytics.partnership.b + ")";
-            
-            if(matchState.score.target > 0) {
-                let remR = matchState.score.target - matchState.score.runs;
-                let remB = 120 - totalBalls;
-                let rrr = remB > 0 ? (remR / remB) * 6 : 0;
-                document.getElementById('stat-rrr').innerText = rrr.toFixed(2);
-                document.getElementById('ui-rrr').innerText = "REQ. RATE: " + rrr.toFixed(2);
-            }
+wicket = function() {
+    saveState();
+    originalWicket();
+    updateRRR();
+};
 
-            // Sync Inputs
-            document.getElementById('in-tour').value = matchState.meta.tour;
-            document.getElementById('in-team').value = matchState.teams.batting;
-            document.getElementById('in-opp-n').value = matchState.teams.bowling;
-            document.getElementById('in-target').value = matchState.score.target;
-            document.getElementById('in-p1-n').value = matchState.players.p1.name;
-            document.getElementById('in-p1-i').value = matchState.players.p1.img;
-            document.getElementById('in-p2-n').value = matchState.players.p2.name;
-            document.getElementById('in-p2-i').value = matchState.players.p2.img;
-            document.getElementById('in-bowler').value = matchState.players.bowler;
-        }
+extra = function(type) {
+    saveState();
+    originalExtra(type);
+    updateRRR();
+};
 
-        // AUTH & SYNC ENGINE
-        function validateAccess() {
-            if(document.getElementById('master-key').value === "Chhotu8718") {
-                localStorage.setItem("admin_auth", "CLEARED");
-                showConsole();
-                vibratePhone(100);
-            } else {
-                alert("ACCESS DENIED: INVALID MASTER KEY.");
-            }
-        }
+/* ---------------- REQUIRED RUN RATE ---------------- */
+function updateRRR() {
+    const totalBalls = 120; // T20 default
+    const usedBalls = match.overs * 6 + match.balls;
+    const remainingBalls = totalBalls - usedBalls;
+    const remainingRuns = match.target - match.score;
 
-        function showConsole() {
-            document.getElementById('auth-panel').style.display = "none";
-            document.getElementById('master-console').style.display = "block";
-        }
+    let rrr = 0;
+    if (remainingBalls > 0 && remainingRuns > 0) {
+        rrr = (remainingRuns / remainingBalls) * 6;
+    }
 
-        function syncToCloud() {
-            // Capture all inputs into state before sync
-            matchState.meta.tour = document.getElementById('in-tour').value;
-            matchState.teams.batting = document.getElementById('in-team').value;
-            matchState.teams.bowling = document.getElementById('in-opp-n').value;
-            matchState.score.target = parseInt(document.getElementById('in-target').value) || 0;
-            matchState.players.p1.name = document.getElementById('in-p1-n').value;
-            matchState.players.p1.img = document.getElementById('in-p1-i').value;
-            matchState.players.p2.name = document.getElementById('in-p2-n').value;
-            matchState.players.p2.img = document.getElementById('in-p2-i').value;
-            matchState.players.bowler = document.getElementById('in-bowler').value;
-            
-            engineDB.set(matchState);
-        }
+    document.getElementById("rrr").innerText =
+        remainingRuns > 0 ? rrr.toFixed(2) : "0.00";
 
-        function resetMatchEngine() {
-            if(confirm("CRITICAL WARNING: This will destroy all current match data. Are you sure?")) {
-                matchState = {
-                    meta: { tour: "TOURNAMENT 2026", timestamp: Date.now() },
-                    score: { runs: 0, wkts: 0, overs: 0, balls: 0, target: 0 },
-                    teams: { batting: "TEAM A", bowling: "TEAM B" },
-                    players: {
-                        p1: { name: "PLAYER 1", runs: 0, balls: 0, img: "" },
-                        p2: { name: "PLAYER 2", runs: 0, balls: 0, img: "" },
-                        bowler: "READY", strike: 1
-                    },
-                    analytics: { graphData: [0], fow: [], partnership: { r: 0, b: 0 } },
-                    history: []
-                };
-                syncToCloud();
-            }
-        }
+    document.getElementById("remaining").innerText =
+        remainingBalls > 0 ? remainingBalls : 0;
+}
 
-        function startClock() {
-            setInterval(() => {
-                document.getElementById('ui-clock').innerText = new Date().toLocaleTimeString();
-            }, 1000);
-        }
+/* ---------------- SWITCH INNINGS ---------------- */
+function switchInnings() {
+    if (!confirm("Switch Innings?")) return;
 
-        function vibratePhone(ms) { if(navigator.vibrate) navigator.vibrate(ms); }
+    match.target = match.score + 1;
+    match.score = 0;
+    match.wickets = 0;
+    match.overs = 0;
+    match.balls = 0;
+    match.extras = 0;
+    match.partnership = { runs: 0, balls: 0 };
 
-    </script>
+    match.batsmen = [
+        { name: "PLAYER 1", runs: 0, balls: 0, strike: true },
+        { name: "PLAYER 2", runs: 0, balls: 0, strike: false }
+    ];
+
+    historyStack = [];
+    renderAll();
+    updateRRR();
+}
+
+/* ---------------- SAVE MATCH ---------------- */
+function saveMatch() {
+    localStorage.setItem("savedMatch", JSON.stringify(match));
+    alert("Match Saved");
+}
+
+/* ---------------- LOAD MATCH ---------------- */
+function loadMatch() {
+    const data = localStorage.getItem("savedMatch");
+    if (!data) return alert("No saved match");
+    Object.assign(match, JSON.parse(data));
+    renderAll();
+    updateRRR();
+}
+
+/* ---------------- RESET MATCH ---------------- */
+function resetMatch() {
+    if (!confirm("Reset entire match?")) return;
+
+    location.reload();
+}
+
+/* ---------------- BUTTON HOOKS ---------------- */
+document.getElementById("undoBtn").onclick = undoLast;
+document.getElementById("switchInningsBtn").onclick = switchInnings;
+document.getElementById("saveMatchBtn").onclick = saveMatch;
+document.getElementById("loadMatchBtn").onclick = loadMatch;
+document.getElementById("resetBtn").onclick = resetMatch;
+
+/* ---------------- INITIAL RRR ---------------- */
+updateRRR();
+</script>
+
+</body>
+    <!-- ================= PART 1 : TOP PREMIUM SCOREBOARD ================= -->
+
+<style>
+:root{
+  --gold:#f5c518;
+  --blue:#00d4ff;
+  --bg:#05070c;
+  --panel:#0d1117;
+  --text:#e6edf3;
+  --dim:#8b949e;
+}
+
+#broadcastScoreboard{
+  width:100%;
+  background:linear-gradient(180deg,#000,#070b14);
+  border-bottom:4px solid var(--gold);
+  position:sticky;
+  top:0;
+  z-index:9999;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+/* TOP BAR */
+#topBar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:6px 20px;
+  font-size:12px;
+  font-weight:700;
+  background:#000;
+  color:var(--gold);
+  text-transform:uppercase;
+}
+
+#topBar span{
+  color:var(--text);
+}
+
+/* MAIN STRIP */
+#mainStrip{
+  display:grid;
+  grid-template-columns:22% 48% 30%;
+  height:90px;
+}
+
+/* TEAM NAME */
+#battingTeam{
+  background:var(--gold);
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  font-weight:900;
+  clip-path:polygon(0 0,100% 0,90% 100%,0 100%);
+}
+
+/* SCORE CENTER */
+#scoreCenter{
+  background:linear-gradient(90deg,#05070c,#0d1117);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 20px;
+}
+
+#scoreBlock{
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+}
+
+#liveScore{
+  font-size:42px;
+  font-weight:900;
+}
+
+#overs{
+  font-size:18px;
+  color:var(--dim);
+}
+
+/* BATSMAN BOX */
+#batsmenBox{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  font-size:14px;
+}
+
+.batsman{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  padding:4px 8px;
+  background:rgba(255,255,255,0.03);
+}
+
+.batsman.active{
+  border-left:3px solid var(--gold);
+  background:rgba(245,197,24,0.15);
+  color:var(--gold);
+}
+
+/* OPPONENT */
+#opponentBox{
+  background:#0d1117;
+  border-left:2px solid var(--blue);
+  padding:10px 20px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-end;
+}
+
+#opponentBox small{
+  color:var(--blue);
+  font-size:10px;
+}
+
+#target{
+  color:var(--gold);
+  font-size:14px;
+}
+
+/* BALL DOTS */
+#ballStrip{
+  background:#000;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:6px 20px;
+  border-top:1px solid #222;
+}
+
+#balls{
+  display:flex;
+  gap:8px;
+}
+
+.ball{
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  background:#21262d;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:800;
+}
+
+.ball.active{
+  background:var(--gold);
+  color:#000;
+  box-shadow:0 0 10px rgba(245,197,24,.7);
+}
+</style>
+
+<div id="broadcastScoreboard">
+
+  <div id="topBar">
+    <div>TOURNAMENT: <span id="uiTour">PREMIER LEAGUE</span></div>
+    <div>PROJECTED: <span id="uiProjected">0</span></div>
+    <div id="uiClock">00:00:00</div>
+  </div>
+
+  <div id="mainStrip">
+    <div id="battingTeam">TEAM A</div>
+
+    <div id="scoreCenter">
+      <div id="scoreBlock">
+        <div id="liveScore">0-0</div>
+        <div id="overs">(0.0)</div>
+      </div>
+
+      <div id="batsmenBox">
+        <div class="batsman active">
+          <span>STRIKER</span>
+          <span>0 (0)</span>
+        </div>
+        <div class="batsman">
+          <span>NON-STRIKER</span>
+          <span>0 (0)</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="opponentBox">
+      <small>OPPONENT</small>
+      <div>0-0 (0.0)</div>
+      <div id="target">TARGET: 0</div>
+    </div>
+  </div>
+
+  <div id="ballStrip">
+    <div>BOWLER: <span style="color:var(--gold)">WAITING</span></div>
+    <div id="balls">
+      <div class="ball active">1</div>
+      <div class="ball">2</div>
+      <div class="ball">3</div>
+      <div class="ball">4</div>
+      <div class="ball">5</div>
+      <div class="ball">6</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function updateClock(){
+  document.getElementById("uiClock").innerText =
+    new Date().toLocaleTimeString();
+}
+setInterval(updateClock,1000);
+updateClock();
+</script>
+
+<!-- ================= END PART 1 ================= -->
+    <!-- ================= PART 2 : BATSMAN & CONTROL PANEL ================= -->
+
+<style>
+#controlPanel{
+  display:grid;
+  grid-template-columns:1fr 380px;
+  gap:20px;
+  max-width:1400px;
+  margin:25px auto;
+  padding:0 20px;
+}
+
+.panelCard{
+  background:#0d1117;
+  border-radius:15px;
+  padding:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  color:#fff;
+}
+
+.panelHeader{
+  display:flex;
+  justify-content:space-between;
+  font-weight:700;
+  font-size:14px;
+  margin-bottom:15px;
+  border-bottom:1px solid #333;
+  padding-bottom:6px;
+}
+
+.scoringGrid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.btnControl{
+  height:60px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:700;
+  font-size:16px;
+  transition:all 0.3s;
+  color:#fff;
+}
+
+.btnRun{ background:#1f6feb; }
+.btnFour{ background:#feca09; color:#000; }
+.btnSix{ background:#f85149; }
+.btnOut{ background:#ff3e3e; }
+.btnDark{ background:#21262d; }
+.btnUndo{ background:#30363d; }
+.btnGiant{ grid-column:span 4; height:80px; font-size:22px; background:#00ff87; color:#000; }
+
+</style>
+
+<div id="controlPanel">
+
+  <div class="panelCard">
+    <div class="panelHeader">SCORING COMMAND CENTER</div>
+    
+    <div class="scoringGrid">
+      <button class="btnControl btnGiant" onclick="processDelivery(0,'DOT')">NEXT BALL (DOT)</button>
+      <button class="btnControl btnRun" onclick="processDelivery(1,'RUN')">+1 RUN</button>
+      <button class="btnControl btnRun" onclick="processDelivery(2,'RUN')">+2 RUNS</button>
+      <button class="btnControl btnRun" onclick="processDelivery(3,'RUN')">+3 RUNS</button>
+      <button class="btnControl btnUndo" onclick="undoLastAction()">UNDO LAST</button>
+      <button class="btnControl btnFour" onclick="processDelivery(4,'FOUR')">FOUR (4)</button>
+      <button class="btnControl btnSix" onclick="processDelivery(6,'SIX')">SIX (6)</button>
+      <button class="btnControl btnOut" onclick="dismissalLogic()">WICKET</button>
+      <button class="btnControl btnDark" onclick="manualStrikeSwap()">SWAP STRIKE</button>
+      <button class="btnControl btnDark" onclick="extraDelivery('WD')">WIDE</button>
+      <button class="btnControl btnDark" onclick="extraDelivery('NB')">NO BALL</button>
+      <button class="btnControl btnDark" onclick="extraDelivery('LB')">LEG BYE</button>
+      <button class="btnControl btnGiant" onclick="advancedInningsSwap()">NEXT INNINGS</button>
+    </div>
+    
+  </div>
+</div>
+
+<script>
+function processDelivery(runs,type){
+  // Score, Strike, Overs logic
+  console.log("Delivery:",runs,type);
+}
+
+function undoLastAction(){
+  console.log("Undo last action triggered");
+}
+
+function dismissalLogic(){
+  console.log("Batsman OUT logic");
+}
+
+function manualStrikeSwap(){
+  console.log("Strike Swap triggered");
+}
+
+function extraDelivery(type){
+  console.log("Extra Ball:",type);
+}
+
+function advancedInningsSwap(){
+  console.log("Next Innings swap");
+}
+</script>
+
+<!-- ================= END PART 2 ================= -->
+    <!-- ================= PART 3 : ANALYTICS & CLOUD ================= -->
+
+<div id="analyticsGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:25px 0;max-width:1400px;margin-left:auto;margin-right:auto;">
+  <div class="panelCard">
+    <div style="font-size:20px;font-weight:700;" id="anPartnership">0(0)</div>
+    <div style="font-size:10px;color:#8b949e;">PARTNERSHIP</div>
+  </div>
+  <div class="panelCard">
+    <div style="font-size:20px;font-weight:700;" id="anCRR">0.00</div>
+    <div style="font-size:10px;color:#8b949e;">RUN RATE (CRR)</div>
+  </div>
+  <div class="panelCard">
+    <div style="font-size:20px;font-weight:700;" id="anRRR">0.00</div>
+    <div style="font-size:10px;color:#8b949e;">REQ RATE (RRR)</div>
+  </div>
+  <div class="panelCard">
+    <div style="font-size:20px;font-weight:700;" id="anExtras">0</div>
+    <div style="font-size:10px;color:#8b949e;">EXTRAS</div>
+  </div>
+</div>
+
+<script>
+let matchState = {
+  score:{runs:0,wickets:0,balls:0,overs:0,extras:0},
+  batting:{p1:{r:0,b:0,strike:true},p2:{r:0,b:0,strike:false},partnership:{runs:0,balls:0}},
+  metadata:{tour:"PREMIER LEAGUE",team:"TEAM A",bowler:"WAITING",opp:"0-0 (0.0)",tgt:0},
+  history:[],
+  settings:{autoStrike:true}
+};
+
+function updateAnalytics(){
+  let totalBalls = matchState.score.overs*6+matchState.score.balls;
+  let crr = totalBalls>0 ? (matchState.score.runs/totalBalls)*6 : 0;
+  document.getElementById("anCRR").innerText=crr.toFixed(2);
+  document.getElementById("anRRR").innerText=totalBalls>0?((matchState.metadata.tgt-matchState.score.runs)/(20-totalBalls)*6).toFixed(2):0;
+  document.getElementById("anExtras").innerText=matchState.score.extras;
+  document.getElementById("anPartnership").innerText=matchState.batting.partnership.runs+"("+matchState.batting.partnership.balls+")";
+}
+
+// Simulate Firebase Sync
+function updateCloud(){
+  console.log("Cloud Update: ",matchState);
+}
+</script>
+
+<!-- ================= END PART 3 ================= -->
+    <!-- ================= PART 4 : LOGS, UI & ADVANCED SYSTEM ================= -->
+
+<style>
+#titanLogs{
+  max-width:1400px;
+  margin:20px auto;
+  background:#0d1117;
+  border-radius:12px;
+  border:1px solid #30363d;
+  padding:15px;
+  font-family:'Roboto Mono',monospace;
+  font-size:12px;
+  color:#8b949e;
+  height:180px;
+  overflow-y:scroll;
+}
+
+#titanLogs div{
+  margin-bottom:4px;
+}
+
+.glow{
+  text-shadow:0 0 10px #f5c518,0 0 20px #f5c518;
+}
+
+#configPanel{
+  max-width:1400px;
+  margin:20px auto;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.fieldGroup{
+  display:flex;
+  flex-direction:column;
+  margin-bottom:10px;
+}
+
+.fieldGroup label{
+  font-size:11px;
+  color:#8b949e;
+  margin-bottom:5px;
+  text-transform:uppercase;
+}
+
+.fieldGroup input{
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #30363d;
+  background:#01040a;
+  color:#fff;
+  font-size:14px;
+}
+
+.btnPremium{
+  margin-top:10px;
+  height:50px;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  font-weight:700;
+  background:#00ff87;
+  color:#000;
+  cursor:pointer;
+  transition:all 0.3s;
+}
+.btnPremium:hover{
+  transform:translateY(-2px);
+  box-shadow:0 0 10px #00ff87;
+}
+</style>
+
+<!-- LOGS PANEL -->
+<div id="titanLogs">
+  <div>[SYSTEM] Premium Scoreboard Initialized...</div>
+</div>
+
+<!-- CONFIG PANEL -->
+<div id="configPanel">
+  <div class="fieldGroup">
+    <label>Tournament Name</label>
+    <input type="text" id="configTour" oninput="updateConfig()">
+  </div>
+  <div class="fieldGroup">
+    <label>Batting Team</label>
+    <input type="text" id="configTeam" oninput="updateConfig()">
+  </div>
+  <div class="fieldGroup">
+    <label>Striker (Player 1)</label>
+    <input type="text" id="configP1" oninput="updateConfig()">
+  </div>
+  <div class="fieldGroup">
+    <label>Non-Striker (Player 2)</label>
+    <input type="text" id="configP2" oninput="updateConfig()">
+  </div>
+  <div class="fieldGroup">
+    <label>Bowler</label>
+    <input type="text" id="configBowler" oninput="updateConfig()">
+  </div>
+  <div class="fieldGroup">
+    <label>Target</label>
+    <input type="number" id="configTarget" oninput="updateConfig()">
+  </div>
+  <div class="fieldGroup">
+    <label>Opponent Score</label>
+    <input type="text" id="configOpponent" oninput="updateConfig()">
+  </div>
+  <button class="btnPremium" onclick="saveMatchToCloud()">ARCHIVE MATCH</button>
+</div>
+
+<script>
+// LOGS SYSTEM
+function writeLog(msg){
+  const logPanel=document.getElementById('titanLogs');
+  const time=new Date().toLocaleTimeString();
+  logPanel.innerHTML=`<div>[${time}] ${msg}</div>`+logPanel.innerHTML;
+}
+
+// CONFIG UPDATE SYSTEM
+function updateConfig(){
+  matchState.metadata.tour=document.getElementById('configTour').value;
+  matchState.metadata.team=document.getElementById('configTeam').value;
+  matchState.batting.p1.name=document.getElementById('configP1').value;
+  matchState.batting.p2.name=document.getElementById('configP2').value;
+  matchState.metadata.bowler=document.getElementById('configBowler').value;
+  matchState.metadata.tgt=parseInt(document.getElementById('configTarget').value)||0;
+  matchState.metadata.opp=document.getElementById('configOpponent').value;
+  updateCloud();
+}
+
+// ADVANCED SYSTEM LOGIC
+function saveMatchToCloud(){
+  updateCloud();
+  writeLog("Match Archived to Cloud");
+}
+
+// Auto Over Reset
+function checkOverReset(){
+  if(matchState.score.balls>=6){
+    matchState.score.overs+=1;
+    matchState.score.balls=0;
+    if(matchState.settings.autoStrike) manualStrikeSwap();
+    writeLog("Over Completed: Strike Swapped");
+  }
+}
+
+// Auto Partnership Reset
+function resetPartnershipIfWicket(){
+  if(matchState.score.wickets>0){
+    matchState.batting.partnership={runs:0,balls:0};
+    writeLog("Partnership Reset After Wicket");
+  }
+}
+
+// Safe State Clone for Undo
+function commitState(){
+  const snapshot=JSON.parse(JSON.stringify(matchState));
+  delete snapshot.history;
+  matchState.history.push(snapshot);
+  if(matchState.history.length>30) matchState.history.shift();
+}
+
+// Initialize Config Inputs
+function initConfigInputs(){
+  document.getElementById('configTour').value=matchState.metadata.tour;
+  document.getElementById('configTeam').value=matchState.metadata.team;
+  document.getElementById('configP1').value=matchState.batting.p1.name;
+  document.getElementById('configP2').value=matchState.batting.p2.name;
+  document.getElementById('configBowler').value=matchState.metadata.bowler;
+  document.getElementById('configTarget').value=matchState.metadata.tgt;
+  document.getElementById('configOpponent').value=matchState.metadata.opp;
+}
+
+initConfigInputs();
+writeLog("Advanced System Loaded");
+</script>
+
+<!-- ================= END PART 4 ================= -->
 </body>
 </html>
