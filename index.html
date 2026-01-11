@@ -23,8 +23,20 @@
         }
 
         .win-bar-container { height: 6px; background: #111; position: relative; display: flex; overflow: hidden; }
-        #win-p1 { background: var(--neon-blue); height: 100%; transition: 1s; box-shadow: 0 0 10px var(--neon-blue); }
-        #win-p2 { background: var(--neon-red); height: 100%; transition: 1s; box-shadow: 0 0 10px var(--neon-red); }
+        #win-p1 { 
+    background: var(--neon-blue); 
+    height: 100%; 
+    transition: 2s ease-in-out; 
+    box-shadow: 0 0 10px var(--neon-blue); 
+}
+
+#win-p2 { 
+    background: var(--neon-red); 
+    height: 100%; 
+    transition: 2s ease-in-out; 
+    box-shadow: 0 0 10px var(--neon-red); 
+}
+        
 
         .main-board { 
             height: 70px; background: linear-gradient(90deg, #00122e 0%, #002b6b 100%);
@@ -93,6 +105,10 @@
 
     <div class="master-container">
         <div class="top-status-bar">
+            <div id="proj-container" style="text-align:center; margin-top:-10px; margin-bottom:5px;">
+    <span id="d-proj" style="background:white; color:black; padding:2px 15px; border-radius:20px; font-weight:900; font-size:12px; box-shadow:0 0 10px #fff;">PROJECTED SCORE: 0</span>
+</div>
+
             <span id="d-tour">TOURNAMENT NAME</span>
             <span id="d-clock">00:00:00</span>
         </div>
@@ -308,6 +324,18 @@
             document.getElementById('d-runs').innerText = state.r;
             document.getElementById('d-wkt').innerText = state.w;
             document.getElementById('d-ov').innerText = `${state.o}.${state.b}`;
+            // Projected Score Calculation
+let totalBallsPlayed = (state.o * 6) + state.b;
+if (totalBallsPlayed > 0 && state.inn === 1) {
+    let currentRR = state.r / (totalBallsPlayed / 6);
+    let projectedFinal = Math.round(currentRR * 20); // 20 ओवर के लिए
+    document.getElementById('d-proj').innerText = "PROJECTED SCORE: " + projectedFinal;
+    document.getElementById('proj-container').style.display = "block";
+} else if (state.inn === 2) {
+    // दूसरी पारी में इसे छिपा दें या RRR दिखाएं
+    document.getElementById('proj-container').style.display = "none";
+}
+            
             document.getElementById('d-team').innerText = state.t1.substring(0,8).toUpperCase();
             document.getElementById('d-tour').innerText = state.tour.toUpperCase();
             document.getElementById('d-b1').innerText = state.p1.n;
@@ -316,6 +344,21 @@
             document.getElementById('d-b2-r').innerText = `${state.p2.r}(${state.p2.b})`;
             document.getElementById('d-bowl').innerText = state.bowl.toUpperCase();
             document.getElementById('d-target').innerText = state.target;
+
+            
+const mainBoard = document.querySelector('.main-board');
+if (state.anim === "FOUR" || state.anim === "SIX") {
+    mainBoard.classList.add('animate-four-six');
+} else {
+    mainBoard.classList.remove('animate-four-six');
+}
+
+if (state.anim === "WICKET") {
+    mainBoard.classList.add('animate-wicket');
+} else {
+    mainBoard.classList.remove('animate-wicket');
+}
+            
 
             // Striker Highlight
             document.getElementById('p1-row').className = state.s === 1 ? "b-row active-bat" : "b-row";
