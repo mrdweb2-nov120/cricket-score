@@ -51,6 +51,34 @@
             justify-content: space-between; 
             border-bottom: 1px solid #222;
             letter-spacing: 1px;
+            align-items: center;
+        }
+
+        /* LIVE INDICATOR STYLE */
+        .live-box {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 0, 0, 0.15);
+            padding: 2px 8px;
+            border-radius: 3px;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+        }
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--neon-red);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--neon-red);
+            animation: blinker 1.2s infinite;
+        }
+        .live-label {
+            color: var(--neon-red);
+            font-weight: 900;
+            font-size: 9px;
+        }
+        @keyframes blinker {
+            50% { opacity: 0; }
         }
 
         .main-board { 
@@ -197,6 +225,11 @@
 
     <div class="master-container">
         <div class="top-info-bar">
+            <div class="live-box">
+                <div class="live-dot"></div>
+                <div class="live-label">LIVE</div>
+            </div>
+            
             <span><span id="d-tour">TOURNAMENT</span> | <span id="d-proj" style="color:var(--primary)">PROJ: 0</span></span>
             <span id="d-clock">00:00:00</span>
         </div>
