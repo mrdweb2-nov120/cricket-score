@@ -2,551 +2,303 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chhotu Ultra-Pro Max Scorer 2026 | Professional Grade</title>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TITAN NEXT-GEN | PRO BROADCAST</title>
     
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Oswald:wght@300;500;700&family=Roboto+Condensed:wght@700&display=swap');
-        
-        :root { 
-            --primary: #fec309; 
-            --neon-blue: #00e1ff; 
-            --neon-red: #ff0040; 
-            --bg: #020812; 
-            --card-bg: #0a1221;
-            --glass: rgba(255, 255, 255, 0.05);
-            --header-gradient: linear-gradient(180deg, #1a2a44 0%, #0a1221 100%);
+        :root {
+            /* मुख्य थीम कलर्स (इमेज के अनुसार) */
+            --bg-deep: #0a0e14;
+            --panel-bg: #151921;
+            --accent-yellow: #fec301;
+            --accent-blue: #00d2ff;
+            --accent-green: #00e676;
+            --accent-red: #ff3d00;
+            --text-main: #f0f6fc;
+            --text-dim: #8b949e;
+            --border-glow: #30363d;
+            
+            /* एनिमेशन और ट्रांजिशन */
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.5s ease-in-out;
+            --shadow-neon: 0 0 15px rgba(0, 210, 255, 0.2);
         }
 
-        body { 
-            background: var(--bg); 
-            color: white; 
-            font-family: 'Oswald', sans-serif; 
-            margin: 0; 
-            padding-bottom: 50px; 
-            overflow-x: hidden; 
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        /* --- BROADCAST SCOREBOARD --- */
-        .master-container { 
-            width: 100%; 
-            max-width: 1000px; 
-            margin: auto; 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-            background: var(--bg);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-
-        .top-info-bar { 
-            background: #000; 
-            color: #ccc; 
-            font-family: 'Orbitron'; 
-            font-size: 10px; 
-            padding: 5px 15px; 
-            display: flex; 
-            justify-content: space-between; 
-            border-bottom: 1px solid #222;
-            letter-spacing: 1px;
-        }
-
-        .main-board { 
-            height: 95px; 
-            background: linear-gradient(90deg, #001a3d 0%, #003366 50%, #001a3d 100%);
-            display: flex; 
-            align-items: center; 
-            position: relative; 
+        /* 1. TOP BATTLE PROGRESS BAR (NEW FEATURE) 
+           यह पट्टी दिखाएगी कि कौन सी टीम मैच में भारी पड़ रही है।
+        */
+        .battle-bar-container {
+            width: 100%;
+            height: 8px;
+            background: #222;
+            position: fixed;
+            top: 0;
+            z-index: 2000;
+            display: flex;
             overflow: hidden;
-            border-bottom: 4px solid var(--primary);
+        }
+        #battle-team-a { 
+            width: 50%; 
+            height: 100%; 
+            background: linear-gradient(90deg, var(--accent-yellow), #ffd700); 
+            transition: var(--transition-slow); 
+            box-shadow: 2px 0 10px rgba(254, 195, 1, 0.8);
+        }
+        #battle-team-b { 
+            width: 50%; 
+            height: 100%; 
+            background: linear-gradient(90deg, #005cff, var(--accent-blue)); 
+            transition: var(--transition-slow); 
         }
 
-        /* --- NEW ANIMATION BANNER (पट्टी के अंदर) --- */
-        #fx-banner {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--primary);
+        /* 2. BROADCAST SCOREBOARD (IMAGE STYLE) */
+        .broadcast-header {
+            background: linear-gradient(180deg, #000 0%, #0d1117 100%);
+            padding: 15px 25px;
+            border-bottom: 1px solid var(--border-glow);
+            display: grid;
+            grid-template-columns: 1fr 2fr 1.5fr;
+            align-items: center;
+            margin-top: 8px;
+            gap: 20px;
+        }
+
+        .team-identity {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .team-flag {
+            background: var(--accent-yellow);
             color: #000;
-            display: none;
+            padding: 8px 15px;
+            font-weight: 900;
+            font-family: 'Orbitron';
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+            font-size: 22px;
+        }
+
+        .main-score-digit {
+            font-family: 'Orbitron';
+            font-size: 48px;
+            font-weight: 900;
+            letter-spacing: -2px;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+        .overs-display {
+            font-size: 20px;
+            color: var(--text-dim);
+            font-weight: 400;
+        }
+
+        .player-stats-header {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            border-left: 2px solid #333;
+            padding-left: 20px;
+        }
+        .p-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .p-row.active-strike {
+            background: rgba(254, 195, 1, 0.15);
+            color: var(--accent-yellow);
+            border-left: 3px solid var(--accent-yellow);
+        }
+
+        .opponent-info-box {
+            text-align: right;
+            background: rgba(0, 210, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 210, 255, 0.1);
+        }
+        .opp-score-text {
+            color: var(--accent-blue);
+            font-family: 'Orbitron';
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* 3. MAIN DASHBOARD LAYOUT */
+        .titan-container {
+            max-width: 1400px;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            padding: 0 20px;
+        }
+
+        /* 4. SCORING CONTROLLER (THE BUTTON GRID) */
+        .scoring-card {
+            background: var(--panel-bg);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid #222;
+        }
+        .controller-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        /* BUTTON STYLES */
+        .btn-t {
+            border: none;
+            border-radius: 12px;
+            font-family: 'Orbitron';
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-family: 'Orbitron';
-            font-size: 50px;
-            font-weight: 900;
-            z-index: 10;
-            text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
-            animation: slideIn 0.3s ease-out;
+            text-transform: uppercase;
+        }
+        .btn-t:active { transform: scale(0.95); }
+
+        .btn-dot { grid-column: span 4; height: 80px; background: var(--accent-green); color: #000; font-size: 22px; }
+        .btn-run { height: 70px; background: #005cff; color: #fff; }
+        .btn-erase { height: 70px; background: #ff1744; color: #fff; } /* -1 RUN Button */
+        .btn-boundary { height: 70px; background: var(--accent-yellow); color: #000; font-size: 18px; }
+        .btn-wicket { grid-column: span 2; background: #d50000; color: #fff; }
+        .btn-extra { height: 60px; background: #21262d; color: var(--text-dim); border: 1px solid #333; }
+        .btn-action { height: 60px; background: #00e676; color: #000; font-size: 14px; }
+
+        /* 5. HISTORY & ARCHIVE (YEARLY FEATURE) */
+        .archive-card {
+            background: var(--panel-bg);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+        .year-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        .year-btn {
+            padding: 8px 20px;
+            background: #0d1117;
+            border: 1px solid #333;
+            border-radius: 20px;
+            color: var(--text-dim);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .year-btn.active {
+            background: var(--accent-yellow);
+            color: #000;
+            border-color: var(--accent-yellow);
         }
 
-        @keyframes slideIn {
-            from { transform: translateY(-100%); }
-            to { transform: translateY(0); }
+        /* 6. ANALYTICS WIDGETS */
+        .analytics-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .stat-box {
+            background: #0d1117;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border-bottom: 3px solid transparent;
         }
 
-        .team-identity { 
-            background: var(--primary); 
-            color: #000; 
-            font-weight: 900; 
-            font-size: 24px;
-            padding: 0 30px; 
-            height: 100%; 
-            display: flex; 
+        /* 7. BALL TRACKER */
+        .ball-sequence {
+            display: flex;
             align-items: center;
-            clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%); 
-            font-family: 'Orbitron'; 
-            min-width: 120px;
+            gap: 8px;
+            background: #000;
+            padding: 5px 15px;
+            border-radius: 30px;
+            margin-left: 20px;
         }
-
-        .score-display { 
-            font-size: 48px; 
-            font-weight: 900; 
-            padding: 0 20px; 
-            font-family: 'Orbitron'; 
-            display: flex; 
-            align-items: baseline;
+        .ball-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 900;
+            color: #555;
         }
-
-        .ov-tag { font-size: 18px; opacity: 0.8; margin-left: 10px; }
-
-        .batsmen-info { 
-            flex-grow: 1; 
-            padding: 0 20px; 
-            border-left: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .player-row { 
-            font-size: 14px; 
-            display: flex; 
-            justify-content: space-between; 
-            margin: 4px 0; 
-            font-family: 'Orbitron';
-        }
-
-        .striker-active { color: var(--primary); border-left: 3px solid var(--primary); padding-left: 8px; }
-
-        .opp-summary { 
-            background: rgba(0,225,255,0.05); 
-            height: 100%; 
-            padding: 0 15px; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            text-align: right; 
-            min-width: 130px; 
-            border-left: 1px solid rgba(0,225,255,0.2);
-        }
-
-        .bottom-nav-strip { 
-            background: #000; 
-            padding: 12px 20px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-
-        /* --- BALL TRACKER --- */
-        .ball-tracker { display: flex; gap: 6px; }
-        .ball-circle { 
-            width: 26px; height: 26px; background: #1a1a1a; 
-            border-radius: 50%; display: flex; align-items: center; 
-            justify-content: center; font-size: 11px; border: 1px solid #333; 
-            color: #555; font-family: 'Orbitron';
-        }
-        .ball-circle.filled { 
-            background: var(--primary); color: #000; 
-            box-shadow: 0 0 10px var(--primary); font-weight: 900; border:none;
-        }
-
-        /* --- ADMIN DASHBOARD --- */
-        .admin-main { padding: 20px; max-width: 1100px; margin: auto; }
-        .admin-card { 
-            background: var(--card-bg); padding: 25px; border-radius: 15px; 
-            border: 1px solid #1a2a44; margin-bottom: 20px;
-        }
-
-        .btn-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
-        button { 
-            padding: 15px 5px; font-weight: 900; border: none; border-radius: 8px; 
-            cursor: pointer; font-family: 'Oswald'; text-transform: uppercase;
-        }
-        button:active { transform: scale(0.95); }
-
-        .btn-blue { background: #1a73e8; color: white; box-shadow: 0 4px #0d47a1; }
-        .btn-yellow { background: var(--primary); color: #000; box-shadow: 0 4px #b78a00; }
-        .btn-red { background: var(--neon-red); color: white; box-shadow: 0 4px #a00028; }
-        .btn-green { background: #00c853; color: white; box-shadow: 0 4px #007e33; }
-        .btn-dark { background: #1e2a44; color: #cbd5e1; }
-
-        input { 
-            width: 95%; padding: 12px; margin-bottom: 12px; 
-            background: #050b16; border: 1px solid #1e2a44; 
-            color: white; border-radius: 8px; font-family: 'Orbitron';
-        }
-
-        .hidden { display: none !important; }
-
-        /* Over History Chips */
-        .over-history-flex { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-        .ball-chip { background: #1a2a44; padding: 5px 12px; border-radius: 20px; font-size: 12px; color: var(--primary); border: 1px solid #333; }
-
+        .ball-dot.done { background: var(--accent-yellow); color: #000; }
     </style>
 </head>
-<body onload="initApp()">
+<body>
 
-    <div class="master-container">
-        <div class="top-info-bar">
-            <span><span id="d-tour">TOURNAMENT</span> | <span id="d-proj" style="color:var(--primary)">PROJ: 0</span></span>
-            <span id="d-clock">00:00:00</span>
-        </div>
-        
-        <div class="main-board">
-            <div id="fx-banner">SIX!</div>
-
-            <div class="team-identity" id="d-team">TEAM A</div>
-            <div class="score-display">
-                <span id="d-runs">0</span>-<span id="d-wkt">0</span>
-                <span class="ov-tag">(<span id="d-ov">0.0</span>)</span>
-            </div>
-            
-            <div class="batsmen-info">
-                <div id="p1-row" class="player-row striker-active">
-                    <span id="d-b1">BATSMAN 1</span> <span id="d-b1-r">0(0)</span>
-                </div>
-                <div id="p2-row" class="player-row">
-                    <span id="d-b2">BATSMAN 2</span> <span id="d-b2-r">0(0)</span>
-                </div>
-            </div>
-
-            <div class="opp-summary">
-                <span style="font-size: 9px; color: var(--neon-blue); letter-spacing: 1px;">OPPONENT</span>
-                <span id="d-opp-score" style="font-size: 16px; font-weight: 900;">0-0 (0.0)</span>
-                <span style="font-size: 10px; opacity: 0.8; margin-top: 4px;">TGT: <span id="d-target" style="color:var(--primary)">0</span></span>
-            </div>
-        </div>
-
-        <div class="bottom-nav-strip">
-            <div style="font-family:'Orbitron'; font-size:11px; color:#aaa;" id="d-status">LIVE MATCH</div>
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <span style="font-family:'Orbitron'; font-size:11px; color:var(--primary);">BWL: <span id="d-bowl" style="color:white">WAITING</span></span>
-                <div class="ball-tracker" id="d-dots">
-                    <div class="ball-circle">1</div><div class="ball-circle">2</div><div class="ball-circle">3</div>
-                    <div class="ball-circle">4</div><div class="ball-circle">5</div><div class="ball-circle">6</div>
-                </div>
-            </div>
-        </div>
+    <div class="battle-bar-container">
+        <div id="battle-team-a"></div>
+        <div id="battle-team-b"></div>
     </div>
 
-    <div class="admin-main">
-        
-        <div id="login-section" class="admin-card" style="text-align: center; max-width: 500px; margin: 40px auto;">
-            <h2 style="font-family:'Orbitron'; color:var(--primary)">ADMIN LOGIN</h2>
-            <input type="password" id="pass-input" placeholder="ENTER ACCESS PIN" style="text-align:center; font-size: 20px;">
-            <button class="btn-yellow" onclick="checkAuth()" style="width:100%">UNLOCK SYSTEM</button>
+    <header class="broadcast-header">
+        <div class="team-identity">
+            <div class="team-flag" id="ui-team-name">TEAM A</div>
+            <div class="main-score-digit">
+                <span id="ui-score">0-0</span>
+                <span class="overs-display" id="ui-overs">(0.0)</span>
+            </div>
         </div>
 
-        <div id="dashboard-section" class="hidden">
-            <div class="admin-card" style="display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-family:'Orbitron'; color:var(--primary)">CONTROL PANEL v3.0</h3>
-                <button class="btn-red" onclick="lockPanel()" style="padding:5px 15px; font-size:12px;">LOGOUT</button>
-            </div>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
-                
-                <div class="admin-card">
-                    <div style="color:#666; font-size:11px; margin-bottom:10px; text-transform:uppercase;">Scoring Engine</div>
-                    <div class="btn-row">
-                        <button class="btn-blue" onclick="addRun(1)">+1</button>
-                        <button class="btn-blue" onclick="addRun(2)">+2</button>
-                        <button class="btn-blue" onclick="addRun(3)">+3</button>
-                        <button class="btn-red" onclick="addRun(-1)">-1</button>
-                    </div>
-                    <div class="btn-row">
-                        <button class="btn-yellow" onclick="addRun(4)">FOUR</button>
-                        <button class="btn-yellow" onclick="addRun(6)">SIX</button>
-                        <button class="btn-red" onclick="outPlayer()" style="grid-column: span 2;">WICKET</button>
-                    </div>
-                    <div class="btn-row">
-                        <button class="btn-dark" onclick="addExtra('WD')">WD</button>
-                        <button class="btn-dark" onclick="addExtra('NB')">NB</button>
-                        <button class="btn-dark" onclick="addExtra('BYE')">BYE</button>
-                        <button class="btn-dark" onclick="swapStrike()">SWAP</button>
-                    </div>
-                    <button class="btn-green" onclick="nextBall()" style="width:100%; font-size:18px; margin-bottom:10px;">DOT BALL</button>
-                    
-                    <div style="display:flex; gap:10px;">
-                        <button id="auto-btn" class="btn-dark" onclick="toggleAutoStrike()" style="flex:1">AUTO: ON</button>
-                        <button id="inn-btn" class="btn-yellow" onclick="toggleInn()" style="width:80px;">INN 1</button>
-                    </div>
+        <div style="display: flex; align-items: center;">
+            <div class="player-stats-header">
+                <div class="p-row active-strike" id="ui-p1-row">
+                    <span id="ui-p1-name">PLAYER 1</span>
+                    <span id="ui-p1-stats">0(0)</span>
                 </div>
-
-                <div class="admin-card">
-                    <div style="color:#666; font-size:11px; margin-bottom:10px; text-transform:uppercase;">Configuration</div>
-                    <input type="text" id="i-tour" placeholder="Tournament Name" oninput="pushConfig()">
-                    <input type="text" id="i-t1" placeholder="Team Name" oninput="pushConfig()">
-                    <input type="text" id="i-b1" placeholder="Striker" oninput="pushConfig()">
-                    <input type="text" id="i-b2" placeholder="Non-Striker" oninput="pushConfig()">
-                    <input type="text" id="i-bowl" placeholder="Bowler" oninput="pushConfig()">
-                    <div style="display:flex; gap:10px;">
-                        <input type="number" id="i-target" placeholder="Target" oninput="pushConfig()">
-                        <input type="number" id="i-max-ov" placeholder="Overs" oninput="pushConfig()">
-                    </div>
-                    <input type="text" id="i-opp-score" placeholder="Opponent Info" oninput="pushConfig()">
+                <div class="p-row" id="ui-p2-row">
+                    <span id="ui-p2-name">PLAYER 2</span>
+                    <span id="ui-p2-stats">0(0)</span>
                 </div>
             </div>
-
-            <div class="admin-card">
-                <div style="color:#666; font-size:11px; margin-bottom:10px; text-transform:uppercase;">Recent Balls (Current Over)</div>
-                <div id="over-analysis" class="over-history-flex"></div>
-                <button class="btn-red" onclick="clearOverLog()" style="margin-top:15px; padding:5px 15px; font-size:10px;">CLEAR LOG</button>
+            
+            <div class="ball-sequence" id="ui-ball-dots">
+                </div>
+            <div style="margin-left: 15px; font-size: 12px; color: var(--accent-yellow);">
+                BOWLER: <span id="ui-bowler" style="color: #fff; font-family: 'Orbitron';">---</span>
             </div>
-
-            <div class="admin-card" style="border-top: 4px solid var(--neon-red);">
-                <button class="btn-red" onclick="archiveMatch()" style="width:100%; font-size:18px;">FINISH MATCH & ARCHIVE</button>
-                <div id="history-log" style="margin-top:20px;"></div>
-            </div>
-
         </div>
-    </div>
 
-    <script>
-        const firebaseConfig = { databaseURL: "Https://myscoreboard-b140f-default-rtdb.firebaseio.com/" };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database().ref("broadcast_broadcast_v4");
-        const histDb = firebase.database().ref("match_history_v4");
+        <div class="opponent-info-box">
+            <div style="font-size: 10px; letter-spacing: 1px; color: var(--text-dim);">OPPONENT INFO</div>
+            <div class="opp-score-text" id="ui-opp-score">145-2 (7.5)</div>
+            <div style="font-size: 11px; font-weight: 900; color: #fff;">TGT: <span id="ui-target">146</span></div>
+        </div>
+    </header>
 
-        let state = {
-            r: 0, w: 0, o: 0, b: 0,
-            t1: "TEAM A", tour: "TOURNAMENT",
-            oppS: "0-0 (0.0)", target: 0,
-            s: 1, 
-            p1: { n: "BATSMAN 1", r: 0, b: 0 },
-            p2: { n: "BATSMAN 2", r: 0, b: 0 },
-            bowl: "WAITING",
-            inn: 1, maxO: 20, autoS: true, anim: "",
-            overLog: [] 
-        };
-
-        // AUTH SYSTEM
-        function checkAuth() {
-            if(document.getElementById('pass-input').value === "ChhotuLive8718") {
-                localStorage.setItem("admin_v4", "true");
-                showDashboard();
-            } else { alert("WRONG PIN!"); }
-        }
-
-        function showDashboard() {
-            document.getElementById('dashboard-section').classList.remove('hidden');
-            document.getElementById('login-section').classList.add('hidden');
-        }
-
-        function lockPanel() {
-            localStorage.removeItem("admin_v4");
-            location.reload();
-        }
-
-        // INIT
-        function initApp() {
-            if(localStorage.getItem("admin_v4") === "true") showDashboard();
-            
-            setInterval(() => {
-                document.getElementById('d-clock').innerText = new Date().toLocaleTimeString();
-            }, 1000);
-
-            db.on('value', snap => {
-                if(snap.val()) {
-                    state = snap.val();
-                    renderUI();
-                    if(localStorage.getItem("admin_v4") === "true") syncInputs();
-                }
-            });
-            loadHistory();
-        }
-
-        // SCORING LOGIC
-        function addRun(v) {
-            state.r += v;
-            if(state.s === 1) state.p1.r += v; else state.p2.r += v;
-            
-            if(v === 4) triggerFX("FOUR");
-            if(v === 6) triggerFX("SIX");
-
-            if(state.autoS && (v === 1 || v === 3)) swapStrike();
-            
-            // Log to over log
-            if(v >= 0) state.overLog.push(v);
-            save();
-        }
-
-        function addExtra(type) {
-            state.r += 1;
-            state.overLog.push(type);
-            if(type === 'NB') triggerFX("FREE HIT");
-            save();
-        }
-
-        function nextBall() {
-            if(state.s === 1) state.p1.b++; else state.p2.b++;
-            state.b++;
-            state.overLog.push(0);
-            if(state.b >= 6) {
-                state.o++; state.b = 0;
-                if(state.autoS) swapStrike();
-                state.overLog = []; // Clear current over log on over end
-            }
-            save();
-        }
-
-        function outPlayer() {
-            let nextN = prompt("New Batsman Name:");
-            if(nextN) {
-                state.w++;
-                triggerFX("WICKET");
-                state.overLog.push("W");
-                if(state.s === 1) state.p1 = { n: nextN, r: 0, b: 0 };
-                else state.p2 = { n: nextN, r: 0, b: 0 };
-                save();
-            }
-        }
-
-        function triggerFX(msg) {
-            state.anim = msg;
-            save();
-            setTimeout(() => { state.anim = ""; save(); }, 3000);
-        }
-
-        function swapStrike() { state.s = (state.s === 1) ? 2 : 1; save(); }
-        function toggleAutoStrike() { state.autoS = !state.autoS; save(); }
-        function toggleInn() { state.inn = (state.inn === 1) ? 2 : 1; save(); }
-        function clearOverLog() { state.overLog = []; save(); }
-
-        // PUSH CONFIG
-        function pushConfig() {
-            if(localStorage.getItem("admin_v4") !== "true") return;
-            state.tour = document.getElementById('i-tour').value || state.tour;
-            state.t1 = document.getElementById('i-t1').value || state.t1;
-            state.p1.n = document.getElementById('i-b1').value || state.p1.n;
-            state.p2.n = document.getElementById('i-b2').value || state.p2.n;
-            state.bowl = document.getElementById('i-bowl').value || state.bowl;
-            state.target = parseInt(document.getElementById('i-target').value) || 0;
-            state.maxO = parseInt(document.getElementById('i-max-ov').value) || 20;
-            state.oppS = document.getElementById('i-opp-score').value || state.oppS;
-            save();
-        }
-
-        function save() { db.set(state); }
-
-        function syncInputs() {
-            document.getElementById('i-tour').value = state.tour;
-            document.getElementById('i-t1').value = state.t1;
-            document.getElementById('i-b1').value = state.p1.n;
-            document.getElementById('i-b2').value = state.p2.n;
-            document.getElementById('i-bowl').value = state.bowl;
-            document.getElementById('i-target').value = state.target;
-            document.getElementById('i-max-ov').value = state.maxO;
-            document.getElementById('i-opp-score').value = state.oppS;
-            document.getElementById('auto-btn').innerText = "AUTO: " + (state.autoS ? "ON" : "OFF");
-            document.getElementById('inn-btn').innerText = "INN " + state.inn;
-            
-            // Over log UI
-            const logArea = document.getElementById('over-analysis');
-            logArea.innerHTML = "";
-            (state.overLog || []).forEach(val => {
-                logArea.innerHTML += `<span class="ball-chip">${val}</span>`;
-            });
-        }
-
-        // RENDER UI
-        function renderUI() {
-            document.getElementById('d-runs').innerText = state.r;
-            document.getElementById('d-wkt').innerText = state.w;
-            document.getElementById('d-ov').innerText = state.o + "." + state.b;
-            document.getElementById('d-team').innerText = state.t1.toUpperCase();
-            document.getElementById('d-tour').innerText = state.tour.toUpperCase();
-            document.getElementById('d-bowl').innerText = state.bowl;
-            document.getElementById('d-opp-score').innerText = state.oppS;
-            document.getElementById('d-target').innerText = state.target;
-
-            document.getElementById('d-b1').innerText = state.p1.n;
-            document.getElementById('d-b1-r').innerText = `${state.p1.r}(${state.p1.b})`;
-            document.getElementById('d-b2').innerText = state.p2.n;
-            document.getElementById('d-b2-r').innerText = `${state.p2.r}(${state.p2.b})`;
-
-            document.getElementById('p1-row').className = (state.s === 1) ? "player-row striker-active" : "player-row";
-            document.getElementById('p2-row').className = (state.s === 2) ? "player-row striker-active" : "player-row";
-
-            // Ball circles
-            const circles = document.querySelectorAll('.ball-circle');
-            circles.forEach((c, i) => {
-                if(i < state.b) c.classList.add('filled');
-                else c.classList.remove('filled');
-            });
-
-            // Innings status
-            if(state.inn === 2 && state.target > 0) {
-                let diff = state.target - state.r;
-                let remB = (state.maxO * 6) - ((state.o * 6) + state.b);
-                document.getElementById('d-status').innerText = `NEED ${diff} RUNS IN ${remB} BALLS`;
-            } else {
-                document.getElementById('d-status').innerText = "1ST INNINGS IN PROGRESS";
-            }
-
-            // FX BANNER SYSTEM (Patti ke andar)
-            const banner = document.getElementById('fx-banner');
-            if(state.anim) {
-                banner.innerText = state.anim + "!";
-                banner.style.display = 'flex';
-            } else {
-                banner.style.display = 'none';
-            }
-
-            // Projected
-            let totalB = (state.o * 6) + state.b;
-            if(totalB > 0) {
-                let crr = (state.r / totalB) * 6;
-                document.getElementById('d-proj').innerText = "PROJ: " + Math.round(crr * state.maxO);
-            }
-        }
-
-        // ARCHIVE MATCH
-        function archiveMatch() {
-            if(confirm("SAVE THIS MATCH TO HISTORY?")) {
-                const data = {
-                    title: state.t1 + " Match",
-                    score: `${state.r}-${state.w} (${state.o}.${state.b})`,
-                    tour: state.tour,
-                    date: new Date().toLocaleDateString()
-                };
-                histDb.push(data);
-                alert("Match Archived Successfully!");
-                db.set({
-                    r: 0, w: 0, o: 0, b: 0, t1: "TEAM A", tour: "TOURNAMENT", oppS: "0-0 (0.0)", target: 0, s: 1,
-                    p1: { n: "BATSMAN 1", r: 0, b: 0 }, p2: { n: "BATSMAN 2", r: 0, b: 0 }, bowl: "WAITING", inn: 1, maxO: 20, autoS: true, anim: "", overLog: []
-                });
-            }
-        }
-
-        function loadHistory() {
-            histDb.on('value', snap => {
-                const log = document.getElementById('history-log');
-                log.innerHTML = "";
-                const val = snap.val();
-                if(val) {
-                    Object.values(val).reverse().forEach(m => {
-                        log.innerHTML += `
-                            <div style="background:#050b16; padding:10px; border-radius:8px; margin-bottom:10px; border-left:4px solid var(--primary);">
-                                <div style="display:flex; justify-content:space-between">
-                                    <strong>${m.title}</strong>
-                                    <span>${m.score}</span>
-                                </div>
-                                <div style="font-size:10px; color:#666">${m.tour} | ${m.date}</div>
-                            </div>
-                        `;
-                    });
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+    <main class="titan-container">
