@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chhotu Ultra-Pro Max Scorer 2026 | Professional Grade</title>
+    <title>Chhotu Ultra-Pro Max Scorer 2026 | Broadcast Edition</title>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     
@@ -29,7 +29,7 @@
             overflow-x: hidden; 
         }
 
-        /* --- BROADCAST SCOREBOARD --- */
+        /* --- SCOREBOARD STYLES (AS PER IMAGE) --- */
         .master-container { 
             width: 100%; 
             max-width: 1000px; 
@@ -43,194 +43,236 @@
 
         .top-info-bar { 
             background: #000; 
-            color: #fff; 
+            color: #ccc; 
             font-family: 'Orbitron'; 
-            font-size: 11px; 
-            padding: 7px 15px; 
+            font-size: 10px; 
+            padding: 5px 15px; 
             display: flex; 
             justify-content: space-between; 
             border-bottom: 1px solid #222;
             letter-spacing: 1px;
-            font-weight: 900; /* Bold */
+            text-transform: uppercase;
         }
 
         .main-board { 
-            height: 100px; 
+            height: 90px; 
             background: linear-gradient(90deg, #001a3d 0%, #003366 50%, #001a3d 100%);
             display: flex; 
             align-items: center; 
             position: relative; 
             overflow: hidden;
-            border-bottom: 5px solid var(--primary);
-        }
-
-        /* Number Update Animation */
-        @keyframes scoreUpdate {
-            0% { transform: scale(1); filter: brightness(1); }
-            50% { transform: scale(1.3); filter: brightness(2); color: var(--primary); }
-            100% { transform: scale(1); filter: brightness(1); }
-        }
-        .animate-score { animation: scoreUpdate 0.5s ease-in-out; }
-
-        #fx-banner {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--primary);
-            color: #000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Orbitron';
-            font-size: 55px;
-            font-weight: 900;
-            z-index: 10;
-            text-shadow: 3px 3px 0px rgba(255,255,255,0.5);
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(-100%); }
-            to { transform: translateY(0); }
+            border-bottom: 4px solid var(--primary);
         }
 
         .team-identity { 
             background: var(--primary); 
             color: #000; 
             font-weight: 900; 
-            font-size: 26px;
-            padding: 0 35px; 
+            font-size: 24px;
+            padding: 0 30px; 
             height: 100%; 
             display: flex; 
             align-items: center;
             clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%); 
             font-family: 'Orbitron'; 
-            min-width: 130px;
+            min-width: 120px;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.3);
         }
 
         .score-display { 
-            font-size: 52px; 
+            font-size: 48px; 
             font-weight: 900; 
             padding: 0 20px; 
             font-family: 'Orbitron'; 
             display: flex; 
             align-items: baseline;
-            min-width: 180px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
-        .ov-tag { font-size: 20px; opacity: 1; margin-left: 10px; font-weight: 900; color: #fff; }
+        .ov-tag { 
+            font-size: 18px; 
+            opacity: 0.8; 
+            color: #fff; 
+            margin-left: 10px; 
+            font-family: 'Orbitron';
+        }
 
         .batsmen-info { 
             flex-grow: 1; 
             padding: 0 20px; 
-            border-left: 2px solid rgba(255,255,255,0.2);
+            border-left: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .player-row { 
-            font-size: 16px; 
+            font-size: 15px; 
             display: flex; 
             justify-content: space-between; 
-            margin: 6px 0; 
-            font-family: 'Orbitron';
-            font-weight: 900;
+            margin: 3px 0; 
+            font-family: 'Orbitron'; 
             letter-spacing: 0.5px;
+            transition: 0.3s;
         }
 
-        .striker-active { color: var(--primary); border-left: 4px solid var(--primary); padding-left: 10px; }
+        .striker-active { 
+            color: var(--primary); 
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(254,195,9,0.4);
+        }
 
         .opp-summary { 
-            background: rgba(0,225,255,0.08); 
+            background: rgba(0,225,255,0.05); 
             height: 100%; 
             padding: 0 15px; 
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
             text-align: right; 
-            min-width: 140px; 
-            border-left: 2px solid rgba(0,225,255,0.3);
+            min-width: 130px; 
+            border-left: 1px solid rgba(0,225,255,0.2);
         }
 
         .bottom-nav-strip { 
             background: #000; 
-            padding: 15px 20px; 
+            padding: 12px 20px; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
+            border-top: 1px solid #111;
         }
 
-        /* --- BALL TRACKER --- */
-        .ball-tracker { display: flex; gap: 8px; }
+        .bowler-label { font-family: 'Orbitron'; font-size: 11px; color: #aaa; text-transform: uppercase; }
+        .bowler-name { color: var(--primary); font-weight: bold; margin-left: 5px; }
+
+        /* --- BALL TRACKER (IMAGE STYLE) --- */
+        .ball-tracker { display: flex; gap: 6px; }
         .ball-circle { 
-            width: 30px; height: 30px; background: #1a1a1a; 
-            border-radius: 50%; display: flex; align-items: center; 
-            justify-content: center; font-size: 13px; border: 2px solid #333; 
-            color: #777; font-family: 'Orbitron'; font-weight: 900;
+            width: 24px; 
+            height: 24px; 
+            background: #1a1a1a; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 11px; 
+            border: 1px solid #333; 
+            color: #555; 
+            font-family: 'Orbitron';
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .ball-circle.filled { 
-            background: var(--primary); color: #000; 
-            box-shadow: 0 0 15px var(--primary); font-weight: 900; border:none;
+            background: var(--primary); 
+            color: #000; 
+            border-color: #fff; 
+            box-shadow: 0 0 12px var(--primary); 
+            font-weight: 900;
+            transform: scale(1.1);
         }
 
-        /* --- ADMIN DASHBOARD --- */
-        .admin-main { padding: 25px; max-width: 1200px; margin: auto; }
+        /* --- ADMIN PANEL STYLES --- */
+        .admin-main { padding: 20px; max-width: 1100px; margin: auto; }
+        .dashboard-title { 
+            font-family: 'Orbitron'; 
+            font-size: 22px; 
+            color: var(--primary); 
+            margin-bottom: 20px; 
+            display: flex; 
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+            gap: 20px; 
+        }
+
         .admin-card { 
-            background: var(--card-bg); padding: 30px; border-radius: 20px; 
-            border: 1px solid #1a2a44; margin-bottom: 25px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 15px; 
+            border: 1px solid #1a2a44; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
 
-        .btn-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+        .section-header { 
+            color: #64748b; 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            margin-bottom: 15px; 
+            border-bottom: 1px solid #1e2a44;
+            padding-bottom: 5px;
+        }
+
+        /* Buttons */
+        .btn-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
         button { 
-            padding: 18px 5px; font-weight: 900; border: none; border-radius: 10px; 
-            cursor: pointer; font-family: 'Oswald'; text-transform: uppercase;
-            font-size: 16px;
-            transition: all 0.2s;
+            padding: 15px 5px; 
+            font-weight: 900; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            font-family: 'Oswald'; 
+            text-transform: uppercase;
+            font-size: 13px;
         }
         button:active { transform: scale(0.92); }
 
-        .btn-blue { background: #1a73e8; color: white; box-shadow: 0 5px #0d47a1; }
-        .btn-yellow { background: var(--primary); color: #000; box-shadow: 0 5px #b78a00; }
-        .btn-red { background: var(--neon-red); color: white; box-shadow: 0 5px #a00028; }
-        .btn-green { background: #00c853; color: white; box-shadow: 0 5px #007e33; }
-        .btn-dark { background: #1e2a44; color: #cbd5e1; }
+        .btn-blue { background: #1a73e8; color: white; box-shadow: 0 4px #0d47a1; }
+        .btn-yellow { background: var(--primary); color: #000; box-shadow: 0 4px #b78a00; }
+        .btn-red { background: var(--neon-red); color: white; box-shadow: 0 4px #a00028; }
+        .btn-dark { background: #1e2a44; color: #cbd5e1; box-shadow: 0 4px #0f172a; }
+        .btn-green { background: #00c853; color: white; box-shadow: 0 4px #007e33; }
 
         input { 
-            width: 96%; padding: 14px; margin-bottom: 15px; 
-            background: #050b16; border: 1px solid #1e2a44; 
-            color: white; border-radius: 10px; font-family: 'Orbitron';
-            font-weight: 700;
+            width: 95%; 
+            padding: 14px; 
+            margin-bottom: 15px; 
+            background: #050b16; 
+            border: 1px solid #1e2a44; 
+            color: white; 
+            border-radius: 8px; 
+            font-family: 'Orbitron'; 
+            font-size: 14px; 
+            outline: none;
+        }
+        input:focus { border-color: var(--primary); }
+
+        /* Animations */
+        #fx-layer { 
+            position: fixed; top: 35%; left: 0; width: 100%; 
+            background: var(--primary); color: #000; 
+            font-size: 80px; font-weight: 900; text-align: center; 
+            padding: 40px 0; display: none; z-index: 5000; 
+            font-family: 'Orbitron'; transform: skewY(-2deg);
+            box-shadow: 0 0 50px rgba(254,195,9,0.6);
+        }
+
+        .history-item { 
+            background: #050b16; padding: 15px; margin-bottom: 10px; 
+            border-radius: 10px; border-left: 4px solid var(--primary);
+            display: flex; justify-content: space-between; align-items: center;
         }
 
         .hidden { display: none !important; }
-
-        /* Over History Chips */
-        .over-history-flex { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 15px; }
-        .ball-chip { background: #1a2a44; padding: 8px 15px; border-radius: 25px; font-size: 14px; color: var(--primary); border: 1px solid #333; font-weight: 900; }
-
-        /* Next Ball Button Style */
-        .next-ball-btn {
-            background: linear-gradient(135deg, #00c853 0%, #007e33 100%);
-            color: white;
-            font-size: 22px !important;
-            padding: 20px !important;
-            margin-top: 10px;
-            box-shadow: 0 6px 0px #004d40, 0 10px 20px rgba(0,200,83,0.3);
-            border: 2px solid #00e676;
-        }
-
     </style>
 </head>
 <body onload="initApp()">
 
+    <div id="fx-layer">SIX!</div>
+
     <div class="master-container">
         <div class="top-info-bar">
-            <span><span id="d-tour">TOURNAMENT</span> | <span id="d-proj" style="color:var(--primary)">PROJ: 0</span></span>
-            <span id="d-clock">00:00:00</span>
+            <span><span id="d-tour">LEAGUE NAME</span> | <span id="d-proj" style="color:var(--primary)">PROJECTED: 0</span></span>
+            <span id="d-clock">00:00:00 PM</span>
         </div>
         
         <div class="main-board">
-            <div id="fx-banner">SIX!</div>
-
-            <div class="team-identity" id="d-team">TEAM A</div>
+            <div class="team-identity" id="d-team">TEAM</div>
             <div class="score-display">
                 <span id="d-runs">0</span>-<span id="d-wkt">0</span>
                 <span class="ov-tag">(<span id="d-ov">0.0</span>)</span>
@@ -246,19 +288,23 @@
             </div>
 
             <div class="opp-summary">
-                <span style="font-size: 11px; color: var(--neon-blue); letter-spacing: 1px; font-weight: 900;">OPPONENT</span>
-                <span id="d-opp-score" style="font-size: 18px; font-weight: 900;">0-0 (0.0)</span>
-                <span style="font-size: 11px; font-weight: 900; margin-top: 4px;">TGT: <span id="d-target" style="color:var(--primary)">0</span></span>
+                <span style="font-size: 9px; color: var(--neon-blue); letter-spacing: 1px;">OPPONENT</span>
+                <span id="d-opp-score" style="font-size: 16px; font-weight: 900;">0-0 (0.0)</span>
+                <span style="font-size: 10px; opacity: 0.8; margin-top: 4px;">TARGET: <span id="d-target" style="color:var(--primary)">0</span></span>
             </div>
         </div>
 
         <div class="bottom-nav-strip">
-            <div style="font-family:'Orbitron'; font-size:12px; color:#fff; font-weight: 900;" id="d-status">LIVE MATCH</div>
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <span style="font-family:'Orbitron'; font-size:12px; color:var(--primary); font-weight: 900;">BWL: <span id="d-bowl" style="color:white">WAITING</span></span>
+            <div class="bowler-label" id="d-inn-status">1ST INNINGS IN PROGRESS</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span class="bowler-label">BOWLER: <span class="bowler-name" id="d-bowl">WAITING</span></span>
                 <div class="ball-tracker" id="d-dots">
-                    <div class="ball-circle">1</div><div class="ball-circle">2</div><div class="ball-circle">3</div>
-                    <div class="ball-circle">4</div><div class="ball-circle">5</div><div class="ball-circle">6</div>
+                    <div class="ball-circle">1</div>
+                    <div class="ball-circle">2</div>
+                    <div class="ball-circle">3</div>
+                    <div class="ball-circle">4</div>
+                    <div class="ball-circle">5</div>
+                    <div class="ball-circle">6</div>
                 </div>
             </div>
         </div>
@@ -266,22 +312,22 @@
 
     <div class="admin-main">
         
-        <div id="login-section" class="admin-card" style="text-align: center; max-width: 500px; margin: 40px auto;">
-            <h2 style="font-family:'Orbitron'; color:var(--primary); font-weight: 900;">ADMIN LOGIN</h2>
-            <input type="password" id="pass-input" placeholder="ENTER ACCESS PIN" style="text-align:center; font-size: 24px;">
-            <button class="btn-yellow" onclick="checkAuth()" style="width:100%">UNLOCK SYSTEM</button>
+        <div id="login-section" class="admin-card" style="text-align: center; max-width: 500px; margin: 50px auto;">
+            <h2 style="font-family:'Orbitron'; color:var(--primary)">ADMIN ACCESS</h2>
+            <input type="password" id="pass-input" placeholder="ENTER PIN" style="text-align:center; font-size: 24px;">
+            <button class="btn-yellow" onclick="checkAuth()" style="width:100%; padding:20px;">UNLOCK DASHBOARD</button>
         </div>
 
         <div id="dashboard-section" class="hidden">
-            <div class="admin-card" style="display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-family:'Orbitron'; color:var(--primary); font-weight: 900;">CONTROL PANEL v4.0</h3>
-                <button class="btn-red" onclick="lockPanel()" style="padding:8px 20px; font-size:14px;">LOGOUT</button>
+            <div class="dashboard-title">
+                <span>🎮 CONTROL DASHBOARD</span>
+                <button class="btn-red" onclick="lockPanel()" style="margin-left:auto; padding:5px 15px; font-size:10px;">LOCK & EXIT</button>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px;">
+            <div class="control-grid">
                 
                 <div class="admin-card">
-                    <div style="color:#aaa; font-size:12px; margin-bottom:12px; text-transform:uppercase; font-weight: 900;">Scoring Engine</div>
+                    <div class="section-header">Quick Scoring</div>
                     <div class="btn-row">
                         <button class="btn-blue" onclick="addRun(1)">+1</button>
                         <button class="btn-blue" onclick="addRun(2)">+2</button>
@@ -289,79 +335,80 @@
                         <button class="btn-red" onclick="addRun(-1)">-1</button>
                     </div>
                     <div class="btn-row">
-                        <button class="btn-yellow" onclick="addRun(4)">FOUR</button>
-                        <button class="btn-yellow" onclick="addRun(6)">SIX</button>
+                        <button class="btn-yellow" onclick="addRun(4)">4</button>
+                        <button class="btn-yellow" onclick="addRun(6)">6</button>
                         <button class="btn-red" onclick="outPlayer()" style="grid-column: span 2;">WICKET</button>
                     </div>
                     <div class="btn-row">
-                        <button class="btn-dark" onclick="addExtra('WD')">WD</button>
-                        <button class="btn-dark" onclick="addExtra('NB')">NB</button>
-                        <button class="btn-dark" onclick="addExtra('BYE')">BYE</button>
+                        <button class="btn-dark" onclick="addExtra('WD')">WIDE</button>
+                        <button class="btn-dark" onclick="addExtra('NB')">NO BALL</button>
+                        <button class="btn-dark" onclick="addExtra('BYE')">BYES</button>
                         <button class="btn-dark" onclick="swapStrike()">SWAP</button>
                     </div>
+                    <button class="btn-green" onclick="nextBall()" style="width:100%; font-size:18px; margin-bottom:15px;">NEXT BALL (DOT)</button>
                     
-                    <button class="btn-green" onclick="addRun(0)" style="width:100%; font-size:18px; margin-bottom:10px;">DOT BALL</button>
-                    <button class="next-ball-btn" onclick="nextBall()" style="width:100%;">NEXT BALL</button>
-                    
-                    <div style="display:flex; gap:12px; margin-top: 15px;">
-                        <button id="auto-btn" class="btn-dark" onclick="toggleAutoStrike()" style="flex:1">AUTO: ON</button>
-                        <button id="inn-btn" class="btn-yellow" onclick="toggleInn()" style="width:100px;">INN 1</button>
+                    <div style="display:flex; gap:10px;">
+                        <button id="auto-btn" class="btn-dark" onclick="toggleAutoStrike()" style="flex:1">AUTO STRIKE: ON</button>
+                        <button id="inn-btn" class="btn-yellow" onclick="toggleInn()" style="width:80px;">INN 1</button>
                     </div>
                 </div>
 
                 <div class="admin-card">
-                    <div style="color:#aaa; font-size:12px; margin-bottom:12px; text-transform:uppercase; font-weight: 900;">Match Configuration</div>
-                    <input type="text" id="i-tour" placeholder="Tournament Name" oninput="pushConfig()">
-                    <input type="text" id="i-t1" placeholder="Team Name" oninput="pushConfig()">
-                    <input type="text" id="i-b1" placeholder="Striker Name" oninput="pushConfig()">
-                    <input type="text" id="i-b2" placeholder="Non-Striker Name" oninput="pushConfig()">
-                    <input type="text" id="i-bowl" placeholder="Current Bowler" oninput="pushConfig()">
-                    <div style="display:flex; gap:12px;">
-                        <input type="number" id="i-target" placeholder="Target" oninput="pushConfig()">
-                        <input type="number" id="i-max-ov" placeholder="Total Overs" oninput="pushConfig()">
+                    <div class="section-header">Match Setup</div>
+                    <input type="text" id="i-tour" placeholder="Tournament Name" oninput="updateMatchInfo()">
+                    <input type="text" id="i-t1" placeholder="Batting Team Name" oninput="updateMatchInfo()">
+                    <input type="text" id="i-b1" placeholder="Striker Name" oninput="updateMatchInfo()">
+                    <input type="text" id="i-b2" placeholder="Non-Striker Name" oninput="updateMatchInfo()">
+                    <input type="text" id="i-bowl" placeholder="Current Bowler" oninput="updateMatchInfo()">
+                    <div style="display:flex; gap:10px;">
+                        <input type="number" id="i-target" placeholder="Target" oninput="updateMatchInfo()">
+                        <input type="number" id="i-max-ov" placeholder="Overs" oninput="updateMatchInfo()">
                     </div>
-                    <input type="text" id="i-opp-score" placeholder="Opponent Stats (e.g. 150-5 20.0)" oninput="pushConfig()">
+                    <input type="text" id="i-opp-score" placeholder="Opponent Score (e.g. 120-4 10.0)" oninput="updateMatchInfo()">
+                    
+                    <button class="btn-red" onclick="archiveMatch()" style="width:100%; margin-top:10px;">END & SAVE MATCH</button>
                 </div>
+
             </div>
 
-            <div class="admin-card">
-                <div style="color:#aaa; font-size:12px; margin-bottom:12px; text-transform:uppercase; font-weight: 900;">Current Over Timeline</div>
-                <div id="over-analysis" class="over-history-flex"></div>
-                <button class="btn-red" onclick="clearOverLog()" style="margin-top:20px; padding:8px 20px; font-size:12px;">RESET OVER LOG</button>
-            </div>
-
-            <div class="admin-card" style="border-top: 6px solid var(--neon-red);">
-                <button class="btn-red" onclick="archiveMatch()" style="width:100%; font-size:20px; padding: 25px;">FINISH MATCH & ARCHIVE</button>
-                <div id="history-log" style="margin-top:30px;"></div>
+            <div class="admin-card" style="margin-top:20px;">
+                <div class="section-header">Match History Archive</div>
+                <div id="history-display"></div>
             </div>
 
         </div>
     </div>
 
     <script>
-        const firebaseConfig = { databaseURL: "Https://myscoreboard-b140f-default-rtdb.firebaseio.com/" };
+        // --- FIREBASE CONFIGURATION ---
+        const firebaseConfig = { 
+            databaseURL: "Https://myscoreboard-b140f-default-rtdb.firebaseio.com/" 
+        };
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.database().ref("broadcast_broadcast_v4");
-        const histDb = firebase.database().ref("match_history_v4");
+        const db = firebase.database().ref("broadcast_pro_2026");
+        const histDb = firebase.database().ref("broadcast_history");
 
         let state = {
             r: 0, w: 0, o: 0, b: 0,
-            t1: "TEAM A", tour: "TOURNAMENT",
+            t1: "TEAM A", tour: "CHHOTU PREMIER LEAGUE",
             oppS: "0-0 (0.0)", target: 0,
-            s: 1, 
+            s: 1, // 1 = p1 is striker, 2 = p2
             p1: { n: "BATSMAN 1", r: 0, b: 0 },
             p2: { n: "BATSMAN 2", r: 0, b: 0 },
             bowl: "WAITING",
-            inn: 1, maxO: 20, autoS: true, anim: "",
-            overLog: [] 
+            inn: 1,
+            maxO: 20,
+            autoS: true,
+            anim: ""
         };
 
-        // --- AUTH ---
+        // --- AUTHENTICATION ---
         function checkAuth() {
-            if(document.getElementById('pass-input').value === "ChhotuLive8718") {
-                localStorage.setItem("admin_v4", "true");
+            const pin = document.getElementById('pass-input').value;
+            if(pin === "ChhotuLive8718") {
+                localStorage.setItem("pro_admin", "true");
                 showDashboard();
-            } else { alert("WRONG PIN! ACCESS DENIED."); }
+            } else { alert("Access Denied!"); }
         }
 
         function showDashboard() {
@@ -370,113 +417,104 @@
         }
 
         function lockPanel() {
-            localStorage.removeItem("admin_v4");
+            localStorage.removeItem("pro_admin");
             location.reload();
         }
 
-        // --- CORE ---
+        // --- CORE LOGIC ---
         function initApp() {
-            if(localStorage.getItem("admin_v4") === "true") showDashboard();
+            if(localStorage.getItem("pro_admin") === "true") showDashboard();
             
+            // Clock
             setInterval(() => {
                 document.getElementById('d-clock').innerText = new Date().toLocaleTimeString();
             }, 1000);
 
+            // Listen to Database
             db.on('value', snap => {
                 if(snap.val()) {
-                    let oldR = state.r;
-                    let oldW = state.w;
                     state = snap.val();
-                    
                     renderUI();
-                    
-                    // Trigger Animation if score changed
-                    if(oldR !== state.r) triggerScoreAnim('d-runs');
-                    if(oldW !== state.w) triggerScoreAnim('d-wkt');
-
-                    if(localStorage.getItem("admin_v4") === "true") syncInputs();
+                    if(localStorage.getItem("pro_admin") === "true") syncInputs();
                 }
             });
+
             loadHistory();
         }
 
-        function triggerScoreAnim(id) {
-            const el = document.getElementById(id);
-            el.classList.remove('animate-score');
-            void el.offsetWidth; // Trigger reflow
-            el.classList.add('animate-score');
-        }
-
-        // --- SCORING ---
         function addRun(v) {
             state.r += v;
-            if(state.s === 1) { state.p1.r += v; state.p1.b++; } 
-            else { state.p2.r += v; state.p2.b++; }
+            // Update Batsman
+            if(state.s === 1) state.p1.r += v;
+            else state.p2.r += v;
             
+            // Boundary FX
             if(v === 4) triggerFX("FOUR");
             if(v === 6) triggerFX("SIX");
 
+            // Auto Swap on odd runs
             if(state.autoS && (v === 1 || v === 3)) swapStrike();
             
-            state.b++;
-            if(state.b >= 6) {
-                state.o++; state.b = 0;
-                if(state.autoS) swapStrike();
-                state.overLog = [];
-            }
-            
-            if(v >= 0) state.overLog.push(v);
             save();
         }
 
         function addExtra(type) {
             state.r += 1;
-            state.overLog.push(type);
             if(type === 'NB') triggerFX("FREE HIT");
-            if(type === 'WD') triggerFX("WIDE");
             save();
         }
 
         function nextBall() {
-            // Function specially for "NEXT BALL" button click
-            // Just increments ball count without adding runs (Dot logic)
-            if(state.s === 1) state.p1.b++; else state.p2.b++;
+            if(state.s === 1) state.p1.b++;
+            else state.p2.b++;
+
             state.b++;
-            state.overLog.push(0);
             if(state.b >= 6) {
-                state.o++; state.b = 0;
+                state.o++;
+                state.b = 0;
                 if(state.autoS) swapStrike();
-                state.overLog = []; 
             }
             save();
         }
 
         function outPlayer() {
-            let nextN = prompt("New Batsman Name:");
-            if(nextN) {
+            let nextName = prompt("Enter Next Batsman Name:");
+            if(nextName) {
                 state.w++;
                 triggerFX("WICKET");
-                state.overLog.push("W");
-                if(state.s === 1) state.p1 = { n: nextN, r: 0, b: 0 };
-                else state.p2 = { n: nextN, r: 0, b: 0 };
+                if(state.s === 1) state.p1 = { n: nextName, r: 0, b: 0 };
+                else state.p2 = { n: nextName, r: 0, b: 0 };
                 save();
             }
         }
 
-        function triggerFX(msg) {
-            state.anim = msg;
+        function swapStrike() {
+            state.s = (state.s === 1) ? 2 : 1;
             save();
-            setTimeout(() => { state.anim = ""; save(); }, 3000);
         }
 
-        function swapStrike() { state.s = (state.s === 1) ? 2 : 1; save(); }
-        function toggleAutoStrike() { state.autoS = !state.autoS; save(); }
-        function toggleInn() { state.inn = (state.inn === 1) ? 2 : 1; save(); }
-        function clearOverLog() { state.overLog = []; save(); }
+        function toggleAutoStrike() {
+            state.autoS = !state.autoS;
+            save();
+        }
 
-        // --- SYNC ---
-        function pushConfig() {
-            if(localStorage.getItem("admin_v4") !== "true") return;
+        function toggleInn() {
+            state.inn = (state.inn === 1) ? 2 : 1;
+            save();
+        }
+
+        function triggerFX(txt) {
+            state.anim = txt;
+            save();
+            setTimeout(() => {
+                state.anim = "";
+                save();
+            }, 3000);
+        }
+
+        // --- DATA SYNC ---
+        function updateMatchInfo() {
+            if(localStorage.getItem("pro_admin") !== "true") return;
             state.tour = document.getElementById('i-tour').value || state.tour;
             state.t1 = document.getElementById('i-t1').value || state.t1;
             state.p1.n = document.getElementById('i-b1').value || state.p1.n;
@@ -488,7 +526,9 @@
             save();
         }
 
-        function save() { db.set(state); }
+        function save() {
+            db.set(state);
+        }
 
         function syncInputs() {
             document.getElementById('i-tour').value = state.tour;
@@ -499,17 +539,13 @@
             document.getElementById('i-target').value = state.target;
             document.getElementById('i-max-ov').value = state.maxO;
             document.getElementById('i-opp-score').value = state.oppS;
-            document.getElementById('auto-btn').innerText = "AUTO: " + (state.autoS ? "ON" : "OFF");
-            document.getElementById('inn-btn').innerText = "INN " + state.inn;
             
-            const logArea = document.getElementById('over-analysis');
-            logArea.innerHTML = "";
-            (state.overLog || []).forEach(val => {
-                logArea.innerHTML += `<span class="ball-chip">${val}</span>`;
-            });
+            document.getElementById('auto-btn').innerText = "AUTO STRIKE: " + (state.autoS ? "ON" : "OFF");
+            document.getElementById('auto-btn').className = state.autoS ? "btn-dark" : "btn-red";
+            document.getElementById('inn-btn').innerText = "INN " + state.inn;
         }
 
-        // --- RENDER ---
+        // --- UI RENDERING ---
         function renderUI() {
             document.getElementById('d-runs').innerText = state.r;
             document.getElementById('d-wkt').innerText = state.w;
@@ -520,75 +556,80 @@
             document.getElementById('d-opp-score').innerText = state.oppS;
             document.getElementById('d-target').innerText = state.target;
 
-            document.getElementById('d-b1').innerText = state.p1.n.toUpperCase();
-            document.getElementById('d-b1-r').innerText = `${state.p1.r}(${state.p1.b})`;
-            document.getElementById('d-b2').innerText = state.p2.n.toUpperCase();
-            document.getElementById('d-b2-r').innerText = `${state.p2.r}(${state.p2.b})`;
+            // Batsmen
+            document.getElementById('d-b1').innerText = state.p1.n;
+            document.getElementById('d-b1-r').innerText = state.p1.r + "(" + state.p1.b + ")";
+            document.getElementById('d-b2').innerText = state.p2.n;
+            document.getElementById('d-b2-r').innerText = state.p2.r + "(" + state.p2.b + ")";
 
             document.getElementById('p1-row').className = (state.s === 1) ? "player-row striker-active" : "player-row";
             document.getElementById('p2-row').className = (state.s === 2) ? "player-row striker-active" : "player-row";
 
+            // Ball Tracker
             const circles = document.querySelectorAll('.ball-circle');
-            circles.forEach((c, i) => {
-                if(i < state.b) c.classList.add('filled');
+            circles.forEach((c, idx) => {
+                if(idx < state.b) c.classList.add('filled');
                 else c.classList.remove('filled');
             });
 
+            // Innings Logic
             if(state.inn === 2 && state.target > 0) {
-                let diff = state.target - state.r;
+                let remR = state.target - state.r;
                 let remB = (state.maxO * 6) - ((state.o * 6) + state.b);
-                document.getElementById('d-status').innerText = `NEED ${diff} RUNS IN ${remB} BALLS`;
+                document.getElementById('d-inn-status').innerText = "NEED " + remR + " RUNS IN " + remB + " BALLS";
             } else {
-                document.getElementById('d-status').innerText = "MATCH LIVE: 1ST INNINGS";
+                document.getElementById('d-inn-status').innerText = "1ST INNINGS IN PROGRESS";
             }
 
-            const banner = document.getElementById('fx-banner');
+            // FX
+            const fx = document.getElementById('fx-layer');
             if(state.anim) {
-                banner.innerText = state.anim + "!";
-                banner.style.display = 'flex';
+                fx.innerText = state.anim + "!";
+                fx.style.display = 'block';
             } else {
-                banner.style.display = 'none';
+                fx.style.display = 'none';
             }
 
-            let totalB = (state.o * 6) + state.b;
-            if(totalB > 0) {
-                let crr = (state.r / totalB) * 6;
-                document.getElementById('d-proj').innerText = "PROJ: " + Math.round(crr * state.maxO);
+            // Projected Score
+            let balls = (state.o * 6) + state.b;
+            if(balls > 0) {
+                let crr = (state.r / balls) * 6;
+                document.getElementById('d-proj').innerText = "PROJECTED: " + Math.round(crr * state.maxO);
             }
         }
 
-        // --- ARCHIVE ---
+        // --- HISTORY ---
         function archiveMatch() {
-            if(confirm("ARE YOU SURE TO FINISH AND ARCHIVE THIS MATCH?")) {
-                const data = {
-                    title: state.t1,
-                    score: `${state.r}-${state.w} (${state.o}.${state.b})`,
-                    tour: state.tour,
-                    date: new Date().toLocaleString()
-                };
-                histDb.push(data);
-                alert("MATCH SUCCESSFULLY ARCHIVED!");
-                db.set({
-                    r: 0, w: 0, o: 0, b: 0, t1: "TEAM A", tour: "TOURNAMENT", oppS: "0-0 (0.0)", target: 0, s: 1,
-                    p1: { n: "BATSMAN 1", r: 0, b: 0 }, p2: { n: "BATSMAN 2", r: 0, b: 0 }, bowl: "WAITING", inn: 1, maxO: 20, autoS: true, anim: "", overLog: []
-                });
-            }
+            if(!confirm("Are you sure you want to end this match?")) return;
+            const summary = {
+                title: state.t1 + " VS OPP",
+                score: state.r + "-" + state.w + " (" + state.o + "." + state.b + ")",
+                tour: state.tour,
+                date: new Date().toLocaleDateString()
+            };
+            histDb.push(summary);
+            // Reset
+            db.set({
+                r: 0, w: 0, o: 0, b: 0, t1: "TEAM A", tour: "CHHOTU PREMIER LEAGUE", oppS: "0-0 (0.0)", target: 0, s: 1,
+                p1: { n: "BATSMAN 1", r: 0, b: 0 }, p2: { n: "BATSMAN 2", r: 0, b: 0 }, bowl: "WAITING", inn: 1, maxO: 20, autoS: true, anim: ""
+            });
+            alert("Match Saved to History!");
         }
 
         function loadHistory() {
             histDb.on('value', snap => {
-                const log = document.getElementById('history-log');
-                log.innerHTML = "";
-                const val = snap.val();
-                if(val) {
-                    Object.values(val).reverse().forEach(m => {
-                        log.innerHTML += `
-                            <div style="background:#050b16; padding:15px; border-radius:12px; margin-bottom:12px; border-left:5px solid var(--primary);">
-                                <div style="display:flex; justify-content:space-between; font-family:'Orbitron'; font-weight:900;">
-                                    <span>${m.title}</span>
-                                    <span style="color:var(--primary)">${m.score}</span>
+                const area = document.getElementById('history-display');
+                area.innerHTML = "";
+                const data = snap.val();
+                if(data) {
+                    Object.values(data).reverse().forEach(m => {
+                        area.innerHTML += `
+                            <div class="history-item">
+                                <div>
+                                    <strong style="color:var(--primary)">${m.title}</strong><br>
+                                    <small style="color:#666">${m.tour} | ${m.date}</small>
                                 </div>
-                                <div style="font-size:11px; color:#aaa; margin-top:5px; font-weight:900;">${m.tour} | ${m.date}</div>
+                                <div style="font-family:Orbitron; font-size:18px;">${m.score}</div>
                             </div>
                         `;
                     });
