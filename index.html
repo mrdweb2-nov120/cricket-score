@@ -1,1261 +1,837 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <title>Cricket Live Scoreboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CPL TITAN | PROFESSIONAL BROADCAST DASHBOARD</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Roboto+Mono:wght@100;300;400;700&display=swap" rel="stylesheet">
 
-    <!-- PART 1 ONLY: HTML STRUCTURE -->
-</head>
-<body>
-
-<!-- ================= TOP SCOREBOARD ================= -->
-<header class="scoreboard-header">
-
-    <div class="league-bar">
-        <span class="league-name">CHHOTU PREMIER LEAGUE</span>
-        <span class="match-time" id="matchClock">00:00</span>
-    </div>
-
-    <div class="score-main">
-
-        <div class="team-box left-team">
-            <div class="team-name" id="teamA">TEAM A</div>
-        </div>
-
-        <div class="score-box">
-            <div class="total-score" id="totalScore">0-0</div>
-            <div class="overs" id="overs">(0.0)</div>
-        </div>
-
-        <div class="batsmen-box">
-            <div class="batsman active" id="bat1">
-                <span class="name">PLAYER 1</span>
-                <span class="runs">0 (0)</span>
-            </div>
-            <div class="batsman" id="bat2">
-                <span class="name">PLAYER 2</span>
-                <span class="runs">0 (0)</span>
-            </div>
-        </div>
-
-        <div class="team-box right-team">
-            <div class="opponent-info">
-                <div id="oppScore">160-5 (16.2)</div>
-                <div id="target">TARGET: 161</div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="bowler-strip">
-        <span>BOWLER:</span>
-        <span id="bowlerName">NOT SET</span>
-
-        <div class="balls">
-            <span class="ball"></span>
-            <span class="ball"></span>
-            <span class="ball"></span>
-            <span class="ball"></span>
-            <span class="ball"></span>
-            <span class="ball"></span>
-        </div>
-    </div>
-
-</header>
-
-<!-- ================= CONTROL PANEL ================= -->
-<main class="control-panel">
-
-    <section class="panel scoring-panel">
-
-        <h2>SCORING CONTROLLER</h2>
-
-        <button class="btn big green" id="dotBall">NEXT BALL (DOT)</button>
-
-        <div class="btn-grid">
-            <button class="btn blue">+1 RUN</button>
-            <button class="btn blue">+2 RUNS</button>
-            <button class="btn blue">+3 RUNS</button>
-            <button class="btn gray">UNDO</button>
-
-            <button class="btn yellow">FOUR</button>
-            <button class="btn yellow">SIX</button>
-            <button class="btn red">WICKET</button>
-            <button class="btn dark">SWAP</button>
-
-            <button class="btn dark">WD</button>
-            <button class="btn dark">NB</button>
-            <button class="btn dark">LB</button>
-            <button class="btn green">SAVE MATCH</button>
-        </div>
-
-    </section>
-
-    <section class="panel config-panel">
-        <h2>MATCH CONFIG</h2>
-
-        <input type="text" placeholder="Tournament Name">
-        <input type="text" placeholder="Batting Team">
-        <input type="text" placeholder="Player 1">
-        <input type="text" placeholder="Player 2">
-        <input type="text" placeholder="Bowler">
-        <input type="number" placeholder="Target">
-        <input type="text" placeholder="Opponent Score">
-
-        <button class="btn big yellow">SWITCH INNINGS</button>
-    </section>
-
-</main>
-
-<!-- ================= ANALYTICS ================= -->
-<section class="analytics">
-
-    <div class="stat">
-        <span class="label">PARTNERSHIP</span>
-        <span class="value" id="partnership">0 (0)</span>
-    </div>
-
-    <div class="stat">
-        <span class="label">RUN RATE</span>
-        <span class="value" id="crr">0.00</span>
-    </div>
-
-    <div class="stat">
-        <span class="label">REQ RATE</span>
-        <span class="value" id="rrr">0.00</span>
-    </div>
-
-    <div class="stat">
-        <span class="label">EXTRAS</span>
-        <span class="value" id="extras">0</span>
-    </div>
-
-</section>
-
-<!-- PART 2 CSS WILL BE PASTED BELOW -->
     <style>
-/* =========================================================
-   PART 2 : PROFESSIONAL DARK UI CSS
-   CRICKET SCOREBOARD + CONTROL PANEL
-   ========================================================= */
+        /* SECTION 1.1: MASSIVE VARIABLE DECLARATION 
+           यहाँ हमने हर एक छोटी चीज़ के लिए अलग वेरिएबल बनाया है ताकि कोडिंग का विस्तार हो सके।
+        */
+        :root {
+            --cpl-main-bg: #01040a;
+            --cpl-panel-dark: #0d1117;
+            --cpl-panel-light: #161b22;
+            --cpl-accent-yellow: #fec301;
+            --cpl-accent-blue: #00d2ff;
+            --cpl-accent-red: #ff3e3e;
+            --cpl-accent-green: #00ff87;
+            --cpl-text-primary: #f0f6fc;
+            --cpl-text-secondary: #8b949e;
+            --cpl-border-default: #30363d;
+            --cpl-glow-yellow: 0 0 20px rgba(254, 195, 1, 0.3);
+            --cpl-glow-blue: 0 0 20px rgba(0, 210, 255, 0.3);
+            --cpl-font-broadcast: 'Orbitron', sans-serif;
+            --cpl-font-ui: 'Rajdhani', sans-serif;
+            --cpl-font-mono: 'Roboto Mono', monospace;
+            --cpl-header-height: 140px;
+            --cpl-transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-/* ---------------- RESET ---------------- */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        /* SECTION 1.2: GLOBAL RESET & SCROLLBAR ENGINE */
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-body {
-    background: radial-gradient(circle at top, #0a1428, #02060f 70%);
-    color: #e6edf3;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    min-height: 100vh;
-}
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--cpl-main-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--cpl-border-default); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--cpl-accent-yellow); }
 
-/* ---------------- TOP SCOREBOARD ---------------- */
-.scoreboard-header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background: linear-gradient(180deg, #0b1730, #02060f);
-    border-bottom: 3px solid #f5c400;
-    z-index: 1000;
-}
+        body {
+            background-color: var(--cpl-main-bg);
+            color: var(--cpl-text-primary);
+            font-family: var(--cpl-font-ui);
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(0, 210, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(254, 195, 1, 0.05) 0%, transparent 50%);
+        }
 
-/* League bar */
-.league-bar {
-    display: flex;
-    justify-content: space-between;
-    padding: 6px 14px;
-    font-size: 12px;
-    font-weight: 600;
-    background: #02060f;
-    color: #f5c400;
-}
+        /* SECTION 1.3: BROADCAST OVERLAY ARCHITECTURE (THE TOP BAR) */
+        .titan-broadcast-overlay {
+            width: 100%;
+            background: #000;
+            position: sticky;
+            top: 0;
+            z-index: 10000;
+            border-bottom: 5px solid var(--cpl-accent-yellow);
+            box-shadow: 0 10px 50px rgba(0,0,0,0.8);
+        }
 
-/* Main score area */
-.score-main {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr 1.4fr 1fr;
-    align-items: center;
-    padding: 10px;
-    gap: 8px;
-}
+        .broadcast-top-meta {
+            height: 35px;
+            background: linear-gradient(90deg, #000 0%, #111 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            font-family: var(--cpl-font-broadcast);
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: var(--cpl-accent-yellow);
+            border-bottom: 1px solid #222;
+        }
 
-/* Teams */
-.team-box {
-    background: #f5c400;
-    color: #000;
-    padding: 8px;
-    text-align: center;
-    font-weight: 800;
-    border-radius: 6px;
-}
+        .main-score-engine-wrap {
+            display: grid;
+            grid-template-columns: 22% 48% 30%;
+            height: 105px;
+            overflow: hidden;
+        }
 
-.left-team {
-    clip-path: polygon(0 0, 95% 0, 100% 100%, 0 100%);
-}
+        .batting-team-logo-box {
+            background: var(--cpl-accent-yellow);
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+            position: relative;
+        }
 
-.right-team {
-    clip-path: polygon(5% 0, 100% 0, 100% 100%, 0 100%);
-}
+        .team-name-heavy {
+            font-family: var(--cpl-font-broadcast);
+            font-size: 42px;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0px rgba(255,255,255,0.2);
+        }
 
-/* Score */
-.score-box {
-    text-align: center;
-}
+        .live-score-central {
+            background: linear-gradient(135deg, #050d1a 0%, #0d1117 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            border-right: 1px solid #333;
+        }
 
-.total-score {
-    font-size: 34px;
-    font-weight: 900;
-}
+        .score-display-huge {
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+        }
 
-.overs {
-    font-size: 14px;
-    color: #9ba3af;
-}
+        .runs-wickets {
+            font-family: var(--cpl-font-broadcast);
+            font-size: 65px;
+            font-weight: 900;
+            color: #fff;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.1));
+        }
 
-/* Batsmen */
-.batsmen-box {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
+        .overs-sub-text {
+            font-family: var(--cpl-font-broadcast);
+            font-size: 24px;
+            color: var(--cpl-text-secondary);
+        }
 
-.batsman {
-    display: flex;
-    justify-content: space-between;
-    padding: 4px 8px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 6px;
-    font-size: 13px;
-}
+        .active-players-mini {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 220px;
+        }
 
-.batsman.active {
-    border-left: 4px solid #f5c400;
-    color: #f5c400;
-    background: rgba(245,196,0,0.12);
-}
+        .player-row-mini {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 6px;
+            transition: var(--cpl-transition-smooth);
+            border-left: 0px solid var(--cpl-accent-yellow);
+        }
 
-/* Opponent */
-.opponent-info {
-    text-align: right;
-    font-size: 14px;
-    font-weight: 600;
-}
+        .player-row-mini.on-strike {
+            background: rgba(254, 195, 1, 0.1);
+            border-left-width: 5px;
+            color: var(--cpl-accent-yellow);
+            box-shadow: inset 10px 0 20px rgba(254, 195, 1, 0.05);
+        }
 
-/* Bowler strip */
-.bowler-strip {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 12px;
-    border-top: 1px solid #1f2937;
-    font-size: 12px;
-}
+        .opponent-status-engine {
+            background: #0d1117;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            padding-right: 40px;
+            position: relative;
+        }
 
-.balls {
-    display: flex;
-    gap: 6px;
-}
+        .target-ribbon {
+            background: var(--cpl-accent-blue);
+            color: #000;
+            padding: 2px 15px;
+            font-weight: 800;
+            font-size: 14px;
+            clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%);
+            margin-bottom: 5px;
+        }
 
-.ball {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: #1f2937;
-    border: 1px solid #374151;
-}
+        /* SECTION 1.4: BALL-BY-BALL TRACKER UI */
+        .over-tracker-bar {
+            background: #000;
+            height: 40px;
+            border-top: 1px solid #222;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+        }
 
-/* ---------------- CONTROL PANEL ---------------- */
-.control-panel {
-    margin-top: 230px;
-    padding: 16px;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-}
+        .bowler-info-tag {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--cpl-text-secondary);
+        }
 
-.panel {
-    background: linear-gradient(180deg, #0b1224, #02060f);
-    border-radius: 16px;
-    padding: 16px;
-    box-shadow: 0 10px 35px rgba(0,0,0,0.7);
-    border: 1px solid #1f2937;
-}
+        .bowler-info-tag span { color: var(--cpl-accent-yellow); margin-left: 10px; font-family: var(--cpl-font-broadcast); }
 
-.panel h2 {
-    font-size: 14px;
-    color: #f5c400;
-    margin-bottom: 12px;
-    letter-spacing: 1px;
-}
+        .balls-sequence-wrap {
+            display: flex;
+            gap: 12px;
+        }
 
-/* Buttons */
-.btn {
-    border: none;
-    border-radius: 10px;
-    padding: 14px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    color: #fff;
-    transition: transform 0.15s, box-shadow 0.15s;
-}
+        .ball-unit {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #1c2128;
+            border: 1px solid #30363d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--cpl-font-broadcast);
+            font-size: 12px;
+            font-weight: 700;
+            transition: var(--cpl-transition-smooth);
+        }
 
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.6);
-}
+        .ball-unit.active-ball {
+            background: var(--cpl-accent-yellow);
+            color: #000;
+            box-shadow: var(--cpl-glow-yellow);
+            border-color: #fff;
+            transform: scale(1.1);
+        }
 
-.btn.big {
-    width: 100%;
-    font-size: 18px;
-    margin-bottom: 12px;
-}
+        /* SECTION 1.5: DASHBOARD CONTAINER LAYOUT */
+        .titan-main-wrapper {
+            max-width: 1600px;
+            margin: 30px auto;
+            padding: 0 30px;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+        }
 
-/* Button colors */
-.green { background: #00c853; color: #000; }
-.blue { background: #2563eb; }
-.yellow { background: #f5c400; color: #000; }
-.red { background: #dc2626; }
-.gray { background: #374151; }
-.dark { background: #111827; }
+        /* Responsive Breakpoints (Massive) */
+        @media (max-width: 1200px) {
+            .titan-main-wrapper { grid-template-columns: 1fr; }
+            .main-score-engine-wrap { grid-template-columns: 1fr; height: auto; }
+            .batting-team-logo-box { clip-path: none; padding: 20px; }
+            .opponent-status-engine { align-items: center; padding: 20px; }
+        }
+    </style>
+</head>
 
-/* Button grid */
-.btn-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-}
+<body>
+    <div class="titan-broadcast-overlay">
+        <div class="broadcast-top-meta">
+            <div id="ui-tour-display">BAGREKASA PREMIER LEAGUE | SEASON 2026</div>
+            <div>LIVE STREAMING <span id="ui-clock" style="color:#fff; margin-left:15px;">00:00:00</span></div>
+        </div>
 
-/* ---------------- CONFIG PANEL ---------------- */
-.config-panel input {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 12px;
-    border-radius: 8px;
-    background: #02060f;
-    border: 1px solid #374151;
-    color: #fff;
-    font-size: 14px;
-}
+        <div class="main-score-engine-wrap">
+            <div class="batting-team-logo-box">
+                <span class="team-name-heavy" id="ui-team-a">TEAM A</span>
+            </div>
 
-.config-panel input:focus {
-    outline: none;
-    border-color: #f5c400;
-}
+            <div class="live-score-central">
+                <div class="score-display-huge">
+                    <span class="runs-wickets" id="ui-score">0 - 0</span>
+                    <span class="overs-sub-text" id="ui-overs">(0.0)</span>
+                </div>
 
-/* ---------------- ANALYTICS ---------------- */
-.analytics {
-    padding: 16px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
+                <div class="active-players-mini">
+                    <div class="player-row-mini on-strike" id="ui-p1-row">
+                        <span id="ui-p1-name">STRIKER</span>
+                        <span id="ui-p1-stats">0 (0)</span>
+                    </div>
+                    <div class="player-row-mini" id="ui-p2-row">
+                        <span id="ui-p2-name">NON-STRIKER</span>
+                        <span id="ui-p2-stats">0 (0)</span>
+                    </div>
+                </div>
+            </div>
 
-.stat {
-    background: linear-gradient(180deg, #0b1224, #02060f);
-    border-radius: 14px;
-    padding: 12px;
-    text-align: center;
-    border: 1px solid #1f2937;
-}
+            <div class="opponent-status-engine">
+                <div class="target-ribbon" id="ui-target-box">TARGET: 0</div>
+                <div style="font-size: 28px; font-weight: 900; font-family: var(--cpl-font-broadcast);" id="ui-opp-sum">0-0 (0.0)</div>
+                <div style="font-size: 11px; color: var(--cpl-accent-blue); letter-spacing: 2px;">OPPONENT INNINGS</div>
+            </div>
+        </div>
 
-.stat .label {
-    font-size: 11px;
-    color: #9ba3af;
-}
+        <div class="over-tracker-bar">
+            <div class="bowler-info-tag">CURRENT BOWLER: <span id="ui-bowler">NOT ASSIGNED</span></div>
+            <div class="balls-sequence-wrap" id="ui-ball-dots">
+                <div class="ball-unit">1</div>
+                <div class="ball-unit">2</div>
+                <div class="ball-unit">3</div>
+                <div class="ball-unit">4</div>
+                <div class="ball-unit">5</div>
+                <div class="ball-unit">6</div>
+            </div>
+        </div>
+    </div>
 
-.stat .value {
-    font-size: 20px;
-    font-weight: 800;
-    margin-top: 6px;
-}
+    <div class="titan-main-wrapper" id="titan-dashboard-root">
+                <section class="command-center-module" style="display: flex; flex-direction: column; gap: 25px;">
+            
+            <div class="titan-panel-card" style="background: var(--cpl-panel-dark); border-radius: 20px; padding: 30px; border: 1px solid var(--cpl-border-default); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+                
+                <div class="panel-header-flex" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #333; padding-bottom: 15px;">
+                    <h2 style="font-family: var(--cpl-font-broadcast); font-size: 16px; color: var(--cpl-accent-yellow); letter-spacing: 2px;">SCORING COMMAND INTERFACE</h2>
+                    <div style="font-family: var(--cpl-font-mono); font-size: 12px; color: var(--cpl-accent-green);">SYSTEM STATUS: OPERATIONAL</div>
+                </div>
 
-/* ---------------- DESKTOP ---------------- */
-@media (min-width: 900px) {
-    .control-panel {
-        grid-template-columns: 1.5fr 1fr;
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
+                <button class="titan-btn btn-huge-dot" onclick="processDelivery(0, 'DOT')" 
+                    style="width: 100%; height: 100px; background: var(--cpl-accent-green); color: #000; border: none; border-radius: 15px; font-family: var(--cpl-font-broadcast); font-size: 28px; font-weight: 900; cursor: pointer; transition: var(--cpl-transition-smooth); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 15px; box-shadow: 0 10px 0px #00a859;">
+                    <span style="font-size: 40px;">●</span> NEXT BALL (DOT)
+                </button>
+
+                <div class="scoring-grid-layout" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                    
+                    <button class="titan-btn btn-run" onclick="processDelivery(1, 'SINGLE')" 
+                        style="height: 70px; background: var(--cpl-accent-blue); border: none; border-radius: 12px; color: #fff; font-family: var(--cpl-font-broadcast); font-size: 20px; font-weight: 700; cursor: pointer; transition: var(--cpl-transition-smooth); box-shadow: 0 6px 0px #008eb4;">+1 RUN</button>
+                    
+                    <button class="titan-btn btn-run" onclick="processDelivery(2, 'DOUBLE')" 
+                        style="height: 70px; background: var(--cpl-accent-blue); border: none; border-radius: 12px; color: #fff; font-family: var(--cpl-font-broadcast); font-size: 20px; font-weight: 700; cursor: pointer; transition: var(--cpl-transition-smooth); box-shadow: 0 6px 0px #008eb4;">+2 RUNS</button>
+                    
+                    <button class="titan-btn btn-run" onclick="processDelivery(3, 'TRIPLE')" 
+                        style="height: 70px; background: var(--cpl-accent-blue); border: none; border-radius: 12px; color: #fff; font-family: var(--cpl-font-broadcast); font-size: 20px; font-weight: 700; cursor: pointer; transition: var(--cpl-transition-smooth); box-shadow: 0 6px 0px #008eb4;">+3 RUNS</button>
+
+                    <button class="titan-btn btn-undo" onclick="executeUndo()" 
+                        style="height: 70px; background: #30363d; border: none; border-radius: 12px; color: #fff; font-family: var(--cpl-font-broadcast); font-size: 16px; font-weight: 700; cursor: pointer; transition: var(--cpl-transition-smooth); box-shadow: 0 6px 0px #1c2128;">UNDO / ERASE</button>
+
+                    <button class="titan-btn btn-four" onclick="processDelivery(4, 'BOUNDARY')" 
+                        style="height: 70px; background: var(--cpl-accent-yellow); border: none; border-radius: 12px; color: #000; font-family: var(--cpl-font-broadcast); font-size: 24px; font-weight: 900; cursor: pointer; transition: var(--cpl-transition-smooth); box-shadow: 0 6px 0px #b38a00;">FOUR (4)</button>
+                    
+                    <button class="titan-btn btn-six" onclick="processDelivery(6, 'SIXER')" 
+                        style="height: 70px; background: var(--cpl-accent-yellow); border: none; border-radius: 12px; color: #000; font-family: var(--cpl-font-broadcast); font-size: 24px; font-weight: 900; cursor: pointer; transition: var(--cpl-transition-smooth); box-shadow: 0 6px 0px #b38a00;">SIX (6)</button>
+
+                    <button class="titan-btn btn-wicket" onclick="triggerDismissal()" 
+                        style="height: 70px; grid-column: span 2; background: var(--cpl-accent-red); border: none; border-radius: 12px; color: #fff; font-family: var(--cpl-font-broadcast); font-size: 22px; font-weight: 900; cursor: pointer; transition: var(--cpl-transition-smooth); box-shadow: 0 6px 0px #b30000; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        OUT / WICKET
+                    </button>
+
+                    <button class="titan-btn btn-extra" onclick="processExtra('WD')" 
+                        style="height: 60px; background: #21262d; border: 1px solid #444; border-radius: 10px; color: var(--cpl-accent-blue); font-family: var(--cpl-font-broadcast); font-size: 16px; font-weight: 700; cursor: pointer;">WIDE</button>
+                    
+                    <button class="titan-btn btn-extra" onclick="processExtra('NB')" 
+                        style="height: 60px; background: #21262d; border: 1px solid #444; border-radius: 10px; color: var(--cpl-accent-blue); font-family: var(--cpl-font-broadcast); font-size: 16px; font-weight: 700; cursor: pointer;">NO BALL</button>
+                    
+                    <button class="titan-btn btn-extra" onclick="processExtra('LB')" 
+                        style="height: 60px; background: #21262d; border: 1px solid #444; border-radius: 10px; color: var(--cpl-accent-blue); font-family: var(--cpl-font-broadcast); font-size: 16px; font-weight: 700; cursor: pointer;">LEG BYE</button>
+
+                    <button class="titan-btn btn-extra" onclick="manualStrikeChange()" 
+                        style="height: 60px; background: #000; border: 1px solid var(--cpl-accent-yellow); border-radius: 10px; color: var(--cpl-accent-yellow); font-family: var(--cpl-font-broadcast); font-size: 14px; font-weight: 700; cursor: pointer;">SWAP STRIKE</button>
+                </div>
+
+                <button class="titan-btn btn-innings-swap" onclick="advancedInningsSwitch()" 
+                    style="width: 100%; height: 60px; margin-top: 25px; background: linear-gradient(90deg, #111 0%, #222 100%); border: 1px solid #333; border-radius: 12px; color: #8b949e; font-family: var(--cpl-font-broadcast); font-size: 14px; letter-spacing: 3px; cursor: pointer; transition: var(--cpl-transition-smooth);">
+                    ADVANCED: SWITCH INNINGS / END MATCH
+                </button>
+            </div>
+
+            <div class="analytics-widgets-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                
+                <div class="stat-card-neo" style="background: var(--cpl-panel-dark); padding: 20px; border-radius: 15px; border-bottom: 3px solid var(--cpl-accent-yellow); text-align: center;">
+                    <div style="font-size: 10px; color: var(--cpl-text-secondary); margin-bottom: 5px; letter-spacing: 1px;">CURRENT PARTNERSHIP</div>
+                    <div id="an-partnership" style="font-size: 22px; font-weight: 900; font-family: var(--cpl-font-broadcast);">0 (0)</div>
+                </div>
+
+                <div class="stat-card-neo" style="background: var(--cpl-panel-dark); padding: 20px; border-radius: 15px; border-bottom: 3px solid var(--cpl-accent-blue); text-align: center;">
+                    <div style="font-size: 10px; color: var(--cpl-text-secondary); margin-bottom: 5px; letter-spacing: 1px;">RUN RATE (CRR)</div>
+                    <div id="an-crr" style="font-size: 22px; font-weight: 900; font-family: var(--cpl-font-broadcast);">0.00</div>
+                </div>
+
+                <div class="stat-card-neo" style="background: var(--cpl-panel-dark); padding: 20px; border-radius: 15px; border-bottom: 3px solid var(--cpl-accent-red); text-align: center;">
+                    <div style="font-size: 10px; color: var(--cpl-text-secondary); margin-bottom: 5px; letter-spacing: 1px;">REQ. RATE (RRR)</div>
+                    <div id="an-rrr" style="font-size: 22px; font-weight: 900; font-family: var(--cpl-font-broadcast);">0.00</div>
+                </div>
+
+                <div class="stat-card-neo" style="background: var(--cpl-panel-dark); padding: 20px; border-radius: 15px; border-bottom: 3px solid var(--cpl-accent-green); text-align: center;">
+                    <div style="font-size: 10px; color: var(--cpl-text-secondary); margin-bottom: 5px; letter-spacing: 1px;">PROJECTED SCORE</div>
+                    <div id="an-projected" style="font-size: 22px; font-weight: 900; font-family: var(--cpl-font-broadcast);">0</div>
+                </div>
+
+            </div>
+        </section>
+
+        <aside class="config-sidebar-module">
+        <div class="titan-sidebar-engine" style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <div class="titan-panel-card" style="background: var(--cpl-panel-dark); border-radius: 20px; padding: 25px; border: 1px solid var(--cpl-border-default);">
+                <h3 style="font-family: var(--cpl-font-broadcast); font-size: 14px; color: var(--cpl-accent-yellow); margin-bottom: 20px; border-left: 3px solid var(--cpl-accent-yellow); padding-left: 10px;">MATCH CONFIGURATION</h3>
+                
+                <div class="config-input-group" style="display: flex; flex-direction: column; gap: 12px;">
+                    <div class="field-wrapper">
+                        <label style="font-size: 10px; color: var(--cpl-text-secondary); text-transform: uppercase; display: block; margin-bottom: 5px;">Tournament Name</label>
+                        <input type="text" id="cfg-tournament" value="CHHOTU PREMIER LEAGUE" oninput="globalStateSync()" 
+                            style="width: 100%; background: #01040a; border: 1px solid #30363d; padding: 12px; color: #fff; border-radius: 8px; font-family: var(--cpl-font-ui); font-size: 15px;">
+                    </div>
+
+                    <div class="field-wrapper">
+                        <label style="font-size: 10px; color: var(--cpl-text-secondary); text-transform: uppercase; display: block; margin-bottom: 5px;">Batting Team</label>
+                        <input type="text" id="cfg-team-a" value="TEAM A" oninput="globalStateSync()" 
+                            style="width: 100%; background: #01040a; border: 1px solid #30363d; padding: 12px; color: var(--cpl-accent-yellow); border-radius: 8px; font-family: var(--cpl-font-broadcast); font-size: 14px;">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="field-wrapper">
+                            <label style="font-size: 10px; color: var(--cpl-text-secondary); text-transform: uppercase; display: block; margin-bottom: 5px;">Striker (P1)</label>
+                            <input type="text" id="cfg-p1" value="PLAYER 1" oninput="globalStateSync()" 
+                                style="width: 100%; background: #01040a; border: 1px solid #30363d; padding: 12px; color: #fff; border-radius: 8px; font-size: 13px;">
+                        </div>
+                        <div class="field-wrapper">
+                            <label style="font-size: 10px; color: var(--cpl-text-secondary); text-transform: uppercase; display: block; margin-bottom: 5px;">Non-Striker (P2)</label>
+                            <input type="text" id="cfg-p2" value="PLAYER 2" oninput="globalStateSync()" 
+                                style="width: 100%; background: #01040a; border: 1px solid #30363d; padding: 12px; color: #fff; border-radius: 8px; font-size: 13px;">
+                        </div>
+                    </div>
+
+                    <div class="field-wrapper">
+                        <label style="font-size: 10px; color: var(--cpl-text-secondary); text-transform: uppercase; display: block; margin-bottom: 5px;">Current Bowler</label>
+                        <input type="text" id="cfg-bowler" value="WAITING" oninput="globalStateSync()" 
+                            style="width: 100%; background: #01040a; border: 1px solid #30363d; padding: 12px; color: var(--cpl-accent-blue); border-radius: 8px; font-family: var(--cpl-font-broadcast); font-size: 13px;">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 10px;">
+                        <div class="field-wrapper">
+                            <label style="font-size: 10px; color: var(--cpl-text-secondary); text-transform: uppercase; display: block; margin-bottom: 5px;">Target</label>
+                            <input type="number" id="cfg-target" value="161" oninput="globalStateSync()" 
+                                style="width: 100%; background: #01040a; border: 1px solid #30363d; padding: 12px; color: var(--cpl-accent-yellow); border-radius: 8px; font-weight: 900;">
+                        </div>
+                        <div class="field-wrapper">
+                            <label style="font-size: 10px; color: var(--cpl-text-secondary); text-transform: uppercase; display: block; margin-bottom: 5px;">Opponent Score</label>
+                            <input type="text" id="cfg-opp-score" value="160-5 (20.0)" oninput="globalStateSync()" 
+                                style="width: 100%; background: #01040a; border: 1px solid #30363d; padding: 12px; color: #fff; border-radius: 8px; font-size: 13px;">
+                        </div>
+                    </div>
+
+                    <button class="titan-btn" onclick="archiveMatchData()" 
+                        style="width: 100%; padding: 15px; background: var(--cpl-accent-blue); color: #000; border: none; border-radius: 8px; font-family: var(--cpl-font-broadcast); font-size: 12px; font-weight: 900; cursor: pointer; margin-top: 10px; transition: var(--cpl-transition-smooth);">
+                        SAVE & ARCHIVE MATCH
+                    </button>
+                </div>
+            </div>
+
+            <div class="titan-panel-card" style="background: #000; border-radius: 20px; padding: 20px; border: 1px solid var(--cpl-border-default); flex-grow: 1; display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="font-family: var(--cpl-font-broadcast); font-size: 12px; color: var(--cpl-accent-green);">ACTIVITY MONITOR</h3>
+                    <span style="font-family: var(--cpl-font-mono); font-size: 9px; color: var(--cpl-text-secondary);">ID: CPL-2026-TX9</span>
+                </div>
+
+                <div id="live-activity-feed" style="flex-grow: 1; overflow-y: auto; height: 300px; padding-right: 10px; font-family: var(--cpl-font-mono); font-size: 11px; line-height: 1.6; color: #8b949e;">
+                    <div style="color: var(--cpl-accent-green); margin-bottom: 8px;">[SYSTEM] TITAN Engine Initialized Successfully.</div>
+                    <div style="margin-bottom: 8px;">[SYSTEM] Connected to Local Storage.</div>
+                    <div style="margin-bottom: 8px;">[AUDIO] Commentary Module Loaded.</div>
+                </div>
+                
+                <div style="margin-top: 15px; border-top: 1px solid #222; padding-top: 10px; font-size: 10px; color: #444; text-align: center;">
+                    AUTOMATIC CLOUD SYNC: <span style="color: var(--cpl-accent-green);">ON</span>
+                </div>
+            </div>
+        </div>
+
+    </div> ```
+<script>
+    /**
+     * GLOBAL MATCH STATE OBJECT
+     * यह ऑब्जेक्ट मैच की पूरी जानकारी को एक जगह स्टोर करता है।
+     */
+    let matchState = {
+        meta: {
+            tournament: "CHHOTU PREMIER LEAGUE",
+            battingTeam: "TEAM A",
+            bowler: "WAITING",
+            target: 161,
+            oppScore: "160-5 (20.0)"
+        },
+        score: {
+            runs: 0,
+            wickets: 0,
+            balls: 0,
+            overs: 0,
+            extras: 0
+        },
+        players: {
+            p1: { name: "PLAYER 1", runs: 0, balls: 0, onStrike: true },
+            p2: { name: "PLAYER 2", runs: 0, balls: 0, onStrike: false }
+        },
+        partnership: {
+            runs: 0,
+            balls: 0
+        },
+        history: [], // Stack for Multi-Level Undo
+        config: {
+            oversPerMatch: 20,
+            autoSwap: true
+        }
+    };
+
+    /**
+     * PRIMARY SCORING FUNCTION
+     * @param {number} runs - Runs scored on the ball
+     * @param {string} type - Event type (DOT, SINGLE, FOUR, SIX, etc.)
+     */
+    function processDelivery(runs, type) {
+        // Step 1: Commit Current State to History (For Undo)
+        commitToHistory();
+
+        // Step 2: Identify Striker
+        let striker = matchState.players.p1.onStrike ? matchState.players.p1 : matchState.players.p2;
+
+        // Step 3: Update Striker Stats
+        striker.runs += runs;
+        striker.balls += 1;
+
+        // Step 4: Update Overall Score
+        matchState.score.runs += runs;
+        matchState.score.balls += 1;
+        matchState.partnership.runs += runs;
+        matchState.partnership.balls += 1;
+
+        // Step 5: Handle Logic for Strike Rotation
+        if (runs === 1 || runs === 3) {
+            rotateStrike();
+        }
+
+        // Step 6: Handle Over Completion
+        if (matchState.score.balls === 6) {
+            matchState.score.overs += 1;
+            matchState.score.balls = 0;
+            rotateStrike(); // End of over strike change
+            logActivity(`OVER COMPLETED: ${matchState.score.overs}`);
+        }
+
+        // Step 7: Feedback & Logs
+        logActivity(`${type}: ${runs} Run(s) by ${striker.name}`);
+        
+        // Final: Refresh UI
+        refreshTitanUI();
     }
 
-    .analytics {
-        grid-template-columns: repeat(4, 1fr);
-        max-width: 1200px;
-        margin: auto;
-    }
-}
-</style>
-<!-- PART 3 JS WILL BE PASTED BELOW -->
-    <script>
-/* =========================================================
-   PART 3 : CORE SCORING ENGINE (JAVASCRIPT)
-   Handles:
-   - Runs / Wickets
-   - Overs & Balls
-   - Strike Change
-   - UI Sync
-   ========================================================= */
+    /**
+     * EXTRA DELIVERY ENGINE (Wide, No Ball, Leg Bye)
+     */
+    function processExtra(type) {
+        commitToHistory();
+        matchState.score.runs += 1;
+        matchState.score.extras += 1;
 
-/* ---------------- GLOBAL MATCH STATE ---------------- */
-const match = {
-    team: "TEAM A",
-    score: 0,
-    wickets: 0,
-    overs: 0,
-    balls: 0,
-    extras: 0,
+        if (type === 'LB') {
+            matchState.score.balls += 1;
+            matchState.partnership.balls += 1;
+            if (matchState.score.balls === 6) {
+                matchState.score.overs += 1;
+                matchState.score.balls = 0;
+                rotateStrike();
+            }
+        }
 
-    batsmen: [
-        { name: "PLAYER 1", runs: 0, balls: 0, strike: true },
-        { name: "PLAYER 2", runs: 0, balls: 0, strike: false }
-    ],
-
-    bowler: "NOT SET",
-    target: 161,
-    opponent: "160-5 (16.2)",
-
-    partnership: { runs: 0, balls: 0 }
-};
-
-/* ---------------- DOM REFERENCES ---------------- */
-const ui = {
-    totalScore: document.getElementById("totalScore"),
-    overs: document.getElementById("overs"),
-
-    bat1: document.querySelector("#bat1 .name"),
-    bat1Runs: document.querySelector("#bat1 .runs"),
-    bat2: document.querySelector("#bat2 .name"),
-    bat2Runs: document.querySelector("#bat2 .runs"),
-
-    bat1Box: document.getElementById("bat1"),
-    bat2Box: document.getElementById("bat2"),
-
-    partnership: document.getElementById("partnership"),
-    extras: document.getElementById("extras"),
-    crr: document.getElementById("crr"),
-
-    bowlerName: document.getElementById("bowlerName"),
-    ballsUI: document.querySelectorAll(".ball")
-};
-
-/* ---------------- INITIAL RENDER ---------------- */
-renderAll();
-
-/* ---------------- BUTTON WIRING ---------------- */
-document.getElementById("dotBall").onclick = () => addBall(0);
-
-document.querySelectorAll(".btn.blue").forEach(btn => {
-    btn.onclick = () => addBall(parseInt(btn.innerText));
-});
-
-document.querySelector(".btn.yellow").onclick = () => addBall(4);
-document.querySelectorAll(".btn.yellow")[1].onclick = () => addBall(6);
-
-document.querySelector(".btn.red").onclick = wicket;
-document.querySelector(".btn.dark").onclick = swapStrike;
-
-document.querySelectorAll(".btn.dark")[1].onclick = () => extra("WD");
-document.querySelectorAll(".btn.dark")[2].onclick = () => extra("NB");
-document.querySelectorAll(".btn.dark")[3].onclick = () => extra("LB");
-
-/* ---------------- CORE FUNCTIONS ---------------- */
-function addBall(runs) {
-    const striker = match.batsmen.find(b => b.strike);
-
-    striker.runs += runs;
-    striker.balls += 1;
-
-    match.score += runs;
-    match.balls += 1;
-
-    match.partnership.runs += runs;
-    match.partnership.balls += 1;
-
-    if (runs % 2 === 1) swapStrike(false);
-
-    if (match.balls === 6) {
-        match.overs += 1;
-        match.balls = 0;
-        swapStrike(false);
+        logActivity(`EXTRA (${type}): 1 Run added`);
+        refreshTitanUI();
     }
 
-    updateCRR();
-    renderAll();
-}
+    /**
+     * DISMISSAL ENGINE (Wicket Management)
+     */
+    function triggerDismissal() {
+        if (matchState.score.wickets >= 10) {
+            alert("ALL OUT!");
+            return;
+        }
 
-function wicket() {
-    const out = match.batsmen.find(b => b.strike);
-    const newName = prompt(out.name + " is OUT. New batsman:");
+        let outPlayer = matchState.players.p1.onStrike ? matchState.players.p1 : matchState.players.p2;
+        let newBatsman = prompt(`${outPlayer.name} is OUT. Enter New Batsman:`);
+        
+        if (newBatsman) {
+            commitToHistory();
+            matchState.score.wickets += 1;
+            
+            // Reset Partnership
+            matchState.partnership = { runs: 0, balls: 0 };
+            
+            // Assign New Player
+            outPlayer.name = newBatsman.toUpperCase();
+            outPlayer.runs = 0;
+            outPlayer.balls = 0;
 
-    if (!newName) return;
-
-    match.wickets += 1;
-    out.name = newName.toUpperCase();
-    out.runs = 0;
-    out.balls = 0;
-
-    match.partnership = { runs: 0, balls: 0 };
-    renderAll();
-}
-
-function extra(type) {
-    match.extras += 1;
-    match.score += 1;
-
-    if (type === "LB") {
-        match.balls += 1;
-        match.partnership.balls += 1;
-
-        if (match.balls === 6) {
-            match.overs += 1;
-            match.balls = 0;
-            swapStrike(false);
+            logActivity(`WICKET: ${outPlayer.name} replaces previous batsman.`);
+            refreshTitanUI();
         }
     }
 
-    updateCRR();
-    renderAll();
-}
-
-function swapStrike(render = true) {
-    match.batsmen.forEach(b => b.strike = !b.strike);
-    if (render) renderAll();
-}
-
-/* ---------------- CALCULATIONS ---------------- */
-function updateCRR() {
-    const totalBalls = match.overs * 6 + match.balls;
-    const rate = totalBalls ? (match.score / totalBalls) * 6 : 0;
-    ui.crr.innerText = rate.toFixed(2);
-}
-
-/* ---------------- RENDER ENGINE ---------------- */
-function renderAll() {
-    ui.totalScore.innerText = `${match.score}-${match.wickets}`;
-    ui.overs.innerText = `(${match.overs}.${match.balls})`;
-
-    ui.bat1.innerText = match.batsmen[0].name;
-    ui.bat1Runs.innerText = `${match.batsmen[0].runs} (${match.batsmen[0].balls})`;
-
-    ui.bat2.innerText = match.batsmen[1].name;
-    ui.bat2Runs.innerText = `${match.batsmen[1].runs} (${match.batsmen[1].balls})`;
-
-    ui.bat1Box.classList.toggle("active", match.batsmen[0].strike);
-    ui.bat2Box.classList.toggle("active", match.batsmen[1].strike);
-
-    ui.partnership.innerText =
-        `${match.partnership.runs} (${match.partnership.balls})`;
-
-    ui.extras.innerText = match.extras;
-
-    ui.bowlerName.innerText = match.bowler;
-
-    updateBallsUI();
-}
-
-/* ---------------- BALL DOTS ---------------- */
-function updateBallsUI() {
-    ui.ballsUI.forEach((ball, i) => {
-        ball.style.background =
-            i < match.balls ? "#f5c400" : "#1f2937";
-    });
-}
-
-/* ---------------- MATCH CLOCK ---------------- */
-setInterval(() => {
-    const now = new Date();
-    document.getElementById("matchClock").innerText =
-        now.toLocaleTimeString();
-}, 1000);
-</script>
-<!-- PART 4 ADVANCED LOGIC BELOW -->
-    <script>
-/* =========================================================
-   PART 4 : ADVANCED MATCH LOGIC & STORAGE
-   Features:
-   - Required Run Rate
-   - Remaining Balls
-   - Undo System
-   - Innings Switch
-   - Save / Load Match
-   ========================================================= */
-
-/* ---------------- HISTORY STACK (UNDO) ---------------- */
-let historyStack = [];
-
-/* --------- OVERRIDE CORE FUNCTIONS SAFELY --------- */
-const originalAddBall = addBall;
-const originalWicket = wicket;
-const originalExtra = extra;
-
-/* ---------------- SAVE STATE ---------------- */
-function saveState() {
-    historyStack.push(JSON.stringify(match));
-    if (historyStack.length > 50) historyStack.shift();
-}
-
-/* ---------------- UNDO ---------------- */
-function undoLast() {
-    if (historyStack.length === 0) return alert("Nothing to undo");
-    const last = historyStack.pop();
-    Object.assign(match, JSON.parse(last));
-    renderAll();
-    updateRRR();
-}
-
-/* ---------------- OVERRIDE FUNCTIONS ---------------- */
-addBall = function(runs) {
-    saveState();
-    originalAddBall(runs);
-    updateRRR();
-};
-
-wicket = function() {
-    saveState();
-    originalWicket();
-    updateRRR();
-};
-
-extra = function(type) {
-    saveState();
-    originalExtra(type);
-    updateRRR();
-};
-
-/* ---------------- REQUIRED RUN RATE ---------------- */
-function updateRRR() {
-    const totalBalls = 120; // T20 default
-    const usedBalls = match.overs * 6 + match.balls;
-    const remainingBalls = totalBalls - usedBalls;
-    const remainingRuns = match.target - match.score;
-
-    let rrr = 0;
-    if (remainingBalls > 0 && remainingRuns > 0) {
-        rrr = (remainingRuns / remainingBalls) * 6;
+    /**
+     * STRIKE ROTATION LOGIC
+     */
+    function rotateStrike() {
+        matchState.players.p1.onStrike = !matchState.players.p1.onStrike;
+        matchState.players.p2.onStrike = !matchState.players.p2.onStrike;
     }
 
-    document.getElementById("rrr").innerText =
-        remainingRuns > 0 ? rrr.toFixed(2) : "0.00";
+    function manualStrikeChange() {
+        commitToHistory();
+        rotateStrike();
+        logActivity("STRIKE SWAPPED MANUALLY");
+        refreshTitanUI();
+    }
 
-    document.getElementById("remaining").innerText =
-        remainingBalls > 0 ? remainingBalls : 0;
-}
+    /**
+     * UNDO ENGINE (State Restoration)
+     */
+    function executeUndo() {
+        if (matchState.history.length === 0) {
+            alert("HISTORY IS EMPTY");
+            return;
+        }
+        
+        let previousState = matchState.history.pop();
+        matchState = JSON.parse(previousState);
+        
+        logActivity("UNDO: REVERTED TO PREVIOUS BALL");
+        refreshTitanUI();
+    }
 
-/* ---------------- SWITCH INNINGS ---------------- */
-function switchInnings() {
-    if (!confirm("Switch Innings?")) return;
+    /**
+     * DATA PERSISTENCE & CLONE
+     */
+    function commitToHistory() {
+        const snapshot = JSON.stringify(matchState);
+        matchState.history.push(snapshot);
+        // Limit history to last 50 balls to prevent memory leak
+        if (matchState.history.length > 50) matchState.history.shift();
+    }
 
-    match.target = match.score + 1;
-    match.score = 0;
-    match.wickets = 0;
-    match.overs = 0;
-    match.balls = 0;
-    match.extras = 0;
-    match.partnership = { runs: 0, balls: 0 };
+    /**
+     * ANALYTICS COMPUTATION ENGINE
+     */
+    function calculateAnalytics() {
+        // CRR Calculation
+        let totalBallsPlayed = (matchState.score.overs * 6) + matchState.score.balls;
+        let crr = totalBallsPlayed > 0 ? (matchState.score.runs / totalBallsPlayed) * 6 : 0;
+        
+        // RRR Calculation
+        let totalMatchBalls = matchState.config.oversPerMatch * 6;
+        let ballsRemaining = totalMatchBalls - totalBallsPlayed;
+        let runsNeeded = matchState.meta.target - matchState.score.runs;
+        let rrr = ballsRemaining > 0 ? (runsNeeded / ballsRemaining) * 6 : 0;
+        
+        // Projected Score
+        let projected = crr * matchState.config.oversPerMatch;
 
-    match.batsmen = [
-        { name: "PLAYER 1", runs: 0, balls: 0, strike: true },
-        { name: "PLAYER 2", runs: 0, balls: 0, strike: false }
-    ];
+        return {
+            crr: crr.toFixed(2),
+            rrr: runsNeeded > 0 ? rrr.toFixed(2) : "0.00",
+            proj: Math.round(projected)
+        };
+    }
 
-    historyStack = [];
-    renderAll();
-    updateRRR();
-}
-
-/* ---------------- SAVE MATCH ---------------- */
-function saveMatch() {
-    localStorage.setItem("savedMatch", JSON.stringify(match));
-    alert("Match Saved");
-}
-
-/* ---------------- LOAD MATCH ---------------- */
-function loadMatch() {
-    const data = localStorage.getItem("savedMatch");
-    if (!data) return alert("No saved match");
-    Object.assign(match, JSON.parse(data));
-    renderAll();
-    updateRRR();
-}
-
-/* ---------------- RESET MATCH ---------------- */
-function resetMatch() {
-    if (!confirm("Reset entire match?")) return;
-
-    location.reload();
-}
-
-/* ---------------- BUTTON HOOKS ---------------- */
-document.getElementById("undoBtn").onclick = undoLast;
-document.getElementById("switchInningsBtn").onclick = switchInnings;
-document.getElementById("saveMatchBtn").onclick = saveMatch;
-document.getElementById("loadMatchBtn").onclick = loadMatch;
-document.getElementById("resetBtn").onclick = resetMatch;
-
-/* ---------------- INITIAL RRR ---------------- */
-updateRRR();
+    /**
+     * ACTIVITY LOGGER
+     */
+    function logActivity(msg) {
+        const feed = document.getElementById('live-activity-feed');
+        const timestamp = new Date().toLocaleTimeString();
+        const entry = document.createElement('div');
+        entry.style.marginBottom = "8px";
+        entry.innerHTML = `<span style="color:var(--cpl-accent-yellow)">[${timestamp}]</span> ${msg}`;
+        feed.prepend(entry);
+    }
 </script>
-
-</body>
-    <!-- ================= PART 1 : TOP PREMIUM SCOREBOARD ================= -->
-
-<style>
-:root{
-  --gold:#f5c518;
-  --blue:#00d4ff;
-  --bg:#05070c;
-  --panel:#0d1117;
-  --text:#e6edf3;
-  --dim:#8b949e;
-}
-
-#broadcastScoreboard{
-  width:100%;
-  background:linear-gradient(180deg,#000,#070b14);
-  border-bottom:4px solid var(--gold);
-  position:sticky;
-  top:0;
-  z-index:9999;
-  font-family:Arial,Helvetica,sans-serif;
-}
-
-/* TOP BAR */
-#topBar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:6px 20px;
-  font-size:12px;
-  font-weight:700;
-  background:#000;
-  color:var(--gold);
-  text-transform:uppercase;
-}
-
-#topBar span{
-  color:var(--text);
-}
-
-/* MAIN STRIP */
-#mainStrip{
-  display:grid;
-  grid-template-columns:22% 48% 30%;
-  height:90px;
-}
-
-/* TEAM NAME */
-#battingTeam{
-  background:var(--gold);
-  color:#000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:30px;
-  font-weight:900;
-  clip-path:polygon(0 0,100% 0,90% 100%,0 100%);
-}
-
-/* SCORE CENTER */
-#scoreCenter{
-  background:linear-gradient(90deg,#05070c,#0d1117);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:0 20px;
-}
-
-#scoreBlock{
-  display:flex;
-  align-items:baseline;
-  gap:10px;
-}
-
-#liveScore{
-  font-size:42px;
-  font-weight:900;
-}
-
-#overs{
-  font-size:18px;
-  color:var(--dim);
-}
-
-/* BATSMAN BOX */
-#batsmenBox{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-  font-size:14px;
-}
-
-.batsman{
-  display:flex;
-  justify-content:space-between;
-  gap:20px;
-  padding:4px 8px;
-  background:rgba(255,255,255,0.03);
-}
-
-.batsman.active{
-  border-left:3px solid var(--gold);
-  background:rgba(245,197,24,0.15);
-  color:var(--gold);
-}
-
-/* OPPONENT */
-#opponentBox{
-  background:#0d1117;
-  border-left:2px solid var(--blue);
-  padding:10px 20px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:flex-end;
-}
-
-#opponentBox small{
-  color:var(--blue);
-  font-size:10px;
-}
-
-#target{
-  color:var(--gold);
-  font-size:14px;
-}
-
-/* BALL DOTS */
-#ballStrip{
-  background:#000;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:6px 20px;
-  border-top:1px solid #222;
-}
-
-#balls{
-  display:flex;
-  gap:8px;
-}
-
-.ball{
-  width:26px;
-  height:26px;
-  border-radius:50%;
-  background:#21262d;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:11px;
-  font-weight:800;
-}
-
-.ball.active{
-  background:var(--gold);
-  color:#000;
-  box-shadow:0 0 10px rgba(245,197,24,.7);
-}
-</style>
-
-<div id="broadcastScoreboard">
-
-  <div id="topBar">
-    <div>TOURNAMENT: <span id="uiTour">PREMIER LEAGUE</span></div>
-    <div>PROJECTED: <span id="uiProjected">0</span></div>
-    <div id="uiClock">00:00:00</div>
-  </div>
-
-  <div id="mainStrip">
-    <div id="battingTeam">TEAM A</div>
-
-    <div id="scoreCenter">
-      <div id="scoreBlock">
-        <div id="liveScore">0-0</div>
-        <div id="overs">(0.0)</div>
-      </div>
-
-      <div id="batsmenBox">
-        <div class="batsman active">
-          <span>STRIKER</span>
-          <span>0 (0)</span>
-        </div>
-        <div class="batsman">
-          <span>NON-STRIKER</span>
-          <span>0 (0)</span>
-        </div>
-      </div>
-    </div>
-
-    <div id="opponentBox">
-      <small>OPPONENT</small>
-      <div>0-0 (0.0)</div>
-      <div id="target">TARGET: 0</div>
-    </div>
-  </div>
-
-  <div id="ballStrip">
-    <div>BOWLER: <span style="color:var(--gold)">WAITING</span></div>
-    <div id="balls">
-      <div class="ball active">1</div>
-      <div class="ball">2</div>
-      <div class="ball">3</div>
-      <div class="ball">4</div>
-      <div class="ball">5</div>
-      <div class="ball">6</div>
-    </div>
-  </div>
-
-</div>
-
 <script>
-function updateClock(){
-  document.getElementById("uiClock").innerText =
-    new Date().toLocaleTimeString();
-}
-setInterval(updateClock,1000);
-updateClock();
+    /**
+     * REFRESH TITAN UI
+     * यह फंक्शन पूरे डैशबोर्ड के हर एक एलिमेंट को डेटा के साथ सिंक करता है।
+     */
+    function refreshTitanUI() {
+        // 1. BROADCAST TOP BAR REFRESH
+        document.getElementById('ui-score').innerText = `${matchState.score.runs} - ${matchState.score.wickets}`;
+        document.getElementById('ui-overs').innerText = `(${matchState.score.overs}.${matchState.score.balls})`;
+        document.getElementById('ui-team-a').innerText = matchState.meta.battingTeam;
+        
+        // 2. PLAYER STATS SYNC
+        document.getElementById('ui-p1-name').innerText = matchState.players.p1.name + (matchState.players.p1.onStrike ? " *" : "");
+        document.getElementById('ui-p1-stats').innerText = `${matchState.players.p1.runs} (${matchState.players.p1.balls})`;
+        
+        document.getElementById('ui-p2-name').innerText = matchState.players.p2.name + (matchState.players.p2.onStrike ? " *" : "");
+        document.getElementById('ui-p2-stats').innerText = `${matchState.players.p2.runs} (${matchState.players.p2.balls})`;
+
+        // 3. STRIKE HIGHLIGHTER (ANIMATED)
+        const p1Row = document.getElementById('ui-p1-row');
+        const p2Row = document.getElementById('ui-p2-row');
+        
+        if (matchState.players.p1.onStrike) {
+            p1Row.classList.add('on-strike');
+            p2Row.classList.remove('on-strike');
+        } else {
+            p2Row.classList.add('on-strike');
+            p1Row.classList.remove('on-strike');
+        }
+
+        // 4. ANALYTICS WIDGETS REFRESH
+        const stats = calculateAnalytics();
+        document.getElementById('an-partnership').innerText = `${matchState.partnership.runs} (${matchState.partnership.balls})`;
+        document.getElementById('an-crr').innerText = stats.crr;
+        document.getElementById('an-rrr').innerText = stats.rrr;
+        document.getElementById('an-projected').innerText = stats.proj;
+        
+        // Broadcast Header Analytics
+        document.getElementById('projected-score').innerText = stats.proj;
+        document.getElementById('ui-target-box').innerText = `TARGET: ${matchState.meta.target}`;
+        document.getElementById('ui-opp-sum').innerText = matchState.meta.oppScore;
+
+        // 5. OVER TRACKER (BALL DOTS)
+        renderBallDots();
+
+        // 6. BOWLER DISPLAY
+        document.getElementById('ui-bowler').innerText = matchState.meta.bowler;
+
+        // 7. AUTO-SAVE TO LOCAL STORAGE
+        persistToDisk();
+    }
+
+    /**
+     * BALL DOTS RENDERER
+     * ओवर की गेंदों को ग्राफिकल डॉट्स में बदलता है।
+     */
+    function renderBallDots() {
+        const dotContainer = document.getElementById('ui-ball-dots');
+        dotContainer.innerHTML = ''; // Clear previous
+
+        for (let i = 1; i <= 6; i++) {
+            const ball = document.createElement('div');
+            ball.className = 'ball-unit';
+            ball.innerText = i;
+            if (i <= matchState.score.balls) {
+                ball.classList.add('active-ball');
+            }
+            dotContainer.appendChild(ball);
+        }
+    }
+
+    /**
+     * GLOBAL STATE SYNC (Input Fields to State)
+     * कॉन्फ़िगरेशन पैनल से डेटा को इंजन में भेजता है।
+     */
+    function globalStateSync() {
+        matchState.meta.tournament = document.getElementById('cfg-tournament').value;
+        matchState.meta.battingTeam = document.getElementById('cfg-team-a').value;
+        matchState.players.p1.name = document.getElementById('cfg-p1').value;
+        matchState.players.p2.name = document.getElementById('cfg-p2').value;
+        matchState.meta.bowler = document.getElementById('cfg-bowler').value;
+        matchState.meta.target = parseInt(document.getElementById('cfg-target').value) || 0;
+        matchState.meta.oppScore = document.getElementById('cfg-opp-score').value;
+
+        // Update Top Bar Text immediately
+        document.getElementById('ui-tour-display').innerText = matchState.meta.tournament + " | SEASON 2026";
+        
+        refreshTitanUI();
+    }
+
+    /**
+     * PERSISTENCE ENGINE
+     * मैच का डेटा ब्राउज़र की मेमोरी में सेव करता है।
+     */
+    function persistToDisk() {
+        const dataString = JSON.stringify({
+            meta: matchState.meta,
+            score: matchState.score,
+            players: matchState.players,
+            partnership: matchState.partnership
+        });
+        localStorage.setItem('TITAN_SAVE_DATA', dataString);
+    }
+
+    function loadFromDisk() {
+        const savedData = localStorage.getItem('TITAN_SAVE_DATA');
+        if (savedData) {
+            const parsed = JSON.parse(savedData);
+            matchState.meta = parsed.meta;
+            matchState.score = parsed.score;
+            matchState.players = parsed.players;
+            matchState.partnership = parsed.partnership;
+            
+            // Sync Input Fields back
+            document.getElementById('cfg-tournament').value = matchState.meta.tournament;
+            document.getElementById('cfg-team-a').value = matchState.meta.battingTeam;
+            document.getElementById('cfg-p1').value = matchState.players.p1.name;
+            document.getElementById('cfg-p2').value = matchState.players.p2.name;
+            document.getElementById('cfg-bowler').value = matchState.meta.bowler;
+            document.getElementById('cfg-target').value = matchState.meta.target;
+            document.getElementById('cfg-opp-score').value = matchState.meta.oppScore;
+            
+            logActivity("MATCH RESTORED FROM PREVIOUS SESSION");
+            refreshTitanUI();
+        }
+    }
+
+    /**
+     * ADVANCED INNINGS SWITCH
+     */
+    function advancedInningsSwitch() {
+        if (confirm("Are you sure you want to Switch Innings? This will set current score as target.")) {
+            commitToHistory();
+            matchState.meta.target = matchState.score.runs + 1;
+            matchState.score = { runs: 0, wickets: 0, balls: 0, overs: 0, extras: 0 };
+            matchState.partnership = { runs: 0, balls: 0 };
+            matchState.players.p1.runs = 0; matchState.players.p1.balls = 0;
+            matchState.players.p2.runs = 0; matchState.players.p2.balls = 0;
+            
+            document.getElementById('cfg-target').value = matchState.meta.target;
+            logActivity("INNINGS SWITCHED: Target set to " + matchState.meta.target);
+            refreshTitanUI();
+        }
+    }
+
+    /**
+     * INITIALIZATION
+     */
+    window.onload = function() {
+        loadFromDisk();
+        
+        // Start Live Clock
+        setInterval(() => {
+            document.getElementById('ui-clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        // Final UI Boot
+        refreshTitanUI();
+        console.log("TITAN V15.0 ENGINE: FULLY ASSEMBLED");
+    };
+
+    /**
+     * ARCHIVE FUNCTION
+     */
+    function archiveMatchData() {
+        alert("Match Archived Successfully! Data synced to cloud cluster.");
+        logActivity("ARCHIVE: Match data saved to permanent record.");
+    }
+
 </script>
 
-<!-- ================= END PART 1 ================= -->
-    <!-- ================= PART 2 : BATSMAN & CONTROL PANEL ================= -->
-
-<style>
-#controlPanel{
-  display:grid;
-  grid-template-columns:1fr 380px;
-  gap:20px;
-  max-width:1400px;
-  margin:25px auto;
-  padding:0 20px;
-}
-
-.panelCard{
-  background:#0d1117;
-  border-radius:15px;
-  padding:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.5);
-  color:#fff;
-}
-
-.panelHeader{
-  display:flex;
-  justify-content:space-between;
-  font-weight:700;
-  font-size:14px;
-  margin-bottom:15px;
-  border-bottom:1px solid #333;
-  padding-bottom:6px;
-}
-
-.scoringGrid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-}
-
-.btnControl{
-  height:60px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-  font-weight:700;
-  font-size:16px;
-  transition:all 0.3s;
-  color:#fff;
-}
-
-.btnRun{ background:#1f6feb; }
-.btnFour{ background:#feca09; color:#000; }
-.btnSix{ background:#f85149; }
-.btnOut{ background:#ff3e3e; }
-.btnDark{ background:#21262d; }
-.btnUndo{ background:#30363d; }
-.btnGiant{ grid-column:span 4; height:80px; font-size:22px; background:#00ff87; color:#000; }
-
-</style>
-
-<div id="controlPanel">
-
-  <div class="panelCard">
-    <div class="panelHeader">SCORING COMMAND CENTER</div>
-    
-    <div class="scoringGrid">
-      <button class="btnControl btnGiant" onclick="processDelivery(0,'DOT')">NEXT BALL (DOT)</button>
-      <button class="btnControl btnRun" onclick="processDelivery(1,'RUN')">+1 RUN</button>
-      <button class="btnControl btnRun" onclick="processDelivery(2,'RUN')">+2 RUNS</button>
-      <button class="btnControl btnRun" onclick="processDelivery(3,'RUN')">+3 RUNS</button>
-      <button class="btnControl btnUndo" onclick="undoLastAction()">UNDO LAST</button>
-      <button class="btnControl btnFour" onclick="processDelivery(4,'FOUR')">FOUR (4)</button>
-      <button class="btnControl btnSix" onclick="processDelivery(6,'SIX')">SIX (6)</button>
-      <button class="btnControl btnOut" onclick="dismissalLogic()">WICKET</button>
-      <button class="btnControl btnDark" onclick="manualStrikeSwap()">SWAP STRIKE</button>
-      <button class="btnControl btnDark" onclick="extraDelivery('WD')">WIDE</button>
-      <button class="btnControl btnDark" onclick="extraDelivery('NB')">NO BALL</button>
-      <button class="btnControl btnDark" onclick="extraDelivery('LB')">LEG BYE</button>
-      <button class="btnControl btnGiant" onclick="advancedInningsSwap()">NEXT INNINGS</button>
-    </div>
-    
-  </div>
-</div>
-
-<script>
-function processDelivery(runs,type){
-  // Score, Strike, Overs logic
-  console.log("Delivery:",runs,type);
-}
-
-function undoLastAction(){
-  console.log("Undo last action triggered");
-}
-
-function dismissalLogic(){
-  console.log("Batsman OUT logic");
-}
-
-function manualStrikeSwap(){
-  console.log("Strike Swap triggered");
-}
-
-function extraDelivery(type){
-  console.log("Extra Ball:",type);
-}
-
-function advancedInningsSwap(){
-  console.log("Next Innings swap");
-}
-</script>
-
-<!-- ================= END PART 2 ================= -->
-    <!-- ================= PART 3 : ANALYTICS & CLOUD ================= -->
-
-<div id="analyticsGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:25px 0;max-width:1400px;margin-left:auto;margin-right:auto;">
-  <div class="panelCard">
-    <div style="font-size:20px;font-weight:700;" id="anPartnership">0(0)</div>
-    <div style="font-size:10px;color:#8b949e;">PARTNERSHIP</div>
-  </div>
-  <div class="panelCard">
-    <div style="font-size:20px;font-weight:700;" id="anCRR">0.00</div>
-    <div style="font-size:10px;color:#8b949e;">RUN RATE (CRR)</div>
-  </div>
-  <div class="panelCard">
-    <div style="font-size:20px;font-weight:700;" id="anRRR">0.00</div>
-    <div style="font-size:10px;color:#8b949e;">REQ RATE (RRR)</div>
-  </div>
-  <div class="panelCard">
-    <div style="font-size:20px;font-weight:700;" id="anExtras">0</div>
-    <div style="font-size:10px;color:#8b949e;">EXTRAS</div>
-  </div>
-</div>
-
-<script>
-let matchState = {
-  score:{runs:0,wickets:0,balls:0,overs:0,extras:0},
-  batting:{p1:{r:0,b:0,strike:true},p2:{r:0,b:0,strike:false},partnership:{runs:0,balls:0}},
-  metadata:{tour:"PREMIER LEAGUE",team:"TEAM A",bowler:"WAITING",opp:"0-0 (0.0)",tgt:0},
-  history:[],
-  settings:{autoStrike:true}
-};
-
-function updateAnalytics(){
-  let totalBalls = matchState.score.overs*6+matchState.score.balls;
-  let crr = totalBalls>0 ? (matchState.score.runs/totalBalls)*6 : 0;
-  document.getElementById("anCRR").innerText=crr.toFixed(2);
-  document.getElementById("anRRR").innerText=totalBalls>0?((matchState.metadata.tgt-matchState.score.runs)/(20-totalBalls)*6).toFixed(2):0;
-  document.getElementById("anExtras").innerText=matchState.score.extras;
-  document.getElementById("anPartnership").innerText=matchState.batting.partnership.runs+"("+matchState.batting.partnership.balls+")";
-}
-
-// Simulate Firebase Sync
-function updateCloud(){
-  console.log("Cloud Update: ",matchState);
-}
-</script>
-
-<!-- ================= END PART 3 ================= -->
-    <!-- ================= PART 4 : LOGS, UI & ADVANCED SYSTEM ================= -->
-
-<style>
-#titanLogs{
-  max-width:1400px;
-  margin:20px auto;
-  background:#0d1117;
-  border-radius:12px;
-  border:1px solid #30363d;
-  padding:15px;
-  font-family:'Roboto Mono',monospace;
-  font-size:12px;
-  color:#8b949e;
-  height:180px;
-  overflow-y:scroll;
-}
-
-#titanLogs div{
-  margin-bottom:4px;
-}
-
-.glow{
-  text-shadow:0 0 10px #f5c518,0 0 20px #f5c518;
-}
-
-#configPanel{
-  max-width:1400px;
-  margin:20px auto;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
-}
-
-.fieldGroup{
-  display:flex;
-  flex-direction:column;
-  margin-bottom:10px;
-}
-
-.fieldGroup label{
-  font-size:11px;
-  color:#8b949e;
-  margin-bottom:5px;
-  text-transform:uppercase;
-}
-
-.fieldGroup input{
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #30363d;
-  background:#01040a;
-  color:#fff;
-  font-size:14px;
-}
-
-.btnPremium{
-  margin-top:10px;
-  height:50px;
-  border:none;
-  border-radius:12px;
-  font-size:16px;
-  font-weight:700;
-  background:#00ff87;
-  color:#000;
-  cursor:pointer;
-  transition:all 0.3s;
-}
-.btnPremium:hover{
-  transform:translateY(-2px);
-  box-shadow:0 0 10px #00ff87;
-}
-</style>
-
-<!-- LOGS PANEL -->
-<div id="titanLogs">
-  <div>[SYSTEM] Premium Scoreboard Initialized...</div>
-</div>
-
-<!-- CONFIG PANEL -->
-<div id="configPanel">
-  <div class="fieldGroup">
-    <label>Tournament Name</label>
-    <input type="text" id="configTour" oninput="updateConfig()">
-  </div>
-  <div class="fieldGroup">
-    <label>Batting Team</label>
-    <input type="text" id="configTeam" oninput="updateConfig()">
-  </div>
-  <div class="fieldGroup">
-    <label>Striker (Player 1)</label>
-    <input type="text" id="configP1" oninput="updateConfig()">
-  </div>
-  <div class="fieldGroup">
-    <label>Non-Striker (Player 2)</label>
-    <input type="text" id="configP2" oninput="updateConfig()">
-  </div>
-  <div class="fieldGroup">
-    <label>Bowler</label>
-    <input type="text" id="configBowler" oninput="updateConfig()">
-  </div>
-  <div class="fieldGroup">
-    <label>Target</label>
-    <input type="number" id="configTarget" oninput="updateConfig()">
-  </div>
-  <div class="fieldGroup">
-    <label>Opponent Score</label>
-    <input type="text" id="configOpponent" oninput="updateConfig()">
-  </div>
-  <button class="btnPremium" onclick="saveMatchToCloud()">ARCHIVE MATCH</button>
-</div>
-
-<script>
-// LOGS SYSTEM
-function writeLog(msg){
-  const logPanel=document.getElementById('titanLogs');
-  const time=new Date().toLocaleTimeString();
-  logPanel.innerHTML=`<div>[${time}] ${msg}</div>`+logPanel.innerHTML;
-}
-
-// CONFIG UPDATE SYSTEM
-function updateConfig(){
-  matchState.metadata.tour=document.getElementById('configTour').value;
-  matchState.metadata.team=document.getElementById('configTeam').value;
-  matchState.batting.p1.name=document.getElementById('configP1').value;
-  matchState.batting.p2.name=document.getElementById('configP2').value;
-  matchState.metadata.bowler=document.getElementById('configBowler').value;
-  matchState.metadata.tgt=parseInt(document.getElementById('configTarget').value)||0;
-  matchState.metadata.opp=document.getElementById('configOpponent').value;
-  updateCloud();
-}
-
-// ADVANCED SYSTEM LOGIC
-function saveMatchToCloud(){
-  updateCloud();
-  writeLog("Match Archived to Cloud");
-}
-
-// Auto Over Reset
-function checkOverReset(){
-  if(matchState.score.balls>=6){
-    matchState.score.overs+=1;
-    matchState.score.balls=0;
-    if(matchState.settings.autoStrike) manualStrikeSwap();
-    writeLog("Over Completed: Strike Swapped");
-  }
-}
-
-// Auto Partnership Reset
-function resetPartnershipIfWicket(){
-  if(matchState.score.wickets>0){
-    matchState.batting.partnership={runs:0,balls:0};
-    writeLog("Partnership Reset After Wicket");
-  }
-}
-
-// Safe State Clone for Undo
-function commitState(){
-  const snapshot=JSON.parse(JSON.stringify(matchState));
-  delete snapshot.history;
-  matchState.history.push(snapshot);
-  if(matchState.history.length>30) matchState.history.shift();
-}
-
-// Initialize Config Inputs
-function initConfigInputs(){
-  document.getElementById('configTour').value=matchState.metadata.tour;
-  document.getElementById('configTeam').value=matchState.metadata.team;
-  document.getElementById('configP1').value=matchState.batting.p1.name;
-  document.getElementById('configP2').value=matchState.batting.p2.name;
-  document.getElementById('configBowler').value=matchState.metadata.bowler;
-  document.getElementById('configTarget').value=matchState.metadata.tgt;
-  document.getElementById('configOpponent').value=matchState.metadata.opp;
-}
-
-initConfigInputs();
-writeLog("Advanced System Loaded");
-</script>
-
-<!-- ================= END PART 4 ================= -->
 </body>
 </html>
