@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OBS Live Ticker</title>
+
+<style>
+:root{
+  --bg:#0b0f19;
+  --accent:#ff2e63;
+  --accent2:#08d9d6;
+}
+
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#000;
+  color:#fff;
+}
+
+/* ===== LIVE OUTPUT ===== */
+#output{
+  position:relative;
+  height:120px;
+  background:linear-gradient(90deg,#020617,#111827);
+  overflow:hidden;
+  border-top:4px solid var(--accent);
+}
+
+#headline{
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:260px;
+  background:var(--accent);
+  color:#000;
+  font-size:26px;
+  font-weight:bold;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:2;
+}
+
+#ticker-wrap{
+  position:absolute;
+  left:260px;
+  right:0;
+  top:0;
+  bottom:0;
+  overflow:hidden;
+}
+
+#ticker{
+  position:absolute;
+  white-space:nowrap;
+  font-size:24px;
+  line-height:120px;
+  padding-left:100%;
+  animation:scroll 20s linear infinite;
+}
+
+@keyframes scroll{
+  from{transform:translateX(0);}
+  to{transform:translateX(-100%);}
+}
+
+/* ===== CONTROL PANEL ===== */
+#control{
+  background:#0b0f19;
+  padding:20px;
+  border-top:2px solid #1f2933;
+}
+
+#control h3{
+  color:var(--accent2);
+  margin-top:0;
+}
+
+input,textarea,button{
+  width:100%;
+  margin-top:10px;
+  padding:12px;
+  font-size:16px;
+  border-radius:8px;
+  border:none;
+}
+
+button{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LIVE OUTPUT -->
+<div id="output">
+  <div id="headline">LIVE</div>
+  <div id="ticker-wrap">
+    <div id="ticker">Welcome to live broadcast</div>
+  </div>
+</div>
+
+<!-- CONTROL PANEL -->
+<div id="control">
+  <h3>🎛️ Live Control Panel</h3>
+
+  <input id="hInput" placeholder="Headline text">
+
+  <textarea id="tInput" rows="3" placeholder="Scrolling ticker text"></textarea>
+
+  <input id="sInput" type="number" value="20" placeholder="Speed (seconds)">
+
+  <button onclick="update()">Update LIVE</button>
+</div>
+
+<script>
+function update(){
+  const h = document.getElementById("hInput").value || "LIVE";
+  const t = document.getElementById("tInput").value || "";
+  const s = document.getElementById("sInput").value || 20;
+
+  const ticker = document.getElementById("ticker");
+
+  document.getElementById("headline").innerText = h;
+  ticker.innerText = t;
+
+  ticker.style.animation = "none";
+  ticker.offsetHeight;
+  ticker.style.animation = `scroll ${s}s linear infinite`;
+}
+</script>
+
+</body>
+</html>
