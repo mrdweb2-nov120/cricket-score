@@ -1,30 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="hi">
 <head>
 <meta charset="UTF-8">
-<title>OBS Live Ticker</title>
-
-<style>
+<title>Bhagwat Katha Live Ticker</title><style>
 :root{
-  --bg:#0b0f19;
-  --accent:#ff2e63;
-  --accent2:#08d9d6;
+  --saffron:#ff9933;
+  --gold:#ffd700;
+  --dark:#2b1b0e;
+  --cream:#fff6e5;
 }
 
 body{
   margin:0;
-  font-family:Arial, Helvetica, sans-serif;
   background:#000;
-  color:#fff;
+  font-family:'Segoe UI', Arial, sans-serif;
+  color:var(--cream);
 }
 
 /* ===== LIVE OUTPUT ===== */
 #output{
   position:relative;
   height:120px;
-  background:linear-gradient(90deg,#020617,#111827);
+  background:linear-gradient(90deg,#2b1b0e,#1a1008);
   overflow:hidden;
-  border-top:4px solid var(--accent);
+  border-top:4px solid var(--gold);
+  border-bottom:4px solid var(--gold);
 }
 
 #headline{
@@ -32,20 +31,21 @@ body{
   left:0;
   top:0;
   bottom:0;
-  width:260px;
-  background:var(--accent);
-  color:#000;
+  width:300px;
+  background:linear-gradient(180deg,var(--saffron),#e67e22);
+  color:#2b1b0e;
   font-size:26px;
-  font-weight:bold;
+  font-weight:700;
   display:flex;
   align-items:center;
   justify-content:center;
-  z-index:2;
+  letter-spacing:1px;
+  box-shadow:inset -4px 0 10px rgba(0,0,0,0.3);
 }
 
 #ticker-wrap{
   position:absolute;
-  left:260px;
+  left:300px;
   right:0;
   top:0;
   bottom:0;
@@ -58,7 +58,8 @@ body{
   font-size:24px;
   line-height:120px;
   padding-left:100%;
-  animation:scroll 20s linear infinite;
+  animation:scroll 30s linear infinite;
+  color:var(--cream);
 }
 
 @keyframes scroll{
@@ -68,14 +69,14 @@ body{
 
 /* ===== CONTROL PANEL ===== */
 #control{
-  background:#0b0f19;
+  background:#0f0a05;
   padding:20px;
-  border-top:2px solid #1f2933;
+  border-top:2px solid #3d2a17;
 }
 
 #control h3{
-  color:var(--accent2);
   margin-top:0;
+  color:var(--gold);
 }
 
 input,textarea,button{
@@ -88,42 +89,24 @@ input,textarea,button{
 }
 
 button{
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#000;
+  background:linear-gradient(135deg,var(--saffron),var(--gold));
+  color:#2b1b0e;
   font-weight:bold;
   cursor:pointer;
 }
-</style>
-</head>
-
-<body>
-
-<!-- LIVE OUTPUT -->
-<div id="output">
-  <div id="headline">LIVE</div>
+</style></head><body><!-- LIVE OUTPUT --><div id="output">
+  <div id="headline">🕉️ भागवत कथा</div>
   <div id="ticker-wrap">
-    <div id="ticker">Welcome to live broadcast</div>
+    <div id="ticker">श्रीमद्भागवत महापुराण – श्रीकृष्ण की दिव्य लीलाओं का पावन वर्णन</div>
   </div>
-</div>
+</div><!-- CONTROL PANEL --><div id="control">
+  <h3>🎛️ कथा लाइव कंट्रोल</h3>  <input id="hInput" placeholder="शीर्षक / प्रसंग">  <textarea id="tInput" rows="3" placeholder="कथा की पंक्ति / श्लोक / सूचना"></textarea>  <input id="sInput" type="number" value="30" placeholder="Speed (seconds)"><button onclick="update()">LIVE UPDATE</button>
 
-<!-- CONTROL PANEL -->
-<div id="control">
-  <h3>🎛️ Live Control Panel</h3>
-
-  <input id="hInput" placeholder="Headline text">
-
-  <textarea id="tInput" rows="3" placeholder="Scrolling ticker text"></textarea>
-
-  <input id="sInput" type="number" value="20" placeholder="Speed (seconds)">
-
-  <button onclick="update()">Update LIVE</button>
-</div>
-
-<script>
+</div><script>
 function update(){
-  const h = document.getElementById("hInput").value || "LIVE";
+  const h = document.getElementById("hInput").value || "🕉️ भागवत कथा";
   const t = document.getElementById("tInput").value || "";
-  const s = document.getElementById("sInput").value || 20;
+  const s = document.getElementById("sInput").value || 30;
 
   const ticker = document.getElementById("ticker");
 
@@ -134,7 +117,5 @@ function update(){
   ticker.offsetHeight;
   ticker.style.animation = `scroll ${s}s linear infinite`;
 }
-</script>
-
-</body>
+</script></body>
 </html>
