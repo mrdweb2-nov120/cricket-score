@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Sidebar Overlay</title>
+    <link href="https://fonts.googleapis.com/css2?family=Khand:wght@500;700&family=Rozha+One&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: transparent; /* OBS में पारदर्शी दिखेगा */
+            overflow: hidden;
+            font-family: 'Khand', sans-serif;
+        }
+
+        /* मुख्य कंटेनर - इसे OBS में दाईं ओर सेट करें */
+        #sidebar-wrapper {
+            position: absolute;
+            top: 50px;
+            right: 20px;
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            animation: slideIn 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* --- QR CODE SECTION --- */
+        .qr-container {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border: 2px solid #FFD700;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .qr-header {
+            color: #FFD700;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+            padding-bottom: 5px;
+        }
+
+        .qr-box {
+            width: 180px;
+            height: 180px;
+            background: white;
+            margin: 0 auto;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* यहाँ अपना QR कोड इमेज डालें */
+        .qr-box img {
+            width: 90%;
+            height: 90%;
+        }
+
+        .qr-footer {
+            margin-top: 10px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        /* --- UP NEXT SCHEDULE SECTION --- */
+        .schedule-container {
+            background: linear-gradient(180deg, rgba(75, 0, 0, 0.9) 0%, rgba(20, 0, 0, 0.9) 100%);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border-left: 5px solid #FFD700;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .schedule-title {
+            background: #FFD700;
+            color: #4b0000;
+            padding: 10px;
+            font-family: 'Rozha One', serif;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .event-list {
+            padding: 10px 0;
+        }
+
+        .event-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s;
+        }
+
+        .event-item:last-child { border-bottom: none; }
+
+        .event-time {
+            color: #FFD700;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .event-name {
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        /* विशेष चमकता हुआ इफेक्ट */
+        .active-event {
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 3px solid #fff;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="sidebar-wrapper">
+        
+        <div class="qr-container">
+            <div class="qr-header">🙏 दान / सहयोग</div>
+            <div class="qr-box">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=example" alt="QR Code">
+            </div>
+            <div class="qr-footer">Scan & Pay</div>
+        </div>
+
+        <div class="schedule-container">
+            <div class="schedule-title">आज का कार्यक्रम</div>
+            <div class="event-list">
+                <div class="event-item">
+                    <span class="event-time">04:00 PM - 05:00 PM</span>
+                    <span class="event-name">मंगलाचरण एवं दीप प्रज्वलन</span>
+                </div>
+                <div class="event-item active-event">
+                    <span class="event-time">05:00 PM - 07:30 PM</span>
+                    <span class="event-name">श्रीमद्‍भगवत् अमृत वर्षा</span>
+                </div>
+                <div class="event-item">
+                    <span class="event-time">07:30 PM - 08:00 PM</span>
+                    <span class="event-name">आरती एवं पुष्प वर्षा</span>
+                </div>
+                <div class="event-item">
+                    <span class="event-time">08:00 PM</span>
+                    <span class="event-name">महाप्रसाद वितरण</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
