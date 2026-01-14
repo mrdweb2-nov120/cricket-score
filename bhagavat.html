@@ -23,7 +23,6 @@
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* BREAKING MODE: पूरे कंटेनर का रंग बदलना */
         #live-output-container.breaking-active {
             border-bottom: 4px solid #ffffff;
             box-shadow: 0 0 30px #ff0000;
@@ -44,30 +43,11 @@
             transition: all 0.5s ease;
         }
 
-        /* BREAKING MODE: हेडलाइन का रंग लाल करना */
         .breaking-active #headline-wrapper {
             background: linear-gradient(135deg, #ff0000 0%, #990000 100%);
         }
 
-        #live-indicator {
-            position: absolute;
-            top: 8px;
-            left: 15px;
-            font-size: 14px;
-            font-weight: bold;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            background: rgba(0,0,0,0.3);
-            padding: 2px 8px;
-            border-radius: 4px;
-            text-transform: uppercase;
-        }
-        .dot {
-            height: 8px; width: 8px; background-color: #ff0000; border-radius: 50%;
-            display: inline-block; margin-right: 5px; animation: blink 1s infinite;
-        }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.1; } 100% { opacity: 1; } }
+        /* Note: Live Indicator dot removed as requested */
 
         .headline-top {
             height: 65%;
@@ -80,6 +60,7 @@
             font-family: 'Rozha One', serif;
             text-shadow: 1px 1px 0px rgba(255,255,255,0.4);
             transition: all 0.5s ease;
+            padding-top: 5px;
         }
         .breaking-active .headline-top { color: #ffffff; text-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
 
@@ -108,7 +89,6 @@
             transition: all 0.5s ease;
         }
 
-        /* BREAKING MODE: टिकर का बैकग्राउंड फ्लैश करना */
         .breaking-active #ticker-container {
             background: linear-gradient(90deg, #ff0000 0%, #600000 50%, #ff0000 100%);
             animation: flash-bg 0.8s infinite alternate;
@@ -169,7 +149,6 @@
         }
 
         .preset-row.active { border-left: 5px solid #2ecc71; background: #2a352a; }
-
         .slot-num { font-size: 24px; font-weight: bold; color: #555; }
         .preset-row.active .slot-num { color: #2ecc71; }
 
@@ -185,7 +164,6 @@
         }
         .active .btn-push { background: #2ecc71; color: #000; }
 
-        /* मास्टर कंट्रोल्स */
         .master-controls {
             display: flex;
             justify-content: space-between;
@@ -198,29 +176,17 @@
         }
 
         .btn-breaking-toggle {
-            background: #600;
-            color: #fff;
-            border: 2px solid #f00;
-            padding: 15px 40px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 20px;
-            transition: all 0.3s ease;
+            background: #600; color: #fff; border: 2px solid #f00;
+            padding: 15px 40px; border-radius: 10px; font-weight: bold;
+            cursor: pointer; font-size: 20px; transition: all 0.3s ease;
         }
-
-        .btn-breaking-toggle.on {
-            background: #f00;
-            box-shadow: 0 0 20px #f00;
-            transform: scale(1.05);
-        }
+        .btn-breaking-toggle.on { background: #f00; box-shadow: 0 0 20px #f00; transform: scale(1.05); }
     </style>
 </head>
 <body>
 
     <div id="live-output-container">
         <div id="headline-wrapper">
-            <div id="live-indicator"><span class="dot"></span>Live</div>
             <div class="headline-top" id="display-head-top">🕉️ स्वागतम</div>
             <div class="headline-bottom" id="display-head-bottom">LIVE BROADCAST</div>
         </div>
@@ -287,7 +253,6 @@
             const dispTicker = document.getElementById('ticker-text');
             const tickerMove = document.getElementById('ticker-move');
 
-            // Smooth Transition
             dispHeadT.style.opacity = 0;
             dispHeadB.style.opacity = 0;
             dispTicker.style.opacity = 0;
@@ -310,7 +275,6 @@
             document.getElementById(`row-${slot}`).classList.add('active');
         }
 
-        // BREAKING NEWS MODE FUNCTION
         function toggleBreaking() {
             const container = document.getElementById('live-output-container');
             const btn = document.getElementById('break-btn');
