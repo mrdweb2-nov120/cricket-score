@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bhagwat PCR Engine - Firebase Sync</title>
+    <title>Bhagwat PCR - Firebase & Social Sync</title>
     <link href="https://fonts.googleapis.com/css2?family=Khand:wght@500;700&family=Rozha+One&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -13,165 +13,162 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: #0a0a0a; font-family: 'Khand', sans-serif; overflow-x: hidden; color: white; }
 
-        /* --- LIVE OUTPUT AREA (1920x100) --- */
+        /* --- SOCIAL MEDIA ROTATOR --- */
+        #social-rotator {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: 5px;
+            padding: 5px 15px;
+            height: 35px;
+            min-width: 200px;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .social-item {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            animation: slideFade 0.5s ease-out;
+        }
+
+        .social-item.active { display: flex; }
+
+        @keyframes slideFade {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .social-icon { font-weight: bold; font-size: 14px; padding: 2px 6px; border-radius: 3px; }
+        .yt-icon { background: #ff0000; color: white; }
+        .ig-icon { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; }
+        .social-text { font-size: 18px; font-weight: 700; color: #FFD700; }
+
+        /* --- LIVE OUTPUT AREA --- */
         #live-output-container {
             width: 1920px;
+            height: 150px; /* सोशल के लिए हाइट थोड़ी बढ़ाई */
+            display: flex;
+            align-items: flex-end; /* नीचे की ओर संरेखित */
+            position: relative;
+            background: transparent;
+            overflow: hidden;
+            padding-bottom: 10px;
+        }
+
+        /* पट्टियों का मुख्य ढांचा */
+        .bars-wrapper {
+            width: 100%;
             height: 100px;
             display: flex;
             align-items: center;
-            position: relative;
-            background: #000;
-            overflow: hidden;
             border-bottom: 4px solid #FFD700;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #000;
+            position: relative;
         }
 
-        #live-output-container.breaking-active {
+        #live-output-container.breaking-active .bars-wrapper {
             border-bottom: 4px solid #ffffff;
             box-shadow: 0 0 30px #ff0000;
         }
 
-        /* Headline Box Design */
         #headline-wrapper {
-            display: flex;
-            flex-direction: column;
-            min-width: 450px;
-            height: 100%;
-            position: relative;
-            z-index: 20;
+            display: flex; flex-direction: column; min-width: 450px; height: 100%;
+            position: relative; z-index: 20;
             clip-path: polygon(0 0, 90% 0, 100% 100%, 0% 100%);
             background: linear-gradient(135deg, #FFD700 0%, #FF8C00 45%, #e67e22 55%, #d35400 100%);
-            border-right: 2px solid rgba(255,255,255,0.5);
-            padding-right: 50px;
-            transition: all 0.5s ease;
+            border-right: 2px solid rgba(255,255,255,0.5); padding-right: 50px; transition: all 0.5s ease;
         }
 
-        .breaking-active #headline-wrapper {
-            background: linear-gradient(135deg, #ff0000 0%, #990000 100%);
-        }
+        .breaking-active #headline-wrapper { background: linear-gradient(135deg, #ff0000 0%, #990000 100%); }
 
         .headline-top {
-            height: 65%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 42px;
-            font-weight: 700;
-            color: #4b0000;
-            font-family: 'Rozha One', serif;
-            text-shadow: 1px 1px 0px rgba(255,255,255,0.4);
-            transition: all 0.5s ease;
-            padding-top: 5px;
+            height: 65%; display: flex; align-items: center; justify-content: center;
+            font-size: 42px; font-weight: 700; color: #4b0000; font-family: 'Rozha One', serif;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.4); padding-top: 5px;
         }
-        .breaking-active .headline-top { color: #ffffff; text-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
+        .breaking-active .headline-top { color: #ffffff; }
 
         .headline-bottom {
-            height: 35%;
-            background: rgba(0, 0, 0, 0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            color: #fff;
-            letter-spacing: 1px;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.5s ease;
+            height: 35%; background: rgba(0, 0, 0, 0.25); display: flex;
+            align-items: center; justify-content: center; font-size: 22px; color: #fff;
+            letter-spacing: 1px; border-top: 1px solid rgba(255,255,255,0.2);
         }
 
-        /* Ticker Area Design */
         #ticker-container {
-            flex-grow: 1;
-            height: 100%;
+            flex-grow: 1; height: 100%; position: relative; margin-left: -40px;
             background: linear-gradient(90deg, #3d0000 0%, #800000 50%, #3d0000 100%);
-            display: flex;
-            align-items: center;
-            position: relative;
-            margin-left: -40px;
-            transition: all 0.5s ease;
+            display: flex; align-items: center; transition: all 0.5s ease;
         }
 
-        .breaking-active #ticker-container {
-            background: linear-gradient(90deg, #ff0000 0%, #600000 50%, #ff0000 100%);
-            animation: flash-bg 0.8s infinite alternate;
-        }
-        @keyframes flash-bg { from { filter: brightness(1); } to { filter: brightness(1.5); } }
+        .breaking-active #ticker-container { background: linear-gradient(90deg, #ff0000 0%, #600000 50%, #ff0000 100%); }
 
-        #ticker-move {
-            white-space: nowrap;
-            display: inline-block;
-            padding-left: 100%;
-            animation: scroll-left 25s linear infinite;
-        }
-
-        #ticker-text {
-            color: #FFD700;
-            font-size: 44px;
-            font-weight: 500;
-            text-shadow: 3px 3px 5px rgba(0,0,0,0.8);
-            transition: all 0.5s ease;
-        }
-        .breaking-active #ticker-text { color: #ffffff; font-weight: 700; }
+        #ticker-move { white-space: nowrap; display: inline-block; padding-left: 100%; animation: scroll-left 25s linear infinite; }
+        #ticker-text { color: #FFD700; font-size: 44px; font-weight: 500; text-shadow: 3px 3px 5px rgba(0,0,0,0.8); }
 
         @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* --- CONTROL PANEL DESIGN --- */
-        #control-panel {
-            max-width: 1250px;
-            margin: 50px auto;
-            background: #1a1a1a;
-            padding: 30px;
-            border-radius: 20px;
-            border: 2px solid #333;
-        }
-
-        .pcr-title {
-            text-align: center; font-size: 28px; color: #FFD700; margin-bottom: 30px;
-            border-bottom: 2px solid #333; padding-bottom: 10px; text-transform: uppercase;
-        }
-
-        .preset-row {
-            display: grid; grid-template-columns: 50px 1fr 1fr 2fr 150px; gap: 15px;
-            background: #252525; padding: 15px; margin-bottom: 15px; border-radius: 10px; align-items: center;
-        }
-
+        /* --- CONTROL PANEL --- */
+        #control-panel { max-width: 1250px; margin: 30px auto; background: #1a1a1a; padding: 25px; border-radius: 20px; border: 2px solid #333; }
+        .pcr-title { text-align: center; font-size: 24px; color: #FFD700; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .preset-row { display: grid; grid-template-columns: 50px 1fr 1fr 2fr 150px; gap: 15px; background: #252525; padding: 12px; margin-bottom: 10px; border-radius: 10px; align-items: center; }
         .preset-row.active { border-left: 5px solid #2ecc71; background: #2a352a; }
-
-        input, textarea {
-            width: 100%; padding: 10px; background: #000; border: 1px solid #444;
-            color: #fff; border-radius: 5px;
-        }
-
-        .btn-push {
-            background: #444; color: white; border: none; padding: 10px;
-            border-radius: 5px; cursor: pointer; font-weight: bold; height: 100%;
-        }
+        input, textarea { width: 100%; padding: 8px; background: #000; border: 1px solid #444; color: #fff; border-radius: 5px; }
+        .btn-push { background: #444; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .active .btn-push { background: #2ecc71; color: #000; }
-
-        .btn-breaking-toggle {
-            background: #600; color: #fff; border: 2px solid #f00; padding: 15px 40px;
-            border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 20px;
-        }
-        .btn-breaking-toggle.on { background: #f00; }
+        .btn-breaking-toggle { background: #600; color: #fff; border: 2px solid #f00; padding: 12px 30px; border-radius: 10px; cursor: pointer; }
+        .btn-breaking-toggle.on { background: #f00; box-shadow: 0 0 15px #f00; }
     </style>
 </head>
 <body>
 
     <div id="live-output-container">
-        <div id="headline-wrapper">
-            <div class="headline-top" id="display-head-top">🕉️ स्वागतम</div>
-            <div class="headline-bottom" id="display-head-bottom">LIVE BROADCAST</div>
+        <div id="social-rotator">
+            <div class="social-item active" id="soc-yt">
+                <span class="social-icon yt-icon">YouTube</span>
+                <span class="social-text" id="disp-yt">Dev2 Facts</span>
+            </div>
+            <div class="social-item" id="soc-ig">
+                <span class="social-icon ig-icon">Instagram</span>
+                <span class="social-text" id="disp-ig">Cg_master_editor</span>
+            </div>
         </div>
-        <div id="ticker-container">
-            <div id="ticker-move">
-                <span id="ticker-text">श्रीमद्‍भगवत् महापुराण कथा में आप सभी का स्वागत है...</span>
+
+        <div class="bars-wrapper">
+            <div id="headline-wrapper">
+                <div class="headline-top" id="display-head-top">🕉️ स्वागतम</div>
+                <div class="headline-bottom" id="display-head-bottom">LIVE BROADCAST</div>
+            </div>
+            <div id="ticker-container">
+                <div id="ticker-move">
+                    <span id="ticker-text">श्रीमद्‍भगवत् महापुराण कथा में आप सभी का स्वागत है...</span>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="control-panel">
-        <div class="pcr-title">🎛️ Bhagwat Live PCR (Firebase Synced)</div>
+        <div class="pcr-title">🎛️ Bhagwat Live PCR (Firebase & Social Sync)</div>
         
+        <div style="display: flex; gap: 20px; margin-bottom: 20px; background: #222; padding: 15px; border-radius: 10px;">
+            <div style="flex:1">
+                <label style="color:#888; font-size:12px;">YouTube Name</label>
+                <input type="text" id="in-yt" value="Dev2 Facts">
+            </div>
+            <div style="flex:1">
+                <label style="color:#888; font-size:12px;">Instagram Name</label>
+                <input type="text" id="in-ig" value="Cg_master_editor">
+            </div>
+            <button onclick="updateSocials()" style="background:#FFD700; border:none; padding:10px 20px; border-radius:5px; font-weight:bold; cursor:pointer; color:#000;">Update Socials</button>
+        </div>
+
         <div class="preset-row" id="row-1">
             <div class="slot-num">01</div>
             <div><input type="text" id="head-1-t" value="🕉️ भागवत कथा"></div>
@@ -188,41 +185,45 @@
             <button class="btn-push" onclick="pushToFirebase(2)">SET LIVE</button>
         </div>
 
-        <div class="preset-row" id="row-3">
-            <div class="slot-num">03</div>
-            <div><input type="text" id="head-3-t" value="🙏 दान / सहयोग"></div>
-            <div><input type="text" id="head-3-b" value="PhonePe: 98765XXXX"></div>
-            <div><textarea id="tick-3">कथा आयोजन में अपना सहयोग देने हेतु संपर्क करें...</textarea></div>
-            <button class="btn-push" onclick="pushToFirebase(3)">SET LIVE</button>
-        </div>
-
-        <div class="master-controls" style="display:flex; justify-content: space-between; margin-top:20px; background:#222; padding:20px; border-radius:10px;">
+        <div class="master-controls" style="display:flex; justify-content: space-between; align-items:center; background:#222; padding:15px; border-radius:10px;">
             <div>
                 <span>SCROLL SPEED: </span>
-                <input type="number" id="global-speed" value="25" style="width:70px;">
+                <input type="number" id="global-speed" value="25" style="width:60px;">
             </div>
-            <button class="btn-breaking-toggle" id="break-btn" onclick="toggleBreakingFirebase()">🚨 BREAKING NEWS MODE</button>
+            <button class="btn-breaking-toggle" id="break-btn" onclick="toggleBreakingFirebase()">🚨 BREAKING MODE</button>
         </div>
     </div>
 
     <script>
-        // --- FIREBASE CONFIGURATION ---
-        const firebaseConfig = {
-            databaseURL: "https://bhagwat-live-pcr-default-rtdb.firebaseio.com/"
-        };
+        const firebaseConfig = { databaseURL: "https://bhagwat-live-pcr-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // --- PUSH DATA TO FIREBASE ---
+        // --- SOCIAL ROTATOR LOGIC ---
+        let socialIndex = 0;
+        const socialItems = document.querySelectorAll('.social-item');
+        
+        setInterval(() => {
+            socialItems[socialIndex].classList.remove('active');
+            socialIndex = (socialIndex + 1) % socialItems.length;
+            socialItems[socialIndex].classList.add('active');
+        }, 8000); // 8 सेकंड में बदलेगा
+
+        function updateSocials() {
+            db.ref('socials').update({
+                yt: document.getElementById('in-yt').value,
+                ig: document.getElementById('in-ig').value
+            });
+        }
+
         function pushToFirebase(slot) {
-            const data = {
+            db.ref('liveData').update({
                 activeSlot: slot,
                 headT: document.getElementById(`head-${slot}-t`).value,
                 headB: document.getElementById(`head-${slot}-b`).value,
                 ticker: document.getElementById(`tick-${slot}`).value,
                 speed: document.getElementById('global-speed').value
-            };
-            db.ref('liveData').update(data);
+            });
         }
 
         function toggleBreakingFirebase() {
@@ -230,43 +231,31 @@
             db.ref('liveData').update({ breaking: isBreaking });
         }
 
-        // --- LISTEN FOR REAL-TIME UPDATES ---
-        db.ref('liveData').on('value', (snapshot) => {
-            const val = snapshot.val();
-            if (!val) return;
-
-            // Update Text
-            const dispHeadT = document.getElementById('display-head-top');
-            const dispHeadB = document.getElementById('display-head-bottom');
-            const dispTicker = document.getElementById('ticker-text');
-            const tickerMove = document.getElementById('ticker-move');
-            const container = document.getElementById('live-output-container');
-            const btn = document.getElementById('break-btn');
-
-            // Set Animations and Values
-            dispHeadT.innerText = val.headT;
-            dispHeadB.innerText = val.headB;
-            dispTicker.innerText = val.ticker;
+        // --- FIREBASE LISTENERS ---
+        db.ref('liveData').on('value', (snap) => {
+            const v = snap.val(); if(!v) return;
+            document.getElementById('display-head-top').innerText = v.headT;
+            document.getElementById('display-head-bottom').innerText = v.headB;
+            document.getElementById('ticker-text').innerText = v.ticker;
+            document.getElementById('ticker-move').style.animation = `scroll-left ${v.speed || 25}s linear infinite`;
             
-            tickerMove.style.animation = 'none';
-            tickerMove.offsetHeight; // trigger reflow
-            tickerMove.style.animation = `scroll-left ${val.speed || 25}s linear infinite`;
-
-            // Breaking Mode Logic
-            if(val.breaking) {
-                container.classList.add('breaking-active');
-                btn.classList.add('on');
-                btn.innerHTML = "🚨 MODE: BREAKING (LIVE)";
+            if(v.breaking) {
+                document.getElementById('live-output-container').classList.add('breaking-active');
+                document.getElementById('break-btn').classList.add('on');
             } else {
-                container.classList.remove('breaking-active');
-                btn.classList.remove('on');
-                btn.innerHTML = "🚨 BREAKING NEWS MODE";
+                document.getElementById('live-output-container').classList.remove('breaking-active');
+                document.getElementById('break-btn').classList.remove('on');
             }
+            document.querySelectorAll('.preset-row').forEach(r => r.classList.remove('active'));
+            document.getElementById(`row-${v.activeSlot}`)?.classList.add('active');
+        });
 
-            // Update UI Active State in Panel
-            document.querySelectorAll('.preset-row').forEach(row => row.classList.remove('active'));
-            const activeRow = document.getElementById(`row-${val.activeSlot}`);
-            if(activeRow) activeRow.classList.add('active');
+        db.ref('socials').on('value', (snap) => {
+            const v = snap.val(); if(!v) return;
+            document.getElementById('disp-yt').innerText = v.yt;
+            document.getElementById('disp-ig').innerText = v.ig;
+            document.getElementById('in-yt').value = v.yt;
+            document.getElementById('in-ig').value = v.ig;
         });
     </script>
 </body>
