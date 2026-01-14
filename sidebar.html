@@ -3,88 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Bhagwat Overlay</title>
+    <title>Professional Bhagwat Auto-Cycle Overlay</title>
     <link href="https://fonts.googleapis.com/css2?family=Khand:wght@500;700&family=Rozha+One&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: #111; font-family: 'Khand', sans-serif; color: white; padding: 20px; }
 
-        /* --- LIVE DISPLAY AREA (Responsive) --- */
+        /* --- LIVE DISPLAY AREA --- */
         #live-container {
             width: 100%;
-            max-width: 1200px; /* टीवी/मॉनिटर के लिए बेस्ट साइज */
+            max-width: 1200px;
+            height: 550px; /* हाइट फिक्स रखी गई है */
             margin: 0 auto 30px auto;
-            background: transparent;
+            position: relative;
         }
 
         .master-frame {
             width: 100%;
-            background: linear-gradient(145deg, rgba(80, 0, 0, 0.95), rgba(30, 0, 0, 0.98));
+            height: 100%;
+            background: linear-gradient(145deg, rgba(60, 0, 0, 0.98), rgba(20, 0, 0, 1));
             border: 4px solid #FFD700;
             border-radius: 40px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
         }
 
-        /* Top Header */
+        /* Moving Shine Effect */
+        .master-frame::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shineMove 4s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shineMove {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        /* Header */
         .header-section {
-            padding: 20px;
+            padding: 25px 20px 10px;
             text-align: center;
             border-bottom: 3px solid #FFD700;
-            background: rgba(255, 215, 0, 0.05);
+            background: rgba(0, 0, 0, 0.3);
         }
-        .main-title { font-family: 'Rozha One', serif; font-size: clamp(24px, 5vw, 45px); color: #FFD700; text-shadow: 2px 2px 5px rgba(0,0,0,0.8); }
-        .sub-title { font-size: clamp(16px, 3vw, 24px); color: #fff; text-transform: uppercase; margin-top: 5px; }
+        .main-title { font-family: 'Rozha One', serif; font-size: 38px; color: #FFD700; }
+        .sub-title-text { font-size: 20px; color: #fff; margin-top: 5px; }
 
         /* Content Layout */
         .content-layout {
             display: flex;
-            flex-wrap: wrap; /* छोटे स्क्रीन पर नीचे आ जाएगा */
+            flex: 1;
+            overflow: hidden; 
             padding: 20px;
             gap: 20px;
         }
 
-        /* Left Side: Table Area */
-        .table-area { flex: 2; min-width: 300px; }
-        .schedule-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-        .schedule-table th { 
-            font-size: 20px; color: #FFD700; text-align: left; padding: 10px; 
-            border-bottom: 2px solid rgba(255,215,0,0.3); font-family: 'Rozha One', serif;
+        .table-area { 
+            flex: 2; 
+            position: relative;
         }
-        .row-item { background: rgba(255,255,255,0.05); }
-        .row-item.is-live { background: rgba(255, 215, 0, 0.2); border-left: 6px solid #FFD700; color: #FFD700; font-weight: bold; }
-        .row-item td { padding: 15px; font-size: clamp(16px, 2.5vw, 22px); border-radius: 10px; }
 
-        /* Right Side: QR Area */
+        /* Table & Animations */
+        .schedule-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        
+        /* Fade Animation for Paging */
+        #out-tbody {
+            transition: opacity 0.8s ease-in-out;
+        }
+        .fade-out { opacity: 0; }
+
+        .row-item td { 
+            padding: 12px 18px; 
+            font-size: 22px; 
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border-bottom: 1px solid rgba(255,215,0,0.1);
+        }
+        .is-live { 
+            border-left: 8px solid #FFD700; 
+            background: rgba(255,215,0,0.2) !important; 
+            color: #FFD700; 
+            font-weight: bold;
+        }
+
+        /* QR Sidebar */
         .qr-sidebar {
             flex: 0.8;
-            min-width: 250px;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.5);
             border-radius: 30px;
-            border: 2px solid rgba(255,215,0,0.3);
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            justify-content: center;
+            border: 1px solid rgba(255,215,0,0.2);
         }
-        .qr-display-box {
-            width: 180px; height: 180px; background: #fff; border-radius: 15px;
-            padding: 10px; border: 4px solid #FFD700;
-        }
-        .qr-display-box img { width: 100%; height: 100%; object-fit: contain; }
-        
-        .pay-now-btn {
-            margin-top: 15px; background: #FFD700; color: #4b0000;
-            padding: 8px 25px; border-radius: 50px; font-size: 18px; font-weight: 800;
-        }
-        .org-display-name {
-            margin-top: 20px; font-size: 24px; font-weight: bold; color: #FFD700;
-            text-align: center; font-family: 'Rozha One', serif;
-        }
+        .qr-box { width: 180px; height: 180px; background: #fff; padding: 10px; border-radius: 15px; border: 4px solid #FFD700; }
+        .qr-box img { width: 100%; height: 100%; object-fit: contain; }
+        .org-name { margin-top: 15px; color: #FFD700; font-weight: bold; font-size: 24px; text-align: center; }
 
-        /* --- CONTROL PANEL (Below Display) --- */
+        /* Control Panel */
         #pcr-panel {
             max-width: 1200px;
             margin: 0 auto;
@@ -93,20 +119,10 @@
             border-radius: 20px;
             border: 2px solid #444;
         }
-        .panel-h1 { text-align: center; color: #FFD700; margin-bottom: 20px; font-size: 24px; }
-        .input-row { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; }
-        .input-row div { flex: 1; min-width: 200px; }
-        input { width: 100%; padding: 12px; background: #000; border: 1px solid #555; color: #fff; border-radius: 8px; }
-        
-        .list-edit-item { 
-            display: flex; gap: 10px; background: #252525; padding: 10px; 
-            border-radius: 10px; margin-bottom: 8px; align-items: center;
-        }
-        .btn-update-master {
-            width: 100%; padding: 15px; background: linear-gradient(90deg, #FFD700, #FFA500);
-            border: none; border-radius: 10px; font-size: 22px; font-weight: bold; color: #4b0000;
-            cursor: pointer; margin-top: 20px;
-        }
+        .input-row { display: flex; gap: 15px; margin-bottom: 15px; }
+        input { flex: 1; padding: 12px; background: #000; border: 1px solid #444; color: white; border-radius: 8px; font-size: 16px; }
+        .btn-update { width: 100%; padding: 18px; background: linear-gradient(to right, #FFD700, #FFA500); border: none; font-weight: bold; cursor: pointer; border-radius: 12px; font-size: 20px; color: #4b0000; }
+        .list-row-pcr { background:#252525; padding:12px; border-radius:10px; margin-bottom:10px; display:flex; gap:10px; align-items:center; }
     </style>
 </head>
 <body>
@@ -115,75 +131,58 @@
         <div class="master-frame">
             <div class="header-section">
                 <div class="main-title" id="out-main-title">श्रीमद्‍भगवत् महापुराण कथा</div>
-                <div class="sub-title" id="out-sub-title">आज का विशेष कार्यक्रम</div>
+                <div class="sub-title-text" id="out-sub-title">आज का कार्यक्रम</div>
             </div>
 
             <div class="content-layout">
                 <div class="table-area">
                     <table class="schedule-table">
-                        <thead>
-                            <tr>
-                                <th>कार्यक्रम विवरण</th>
-                                <th style="text-align: center;">समय / दिनांक</th>
-                            </tr>
-                        </thead>
                         <tbody id="out-tbody">
                             </tbody>
                     </table>
                 </div>
 
                 <div class="qr-sidebar">
-                    <div class="qr-display-box">
-                        <img id="qr-out-img" src="" alt="Scan QR">
+                    <div class="qr-box">
+                        <img id="qr-out-img" src="" alt="Upload QR">
                     </div>
-                    <div class="pay-now-btn">PAY NOW</div>
-                    <div class="org-display-name" id="out-org-name">श्री राधे सेवा समिति</div>
+                    <div class="org-name" id="out-org-name">श्री राधे सेवा समिति</div>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="pcr-panel">
-        <div class="panel-h1">🎛️ मास्टर कंट्रोल पैनल (Master PCR)</div>
-        
+        <h2 style="color:#FFD700; margin-bottom:15px; font-size:24px; border-bottom: 1px solid #333; padding-bottom: 10px;">🎛️ मास्टर पीसीआर कंट्रोल</h2>
         <div class="input-row">
-            <div>
-                <label style="color:#888; font-size: 14px;">मुख्य शीर्षक</label>
-                <input type="text" id="in-main-title" value="श्रीमद्‍भगवत् महापुराण कथा">
-            </div>
-            <div>
-                <label style="color:#888; font-size: 14px;">उप-शीर्षक</label>
-                <input type="text" id="in-sub-title" value="आज का विशेष कार्यक्रम">
-            </div>
+            <input type="text" id="in-main-title" value="श्रीमद्‍भगवत् महापुराण कथा">
+            <input type="text" id="in-sub-title" value="आज का कार्यक्रम">
+        </div>
+        <div class="input-row">
+            <input type="file" id="in-qr-file" accept="image/*">
+            <input type="text" id="in-org-name" value="श्री राधे सेवा समिति">
         </div>
 
-        <div class="input-row">
-            <div>
-                <label style="color:#888; font-size: 14px;">QR इमेज (गैलरी)</label>
-                <input type="file" id="in-qr-file" accept="image/*">
-            </div>
-            <div>
-                <label style="color:#888; font-size: 14px;">संस्था का नाम</label>
-                <input type="text" id="in-org-name" value="श्री राधे सेवा समिति">
-            </div>
-        </div>
-
-        <div id="pcr-rows">
-            <div class="list-edit-item">
-                <input type="radio" name="live-sel" checked style="width:20px; height:20px;">
-                <input type="text" class="pcr-name" value="आरती एवं दीप प्रज्वलन">
-                <input type="text" class="pcr-time" value="शाम 05:00 बजे">
-                <button onclick="this.parentElement.remove()" style="color:red; background:none; border:none; font-weight:bold; cursor:pointer;">X</button>
-            </div>
+        <div id="pcr-rows-container">
+            <div class="list-row-pcr">
+                <input type="radio" name="live-sel" checked style="width:25px; height:25px;">
+                <input type="text" class="pcr-name" value="कथा प्रारंभ एवं स्वागत">
+                <input type="text" class="pcr-time" value="03:00 PM">
+                <button onclick="this.parentElement.remove()" style="background:#e74c3c; color:white; border:none; padding:8px 12px; cursor:pointer; border-radius:5px;">X</button>
+             </div>
         </div>
         
-        <button onclick="addNewPcrRow()" style="background:#27ae60; color:#fff; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">+ नया जोड़ें</button>
-
-        <button class="btn-update-master" onclick="applyFullUpdate()">🔴 APPLY LIVE CHANGES</button>
+        <button onclick="addNewPcrRow()" style="background:#27ae60; color:white; border:none; padding:10px 20px; margin:10px 0; cursor:pointer; border-radius:8px; font-weight:bold;">+ नया कार्यक्रम जोड़ें</button>
+        <button class="btn-update" onclick="applyAndRestart()">🔴 LIVE UPDATE & START CYCLING</button>
     </div>
 
     <script>
+        let allItems = [];
+        let currentPage = 0;
+        let cycleInterval = null;
         let qrDataURL = "";
+
+        // QR Image Selection
         document.getElementById('in-qr-file').addEventListener('change', function(e) {
             const reader = new FileReader();
             reader.onload = function() {
@@ -194,41 +193,80 @@
         });
 
         function addNewPcrRow() {
-            const container = document.getElementById('pcr-rows');
+            const container = document.getElementById('pcr-rows-container');
             const div = document.createElement('div');
-            div.className = 'list-edit-item';
+            div.className = 'list-row-pcr';
             div.innerHTML = `
-                <input type="radio" name="live-sel" style="width:20px; height:20px;">
-                <input type="text" class="pcr-name" placeholder="नाम">
+                <input type="radio" name="live-sel" style="width:25px; height:25px;">
+                <input type="text" class="pcr-name" placeholder="कार्यक्रम का नाम">
                 <input type="text" class="pcr-time" placeholder="समय">
-                <button onclick="this.parentElement.remove()" style="color:red; background:none; border:none; font-weight:bold; cursor:pointer;">X</button>
+                <button onclick="this.parentElement.remove()" style="background:#e74c3c; color:white; border:none; padding:8px 12px; cursor:pointer; border-radius:5px;">X</button>
             `;
             container.appendChild(div);
         }
 
-        function applyFullUpdate() {
+        function renderPage() {
+            const tbody = document.getElementById('out-tbody');
+            tbody.classList.add('fade-out'); // Fade out effect
+
+            setTimeout(() => {
+                tbody.innerHTML = '';
+                const start = currentPage * 5;
+                const end = start + 5;
+                const pageItems = allItems.slice(start, end);
+
+                pageItems.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.className = `row-item ${item.isLive ? 'is-live' : ''}`;
+                    tr.innerHTML = `
+                        <td style="width:70%">${item.name}</td>
+                        <td style="text-align:right; font-weight:bold; color:#FFD700;">${item.time}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                tbody.classList.remove('fade-out'); // Fade in effect
+                
+                // Next page logic
+                currentPage++;
+                if (currentPage * 5 >= allItems.length) {
+                    currentPage = 0; // Reset to first page
+                }
+            }, 800);
+        }
+
+        function applyAndRestart() {
+            // Update Headers
             document.getElementById('out-main-title').innerText = document.getElementById('in-main-title').value;
             document.getElementById('out-sub-title').innerText = document.getElementById('in-sub-title').value;
             document.getElementById('out-org-name').innerText = document.getElementById('in-org-name').value;
 
-            const rows = document.querySelectorAll('.list-edit-item');
-            const tbody = document.getElementById('out-tbody');
-            tbody.innerHTML = '';
-
-            rows.forEach(row => {
-                const isLive = row.querySelector('input[type="radio"]').checked;
+            // Collect All Items
+            const pcrRows = document.querySelectorAll('.list-row-pcr');
+            allItems = [];
+            pcrRows.forEach(row => {
                 const name = row.querySelector('.pcr-name').value;
                 const time = row.querySelector('.pcr-time').value;
-
+                const isLive = row.querySelector('input[type="radio"]').checked;
                 if(name || time) {
-                    const tr = document.createElement('tr');
-                    tr.className = `row-item ${isLive ? 'is-live' : ''}`;
-                    tr.innerHTML = `<td style="width:65%">${name}</td><td style="text-align:center">${time}</td>`;
-                    tbody.appendChild(tr);
+                    allItems.push({ name, time, isLive });
                 }
             });
+
+            // Start Cycling
+            currentPage = 0;
+            if(cycleInterval) clearInterval(cycleInterval);
+            
+            renderPage(); // First render
+            
+            // अगर 5 से ज्यादा आइटम हैं तभी साइकिल चलाएं
+            if (allItems.length > 5) {
+                cycleInterval = setInterval(renderPage, 5000); // हर 5 सेकंड में बदलेगा
+            }
         }
-        applyFullUpdate();
+
+        // Initial Start
+        applyAndRestart();
     </script>
 </body>
 </html>
