@@ -3,19 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Bhagwat Auto-Cycle Overlay</title>
+    <title>Professional Bhagwat PCR - Firebase Full Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Khand:wght@500;700&family=Rozha+One&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: #111; font-family: 'Khand', sans-serif; color: white; padding: 20px; }
+        body { background-color: transparent; font-family: 'Khand', sans-serif; color: white; padding: 20px; overflow: hidden; }
 
         /* --- LIVE DISPLAY AREA --- */
         #live-container {
             width: 100%;
             max-width: 1200px;
-            height: 550px; /* हाइट फिक्स रखी गई है */
+            height: 550px;
             margin: 0 auto 30px auto;
             position: relative;
+            /* Sidebar Animation Transition */
+            transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.8s ease;
+        }
+
+        /* Sidebar Hide State */
+        .sidebar-hidden {
+            transform: translateX(1500px);
+            opacity: 0;
         }
 
         .master-frame {
@@ -31,7 +43,7 @@
             box-shadow: 0 0 50px rgba(0,0,0,0.9);
         }
 
-        /* Moving Shine Effect */
+        /* Moving Shine Effect (Original) */
         .master-frame::after {
             content: '';
             position: absolute;
@@ -75,7 +87,6 @@
         /* Table & Animations */
         .schedule-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
         
-        /* Fade Animation for Paging */
         #out-tbody {
             transition: opacity 0.8s ease-in-out;
         }
@@ -110,19 +121,63 @@
         .qr-box img { width: 100%; height: 100%; object-fit: contain; }
         .org-name { margin-top: 15px; color: #FFD700; font-weight: bold; font-size: 24px; text-align: center; }
 
-        /* Control Panel */
+        /* --- CONTROL PANEL DESIGN --- */
         #pcr-panel {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 50px auto;
             background: #1a1a1a;
-            padding: 25px;
+            padding: 30px;
             border-radius: 20px;
             border: 2px solid #444;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #333;
         }
         .input-row { display: flex; gap: 15px; margin-bottom: 15px; }
-        input { flex: 1; padding: 12px; background: #000; border: 1px solid #444; color: white; border-radius: 8px; font-size: 16px; }
-        .btn-update { width: 100%; padding: 18px; background: linear-gradient(to right, #FFD700, #FFA500); border: none; font-weight: bold; cursor: pointer; border-radius: 12px; font-size: 20px; color: #4b0000; }
-        .list-row-pcr { background:#252525; padding:12px; border-radius:10px; margin-bottom:10px; display:flex; gap:10px; align-items:center; }
+        input, select { flex: 1; padding: 12px; background: #000; border: 1px solid #444; color: white; border-radius: 8px; font-size: 16px; }
+        
+        .btn-update { 
+            width: 100%; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #FFD700, #FFA500); 
+            border: none; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border-radius: 15px; 
+            font-size: 22px; 
+            color: #4b0000;
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+            transition: 0.3s;
+        }
+        .btn-update:hover { transform: scale(1.02); filter: brightness(1.1); }
+        
+        .list-row-pcr { 
+            background:#252525; 
+            padding:15px; 
+            border-radius:12px; 
+            margin-bottom:12px; 
+            display:flex; 
+            gap:15px; 
+            align-items:center; 
+            border: 1px solid #333;
+        }
+        .visibility-toggle {
+            padding: 12px 25px;
+            border-radius: 10px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-hide { background: #e74c3c; color: white; }
+        .btn-show { background: #27ae60; color: white; }
     </style>
 </head>
 <body>
@@ -144,7 +199,7 @@
 
                 <div class="qr-sidebar">
                     <div class="qr-box">
-                        <img id="qr-out-img" src="" alt="Upload QR">
+                        <img id="qr-out-img" src="" alt="Live QR">
                     </div>
                     <div class="org-name" id="out-org-name">श्री राधे सेवा समिति</div>
                 </div>
@@ -153,61 +208,176 @@
     </div>
 
     <div id="pcr-panel">
-        <h2 style="color:#FFD700; margin-bottom:15px; font-size:24px; border-bottom: 1px solid #333; padding-bottom: 10px;">🎛️ मास्टर पीसीआर कंट्रोल</h2>
-        <div class="input-row">
-            <input type="text" id="in-main-title" value="श्रीमद्‍भगवत् महापुराण कथा">
-            <input type="text" id="in-sub-title" value="आज का कार्यक्रम">
+        <div class="panel-header">
+            <h2 style="color:#FFD700; font-size:28px;">🎛️ मास्टर पीसीआर कंट्रोल (Cloud Edition)</h2>
+            <button id="visibility-btn" class="visibility-toggle btn-hide" onclick="toggleSidebarRemote()">HIDE SIDEBAR</button>
         </div>
+
         <div class="input-row">
-            <input type="file" id="in-qr-file" accept="image/*">
-            <input type="text" id="in-org-name" value="श्री राधे सेवा समिति">
+            <div>
+                <label style="color:#888; display:block; margin-bottom:5px;">Main Title</label>
+                <input type="text" id="in-main-title" value="श्रीमद्‍भगवत् महापुराण कथा">
+            </div>
+            <div>
+                <label style="color:#888; display:block; margin-bottom:5px;">Sub Title</label>
+                <input type="text" id="in-sub-title" value="आज का कार्यक्रम">
+            </div>
+        </div>
+
+        <div class="input-row">
+            <div style="flex: 2;">
+                <label style="color:#888; display:block; margin-bottom:5px;">Upload QR Code Image</label>
+                <input type="file" id="in-qr-file" accept="image/*">
+            </div>
+            <div style="flex: 1;">
+                <label style="color:#888; display:block; margin-bottom:5px;">Organization Name</label>
+                <input type="text" id="in-org-name" value="श्री राधे सेवा समिति">
+            </div>
         </div>
 
         <div id="pcr-rows-container">
-            <div class="list-row-pcr">
-                <input type="radio" name="live-sel" checked style="width:25px; height:25px;">
-                <input type="text" class="pcr-name" value="कथा प्रारंभ एवं स्वागत">
-                <input type="text" class="pcr-time" value="03:00 PM">
-                <button onclick="this.parentElement.remove()" style="background:#e74c3c; color:white; border:none; padding:8px 12px; cursor:pointer; border-radius:5px;">X</button>
-             </div>
-        </div>
+            </div>
         
-        <button onclick="addNewPcrRow()" style="background:#27ae60; color:white; border:none; padding:10px 20px; margin:10px 0; cursor:pointer; border-radius:8px; font-weight:bold;">+ नया कार्यक्रम जोड़ें</button>
-        <button class="btn-update" onclick="applyAndRestart()">🔴 LIVE UPDATE & START CYCLING</button>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button onclick="addNewPcrRow('', '', false)" style="background:#3498db; color:white; border:none; padding:12px 25px; cursor:pointer; border-radius:10px; font-weight:bold;">+ नया कार्यक्रम जोड़ें</button>
+            <button onclick="clearAllRows()" style="background:#8e44ad; color:white; border:none; padding:12px 25px; cursor:pointer; border-radius:10px; font-weight:bold;">Clear All</button>
+        </div>
+
+        <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #333;">
+            <button class="btn-update" onclick="pushAllDataToFirebase()">🔴 LIVE UPDATE & START CLOUD CYCLING</button>
+        </div>
     </div>
 
     <script>
+        // --- 1. FIREBASE INITIALIZATION ---
+        const firebaseConfig = {
+            databaseURL: "https://sidebar-qrcode-programlist-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // --- 2. GLOBAL VARIABLES ---
         let allItems = [];
         let currentPage = 0;
         let cycleInterval = null;
-        let qrDataURL = "";
+        let qrBase64Data = "";
 
-        // QR Image Selection
+        // --- 3. QR IMAGE HANDLER ---
         document.getElementById('in-qr-file').addEventListener('change', function(e) {
             const reader = new FileReader();
             reader.onload = function() {
-                qrDataURL = reader.result;
-                document.getElementById('qr-out-img').src = qrDataURL;
+                qrBase64Data = reader.result;
+                document.getElementById('qr-out-img').src = qrBase64Data;
             }
             reader.readAsDataURL(e.target.files[0]);
         });
 
-        function addNewPcrRow() {
+        // --- 4. PANEL FUNCTIONS ---
+        function addNewPcrRow(name = "", time = "", isLive = false) {
             const container = document.getElementById('pcr-rows-container');
             const div = document.createElement('div');
             div.className = 'list-row-pcr';
             div.innerHTML = `
-                <input type="radio" name="live-sel" style="width:25px; height:25px;">
-                <input type="text" class="pcr-name" placeholder="कार्यक्रम का नाम">
-                <input type="text" class="pcr-time" placeholder="समय">
-                <button onclick="this.parentElement.remove()" style="background:#e74c3c; color:white; border:none; padding:8px 12px; cursor:pointer; border-radius:5px;">X</button>
+                <input type="radio" name="live-sel" ${isLive ? 'checked' : ''} style="width:30px; height:30px; cursor:pointer;">
+                <input type="text" class="pcr-name" placeholder="कार्यक्रम का नाम" value="${name}">
+                <input type="text" class="pcr-time" placeholder="समय" value="${time}">
+                <button onclick="this.parentElement.remove()" style="background:#e74c3c; color:white; border:none; padding:10px 15px; cursor:pointer; border-radius:8px; font-weight:bold;">X</button>
             `;
             container.appendChild(div);
         }
 
+        function clearAllRows() {
+            document.getElementById('pcr-rows-container').innerHTML = "";
+        }
+
+        // --- 5. FIREBASE WRITE (Push to Cloud) ---
+        function pushAllDataToFirebase() {
+            const rows = [];
+            const pcrRows = document.querySelectorAll('.list-row-pcr');
+            
+            pcrRows.forEach(row => {
+                const name = row.querySelector('.pcr-name').value;
+                const time = row.querySelector('.pcr-time').value;
+                const isLive = row.querySelector('input[type="radio"]').checked;
+                if(name || time) {
+                    rows.push({ name, time, isLive });
+                }
+            });
+
+            const pcrData = {
+                mainTitle: document.getElementById('in-main-title').value,
+                subTitle: document.getElementById('in-sub-title').value,
+                orgName: document.getElementById('in-org-name').value,
+                qrImage: qrBase64Data || document.getElementById('qr-out-img').src,
+                programList: rows,
+                timestamp: Date.now()
+            };
+
+            db.ref('bhagwatSidebar/data').set(pcrData);
+        }
+
+        function toggleSidebarRemote() {
+            const liveView = document.getElementById('live-container');
+            const isHidden = liveView.classList.contains('sidebar-hidden');
+            db.ref('bhagwatSidebar/config').update({ isVisible: isHidden });
+        }
+
+        // --- 6. FIREBASE READ (Listen for Live Changes) ---
+        db.ref('bhagwatSidebar/data').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if(!data) return;
+
+            // Update UI Sidebar
+            document.getElementById('out-main-title').innerText = data.mainTitle;
+            document.getElementById('out-sub-title').innerText = data.subTitle;
+            document.getElementById('out-org-name').innerText = data.orgName;
+            document.getElementById('qr-out-img').src = data.qrImage;
+
+            // Update Panel Inputs (Remote Sync)
+            document.getElementById('in-main-title').value = data.mainTitle;
+            document.getElementById('in-sub-title').value = data.subTitle;
+            document.getElementById('in-org-name').value = data.orgName;
+
+            // Sync Rows in Panel
+            const container = document.getElementById('pcr-rows-container');
+            container.innerHTML = "";
+            if(data.programList) {
+                data.programList.forEach(item => {
+                    addNewPcrRow(item.name, item.time, item.isLive);
+                });
+            }
+
+            // Start Cycling Logic
+            allItems = data.programList || [];
+            currentPage = 0;
+            if(cycleInterval) clearInterval(cycleInterval);
+            
+            renderPage(); 
+            if (allItems.length > 5) {
+                cycleInterval = setInterval(renderPage, 5000);
+            }
+        });
+
+        db.ref('bhagwatSidebar/config/isVisible').on('value', (snapshot) => {
+            const isVisible = snapshot.val() !== false;
+            const liveView = document.getElementById('live-container');
+            const btn = document.getElementById('visibility-btn');
+
+            if(isVisible) {
+                liveView.classList.remove('sidebar-hidden');
+                btn.innerText = "HIDE SIDEBAR";
+                btn.className = "visibility-toggle btn-hide";
+            } else {
+                liveView.classList.add('sidebar-hidden');
+                btn.innerText = "SHOW SIDEBAR";
+                btn.className = "visibility-toggle btn-show";
+            }
+        });
+
+        // --- 7. RENDERING ENGINE (Original Logic) ---
         function renderPage() {
             const tbody = document.getElementById('out-tbody');
-            tbody.classList.add('fade-out'); // Fade out effect
+            tbody.classList.add('fade-out'); 
 
             setTimeout(() => {
                 tbody.innerHTML = '';
@@ -225,48 +395,14 @@
                     tbody.appendChild(tr);
                 });
 
-                tbody.classList.remove('fade-out'); // Fade in effect
+                tbody.classList.remove('fade-out'); 
                 
-                // Next page logic
                 currentPage++;
                 if (currentPage * 5 >= allItems.length) {
-                    currentPage = 0; // Reset to first page
+                    currentPage = 0; 
                 }
             }, 800);
         }
-
-        function applyAndRestart() {
-            // Update Headers
-            document.getElementById('out-main-title').innerText = document.getElementById('in-main-title').value;
-            document.getElementById('out-sub-title').innerText = document.getElementById('in-sub-title').value;
-            document.getElementById('out-org-name').innerText = document.getElementById('in-org-name').value;
-
-            // Collect All Items
-            const pcrRows = document.querySelectorAll('.list-row-pcr');
-            allItems = [];
-            pcrRows.forEach(row => {
-                const name = row.querySelector('.pcr-name').value;
-                const time = row.querySelector('.pcr-time').value;
-                const isLive = row.querySelector('input[type="radio"]').checked;
-                if(name || time) {
-                    allItems.push({ name, time, isLive });
-                }
-            });
-
-            // Start Cycling
-            currentPage = 0;
-            if(cycleInterval) clearInterval(cycleInterval);
-            
-            renderPage(); // First render
-            
-            // अगर 5 से ज्यादा आइटम हैं तभी साइकिल चलाएं
-            if (allItems.length > 5) {
-                cycleInterval = setInterval(renderPage, 5000); // हर 5 सेकंड में बदलेगा
-            }
-        }
-
-        // Initial Start
-        applyAndRestart();
     </script>
 </body>
 </html>
