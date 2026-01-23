@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>School Admin Panel | Secure Access</title>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 40px; }
+        .admin-card { background: white; max-width: 800px; margin: auto; padding: 30px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h2 { color: #0c2461; border-bottom: 2px solid #f6b93b; padding-bottom: 10px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        button { background: #0c2461; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #f6b93b; color: #0c2461; }
+        .notice-list { margin-top: 30px; background: #eee; padding: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="admin-card">
+    <h2>🏫 स्कूल वेबसाइट एडमिन पैनल</h2>
+    <p>यहाँ से आप वेबसाइट की हर चीज़ को लाइव बदल सकते हैं।</p>
+
+    <hr><br>
+
+    <div class="form-group">
+        <label>स्कूल का नाम (Main Name)</label>
+        <input type="text" id="schoolName" placeholder="जैसे: राजकीय विद्यालय...">
+    </div>
+
+    <div class="form-group">
+        <label>टैगलाइन (Tagline)</label>
+        <input type="text" id="tagline" placeholder="जैसे: अनुशासन ही सेवा है...">
+    </div>
+
+    <h3>👤 प्रधानाचार्य सेटिंग्स</h3>
+    <div class="form-group">
+        <label>प्रधानाचार्य का नाम</label>
+        <input type="text" id="pName">
+    </div>
+    <div class="form-group">
+        <label>संदेश (Principal Message)</label>
+        <textarea id="pMsg" rows="4"></textarea>
+    </div>
+
+    <button onclick="updateConfig()">वेबसाइट अपडेट करें</button>
+
+    <br><br>
+    <hr>
+    <h3>📢 नया नोटिस जारी करें</h3>
+    <div class="form-group">
+        <input type="text" id="nTitle" placeholder="नोटिस का शीर्षक">
+        <textarea id="nDesc" placeholder="नोटिस का विवरण" style="margin-top:10px"></textarea>
+        <button onclick="addNotice()" style="margin-top:10px; background: #27ae60;">नोटिस पब्लिश करें</button>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = { databaseURL: "https://school-web-ae1ba-default-rtdb.firebaseio.com/" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Configuration Update
+    function updateConfig() {
+        const data = {
+            schoolName: document.getElementById('schoolName').value,
+            tagline: document.getElementById('tagline').value,
+            principalName: document.getElementById('pName').value,
+            principalMsg: document.getElementById('pMsg').value
+        };
+        db.ref('school_config').set(data).then(() => alert("वेबसाइट अपडेट हो गई!"));
+    }
+
+    // Add New Notice
+    function addNotice() {
+        const title = document.getElementById('nTitle').value;
+        const desc = document.getElementById('nDesc').value;
+        const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+        const d = new Date();
+
+        db.ref('notices').push({
+            title: title,
+            description: desc,
+            day: d.getDate(),
+            month: monthNames[d.getMonth()],
+            year: d.getFullYear()
+        }).then(() => {
+            alert("नोटिस जारी हो गया!");
+            document.getElementById('nTitle').value = "";
+            document.getElementById('nDesc').value = "";
+        });
+    }
+</script>
+
+</body>
+</html>
