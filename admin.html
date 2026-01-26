@@ -3,451 +3,472 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gav Public School | शिक्षा का महाकुंभ</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <title id="metaTitle">हायर सेकंडरी स्कूल बागरेकसा | विद्या ददाति विनयम</title>
     
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
     <style>
-        :root { --primary: #0f172a; --accent: #fbbf24; --soft-blue: #eff6ff; }
-        body { font-family: 'Poppins', sans-serif; }
-        .hindi-font { font-family: 'Mukta', sans-serif; }
-        .nav-link { position: relative; transition: 0.3s; }
-        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -2px; left: 0; background: var(--accent); transition: 0.3s; }
-        .nav-link:hover::after { width: 100%; }
-        .parallax { background-attachment: fixed; background-position: center; background-repeat: no-repeat; background-size: cover; }
-        .custom-shape-divider-bottom { position: absolute; bottom: 0; left: 0; width: 100%; overflow: hidden; line-height: 0; }
-        .custom-shape-divider-bottom svg { position: relative; display: block; width: calc(130% + 1.3px); height: 115px; }
-        .teacher-card:hover img { transform: scale(1.1); transition: 0.5s; }
-        .faq-item:hover { border-left: 4px solid #3b82f6; }
+        :root {
+            --primary-blue: #002147;
+            --accent-red: #d91e18;
+            --gold: #fbc02d;
+            --light-bg: #f8fafc;
+        }
+
+        body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); color: #1e293b; line-height: 1.6; }
+        .hindi { font-family: 'Mukta', sans-serif; }
+        
+        /* Smooth Scrolling */
+        html { scroll-behavior: smooth; }
+
+        /* Left-to-Right Scrolling Text */
+        .marquee-container {
+            background: #fff3cd;
+            border-bottom: 2px solid #ffeeba;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 12px 0;
+            position: relative;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee-move 25s linear infinite;
+            font-weight: 700;
+            color: #856404;
+            font-size: 1.1rem;
+        }
+        @keyframes marquee-move {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Spacing Fixes */
+        .section-padding { padding: 80px 0; }
+        .item-gap { margin-bottom: 2.5rem; }
+
+        /* Sidebar Styling (Reference Image) */
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+        .sidebar-link:hover {
+            background: var(--primary-blue);
+            color: white;
+            padding-left: 30px;
+        }
+
+        /* Hero Section Parallax-like */
+        .hero-box {
+            background: linear-gradient(rgba(0,33,71,0.85), rgba(0,33,71,0.85)), url('https://images.unsplash.com/photo-1541339907198-e08756ebafe3?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 550px;
+            display: flex;
+            align-items: center;
+            border-radius: 0 0 50px 50px;
+        }
+
+        /* Admission Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 800px;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+        .active-modal { display: flex; }
+
+        /* Cards */
+        .feature-card {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            transition: 0.4s;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .feature-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: var(--gold);
+        }
+
+        /* Header Text Shadow */
+        .school-title {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
-<body class="bg-white">
+<body>
 
-    <div class="bg-slate-900 text-white py-2 px-6 flex flex-col md:flex-row justify-between items-center text-xs md:text-sm">
-        <div class="flex space-x-6">
-            <span class="flex items-center"><i class="fas fa-phone-alt text-yellow-400 mr-2"></i> <span id="topPhone">+91 123 456 7890</span></span>
-            <span class="flex items-center hidden sm:flex"><i class="fas fa-envelope text-yellow-400 mr-2"></i> <span id="topEmail">contact@gavschool.com</span></span>
-        </div>
-        <div class="flex items-center space-x-4 mt-2 md:mt-0">
-            <span class="bg-red-600 px-2 py-0.5 rounded animate-pulse">Live</span>
-            <p id="topAnnouncement">दाखिले के लिए अंतिम तिथि: 31 मार्च 2026</p>
+    <div class="bg-slate-900 text-white py-3 px-6 hidden md:block">
+        <div class="container mx-auto flex justify-between items-center text-sm">
+            <div class="flex gap-6">
+                <span><i class="fas fa-phone-alt text-yellow-400 mr-2"></i> <span id="topPhone">+91 98765 43210</span></span>
+                <span><i class="fas fa-envelope text-yellow-400 mr-2"></i> <span id="topEmail">info@hssbagreksa.com</span></span>
+            </div>
+            <div class="flex gap-4 items-center">
+                <span class="bg-red-600 px-3 py-1 rounded-full text-xs font-bold animate-pulse">NOTICE</span>
+                <span id="topNotice">सत्र <span class="sessionYear">2026</span> प्रवेश प्रारंभ है!</span>
+            </div>
         </div>
     </div>
 
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-lg">
-        <div class="container mx-auto px-4 md:px-8 flex justify-between items-center py-4">
-            <div class="flex items-center gap-4">
-                <img src="https://cdn-icons-png.flaticon.com/512/2997/2997313.png" class="h-12 w-12" alt="Logo">
-                <div>
-                    <h1 class="text-2xl md:text-3xl font-black text-slate-800 tracking-tighter" id="schoolNameMain">GAV ACADEMY</h1>
-                    <p class="text-[10px] uppercase tracking-[4px] text-blue-600 font-bold">The Future Starts Here</p>
-                </div>
-            </div>
-            
-            <nav class="hidden lg:flex items-center space-x-8 font-bold text-slate-700">
-                <a href="#home" class="nav-link text-blue-700">होम</a>
-                <div class="group relative py-2">
-                    <a href="#about" class="nav-link flex items-center">स्कूल के बारे में <i class="fas fa-chevron-down ml-1 text-[10px]"></i></a>
-                    <div class="absolute top-full left-0 w-56 bg-white shadow-2xl rounded-b-xl border-t-4 border-blue-600 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                        <a href="#history" class="block px-6 py-3 hover:bg-blue-50">इतिहास</a>
-                        <a href="#vision" class="block px-6 py-3 hover:bg-blue-50">विजन और मिशन</a>
-                        <a href="#principal" class="block px-6 py-3 hover:bg-blue-50">प्रिंसिपल का संदेश</a>
-                        <a href="#management" class="block px-6 py-3 hover:bg-blue-50">प्रबंधन</a>
-                    </div>
-                </div>
-                <a href="#academics" class="nav-link">एकेडमिक्स</a>
-                <a href="#facilities" class="nav-link">सुविधाएं</a>
-                <a href="#gallery" class="nav-link">गैलरी</a>
-                <a href="#contact" class="nav-link">संपर्क</a>
-            </nav>
+    <div class="marquee-container">
+        <div class="marquee-content" id="scrollNotice">
+            📢 महत्वपूर्ण सूचना: हायर सेकंडरी स्कूल बागरेकसा में कक्षा 9वीं से 12वीं तक के लिए प्रवेश फॉर्म अब उपलब्ध हैं। अंतिम तिथि से पहले आवेदन करें। छात्रवृत्ति पोर्टल खुल गया है। 🎓
+        </div>
+    </div>
 
-            <div class="flex gap-3">
-                <button class="bg-slate-100 p-2 rounded-full hover:bg-slate-200 transition md:hidden">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
-                <a href="#admission" class="bg-blue-700 text-white px-6 py-3 rounded-full font-bold hover:bg-blue-800 transition transform hover:-translate-y-1 shadow-lg hidden md:block">
-                    एडमिशन लें
-                </a>
+    <header class="bg-white sticky top-0 z-50 shadow-xl border-b-4 border-blue-900">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-5">
+                <img src="https://cdn-icons-png.flaticon.com/512/2997/2997313.png" class="h-16 w-16" alt="School Logo">
+                <div>
+                    <h1 class="text-3xl md:text-5xl font-black text-blue-900 school-title uppercase tracking-tighter" id="mainSchoolName">हायर सेकंडरी स्कूल बागरेकसा</h1>
+                    <p class="text-xs md:text-sm font-bold text-red-600 uppercase tracking-[3px] hindi">शिक्षा, संस्कार और अनुशासन</p>
+                </div>
             </div>
+            <nav class="hidden lg:flex gap-8 font-bold text-blue-900 uppercase text-sm">
+                <a href="#home" class="hover:text-red-600 transition">होम</a>
+                <a href="#about" class="hover:text-red-600 transition">परिचय</a>
+                <a href="#academics" class="hover:text-red-600 transition">अकादमिक</a>
+                <a href="#facilities" class="hover:text-red-600 transition">सुविधाएं</a>
+                <a href="#contact" class="hover:text-red-600 transition">संपर्क</a>
+            </nav>
+            <button onclick="toggleModal('admissionModal')" class="bg-red-600 text-white px-8 py-3 rounded-full font-black hover:bg-red-700 transition transform hover:scale-110 shadow-lg">
+                ADMISSION <span class="sessionYearShort">26</span>
+            </button>
         </div>
     </header>
 
-    <section id="home" class="relative h-[90vh] flex items-center overflow-hidden">
-        <div class="absolute inset-0 z-0">
-            <video autoplay muted loop class="w-full h-full object-cover brightness-50">
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-children-in-a-classroom-1172-large.mp4" type="video/mp4">
-            </video>
-        </div>
+    <div class="container mx-auto px-6 py-12 flex flex-col lg:flex-row gap-10">
         
-        <div class="container mx-auto px-6 relative z-10">
-            <div class="max-w-4xl text-white">
-                <h4 class="text-yellow-400 font-bold tracking-[5px] uppercase mb-4 animate__animated animate__fadeInDown">Welcome to Gav Public School</h4>
-                <h2 class="text-6xl md:text-8xl font-black mb-8 leading-[1.1]" id="heroMainHeading">शिक्षा ही <span class="text-blue-400">शक्ति</span> है</h2>
-                <p class="text-xl md:text-2xl mb-10 opacity-90 max-w-2xl font-light leading-relaxed" id="heroSubHeading">हम यहाँ बच्चों के चरित्र निर्माण और उनके उज्जवल भविष्य के लिए एक सुरक्षित और आधुनिक वातावरण प्रदान करते हैं।</p>
-                <div class="flex flex-col sm:flex-row gap-5">
-                    <button class="bg-yellow-500 text-slate-900 px-10 py-5 rounded-2xl font-black text-lg hover:bg-yellow-400 transition flex items-center justify-center">
-                        दाखिला फॉर्म <i class="fas fa-arrow-right ml-3"></i>
-                    </button>
-                    <button class="bg-white/10 backdrop-blur-md border border-white/40 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-white/20 transition">
-                        वीडियो टूर देखें
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="custom-shape-divider-bottom">
-            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="#ffffff"></path>
-            </svg>
-        </div>
-    </section>
-
-    <section class="py-20 container mx-auto px-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 -mt-32 relative z-20">
-            <div class="bg-white p-8 rounded-3xl shadow-2xl border-b-8 border-blue-600 transform hover:-translate-y-4 transition duration-500">
-                <div class="bg-blue-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fas fa-book-open text-3xl text-blue-600"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3">ई-लाइब्रेरी</h3>
-                <p class="text-gray-500 text-sm mb-4">हजारों किताबों का संग्रह अब आपके फोन और कंप्यूटर पर उपलब्ध है।</p>
-                <a href="#" class="text-blue-600 font-black hover:tracking-widest transition-all">READ MORE</a>
-            </div>
-            <div class="bg-white p-8 rounded-3xl shadow-2xl border-b-8 border-yellow-500 transform hover:-translate-y-4 transition duration-500">
-                <div class="bg-yellow-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fas fa-bus text-3xl text-yellow-600"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3">ट्रांसपोर्ट</h3>
-                <p class="text-gray-500 text-sm mb-4">पूरे शहर में सुरक्षित बस सेवा उपलब्ध, GPS ट्रैकिंग सिस्टम के साथ।</p>
-                <a href="#" class="text-yellow-600 font-black hover:tracking-widest transition-all">READ MORE</a>
-            </div>
-            <div class="bg-white p-8 rounded-3xl shadow-2xl border-b-8 border-green-600 transform hover:-translate-y-4 transition duration-500">
-                <div class="bg-green-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fas fa-medal text-3xl text-green-600"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3">उपलब्धियां</h3>
-                <p class="text-gray-500 text-sm mb-4">खेल और शिक्षा के क्षेत्र में हमारे छात्रों ने गाड़े हैं सफलता के झंडे।</p>
-                <a href="#" class="text-green-600 font-black hover:tracking-widest transition-all">READ MORE</a>
-            </div>
-            <div class="bg-white p-8 rounded-3xl shadow-2xl border-b-8 border-purple-600 transform hover:-translate-y-4 transition duration-500">
-                <div class="bg-purple-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fas fa-user-friends text-3xl text-purple-600"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3">एलुमनाई</h3>
-                <p class="text-gray-500 text-sm mb-4">हमारे पुराने छात्रों से जुड़ें जो आज दुनिया भर में सफल हैं।</p>
-                <a href="#" class="text-purple-600 font-black hover:tracking-widest transition-all">READ MORE</a>
-            </div>
-        </div>
-    </section>
-
-    <section id="about" class="py-20 bg-slate-50">
-        <div class="container mx-auto px-6">
-            <div class="flex flex-col lg:flex-row gap-16">
-                <div class="lg:w-1/2">
-                    <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1000&q=80" class="rounded-[40px] shadow-3xl" alt="School Activity">
-                        <div class="absolute -bottom-10 -right-10 bg-white p-10 rounded-[40px] shadow-2xl hidden md:block border-t-8 border-blue-600">
-                            <h3 class="text-5xl font-black text-blue-700">25+</h3>
-                            <p class="text-gray-500 font-bold uppercase tracking-widest">Years Experience</p>
-                        </div>
+        <aside class="lg:w-1/4">
+            <div class="sticky top-32 space-y-8">
+                <div class="rounded-3xl overflow-hidden shadow-2xl border border-gray-200">
+                    <div class="bg-blue-900 text-white p-5 font-black uppercase tracking-widest text-center">क्विक लिंक्स</div>
+                    <div class="flex flex-col">
+                        <a href="#" class="sidebar-link"><i class="fas fa-file-invoice mr-3"></i> परीक्षा परिणाम</a>
+                        <a href="#" class="sidebar-link"><i class="fas fa-calendar-check mr-3"></i> स्कूल कैलेंडर</a>
+                        <a href="#" class="sidebar-link"><i class="fas fa-user-tie mr-3"></i> शिक्षक सूची</a>
+                        <a href="#" class="sidebar-link"><i class="fas fa-book mr-3"></i> लाइब्रेरी</a>
+                        <a href="#" class="sidebar-link"><i class="fas fa-bus mr-3"></i> ट्रांसपोर्ट</a>
+                        <a href="#" class="sidebar-link"><i class="fas fa-download mr-3"></i> डाउनलोड फॉर्म्स</a>
                     </div>
                 </div>
-                <div class="lg:w-1/2 flex flex-col justify-center">
-                    <span class="text-blue-600 font-black tracking-widest uppercase mb-4">Gav के बारे में जानें</span>
-                    <h2 class="text-5xl font-black text-slate-800 mb-8 leading-tight">हम एक नई पीढ़ी को <br><span class="text-blue-600">तैयार कर रहे हैं</span></h2>
-                    <p class="text-gray-600 text-lg mb-8 leading-relaxed" id="aboutTextMain">
-                        हमारा स्कूल केवल शिक्षा का केंद्र नहीं है, बल्कि यह एक संस्कार शाला है। यहाँ हम बच्चों को रटने की जगह समझने और रटने की जगह सीखने के लिए प्रेरित करते हैं। आधुनिक सुविधाओं से लैस हमारी लैब्स और डिजिटल क्लासेस बच्चों को ग्लोबल स्तर पर कॉम्पिटिटिव बनाती हैं।
-                    </p>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div class="flex items-center space-x-4 bg-white p-4 rounded-2xl shadow-sm">
-                            <div class="bg-blue-100 p-3 rounded-xl"><i class="fas fa-microchip text-blue-600"></i></div>
-                            <span class="font-bold">STEM Education</span>
-                        </div>
-                        <div class="flex items-center space-x-4 bg-white p-4 rounded-2xl shadow-sm">
-                            <div class="bg-green-100 p-3 rounded-xl"><i class="fas fa-palette text-green-600"></i></div>
-                            <span class="font-bold">Art & Music</span>
-                        </div>
-                        <div class="flex items-center space-x-4 bg-white p-4 rounded-2xl shadow-sm">
-                            <div class="bg-yellow-100 p-3 rounded-xl"><i class="fas fa-swimmer text-yellow-600"></i></div>
-                            <span class="font-bold">Indoor Pool</span>
-                        </div>
-                        <div class="flex items-center space-x-4 bg-white p-4 rounded-2xl shadow-sm">
-                            <div class="bg-red-100 p-3 rounded-xl"><i class="fas fa-shield-alt text-red-600"></i></div>
-                            <span class="font-bold">CCTV Security</span>
-                        </div>
-                    </div>
+
+                <div class="bg-white p-8 rounded-3xl shadow-2xl border-t-8 border-red-600 text-center">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80" class="w-32 h-32 rounded-full mx-auto mb-6 border-4 border-gray-100 object-cover" alt="Principal">
+                    <h4 class="font-black text-blue-900 text-xl" id="principalName">श्री डी.के. साहू</h4>
+                    <p class="text-red-600 font-bold text-xs uppercase mb-4">प्राचार्य (Principal)</p>
+                    <hr class="mb-4">
+                    <p class="text-sm italic text-gray-500 leading-relaxed">"हमारा उद्देश्य केवल साक्षरता नहीं, बल्कि बच्चों का सर्वांगीण विकास करना है।"</p>
                 </div>
             </div>
-        </div>
-    </section>
+        </aside>
 
-    <section class="parallax py-32 relative text-white" style="background-image: url('https://images.unsplash.com/photo-1523050335392-938511794244?auto=format&fit=crop&w=1500&q=80');">
-        <div class="absolute inset-0 bg-blue-900/80"></div>
-        <div class="container mx-auto px-6 relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-12 text-center">
-            <div>
-                <i class="fas fa-user-graduate text-5xl text-yellow-400 mb-6"></i>
-                <h3 class="text-6xl font-black mb-2" id="stat_students">1200+</h3>
-                <p class="text-lg font-bold opacity-80">संतुष्ट छात्र</p>
-            </div>
-            <div>
-                <i class="fas fa-chalkboard-teacher text-5xl text-yellow-400 mb-6"></i>
-                <h3 class="text-6xl font-black mb-2" id="stat_teachers">85+</h3>
-                <p class="text-lg font-bold opacity-80">अनुभवी शिक्षक</p>
-            </div>
-            <div>
-                <i class="fas fa-award text-5xl text-yellow-400 mb-6"></i>
-                <h3 class="text-6xl font-black mb-2" id="stat_awards">42</h3>
-                <p class="text-lg font-bold opacity-80">नेशनल अवॉर्ड्स</p>
-            </div>
-            <div>
-                <i class="fas fa-building text-5xl text-yellow-400 mb-6"></i>
-                <h3 class="text-6xl font-black mb-2" id="stat_campus">5</h3>
-                <p class="text-lg font-bold opacity-80">एकड़ कैंपस</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-24 bg-white overflow-hidden">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-20">
-                <h4 class="text-blue-600 font-black tracking-widest uppercase">Expert Mentors</h4>
-                <h2 class="text-5xl font-black text-slate-800 mt-2">हमारे <span class="text-blue-700">श्रेष्ठ शिक्षक</span></h2>
-            </div>
+        <main class="lg:w-3/4">
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-                <div class="teacher-card group relative">
-                    <div class="relative overflow-hidden rounded-[30px] h-[400px]">
-                        <img src="https://images.unsplash.com/photo-1544717297-fa154da09f9b?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-blue-900 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-500 flex flex-col justify-end p-8">
-                            <div class="flex space-x-4 justify-center mb-4 transform translate-y-10 group-hover:translate-y-0 transition duration-500">
-                                <a href="#" class="bg-white text-blue-600 w-10 h-10 rounded-full flex items-center justify-center hover:bg-yellow-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#" class="bg-white text-blue-600 w-10 h-10 rounded-full flex items-center justify-center hover:bg-yellow-400 hover:text-white"><i class="fab fa-twitter"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-6 text-center">
-                        <h4 class="text-2xl font-black text-slate-800">श्री अनिरुद्ध तिवारी</h4>
-                        <p class="text-blue-600 font-bold">HOD Mathematics</p>
+            <section class="hero-box mb-16 p-10 text-white text-center md:text-left shadow-3xl">
+                <div class="max-w-2xl animate__animated animate__fadeInLeft">
+                    <h2 class="text-5xl md:text-7xl font-black mb-6 leading-tight">ज्ञान ही <span class="text-yellow-400">परम बल</span> है</h2>
+                    <p class="text-xl opacity-90 mb-10 font-medium">हायर सेकंडरी स्कूल बागरेकसा में हम भविष्य के लीडर्स तैयार करते हैं। आधुनिक लैब, खेल मैदान और अनुभवी शिक्षकों के साथ सर्वश्रेष्ठ शिक्षा।</p>
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="toggleModal('admissionModal')" class="bg-yellow-500 text-blue-900 px-10 py-4 rounded-2xl font-black text-lg hover:bg-white transition shadow-2xl">प्रवेश आवेदन भरें</button>
+                        <button class="bg-white/10 backdrop-blur-lg border border-white/30 px-10 py-4 rounded-2xl font-bold text-lg hover:bg-white/20 transition">अधिक जानें</button>
                     </div>
                 </div>
-                <div class="teacher-card group relative">
-                    <div class="relative overflow-hidden rounded-[30px] h-[400px]">
-                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-blue-900 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-500 flex flex-col justify-end p-8">
-                            <div class="flex space-x-4 justify-center mb-4 transform translate-y-10 group-hover:translate-y-0 transition duration-500">
-                                <a href="#" class="bg-white text-blue-600 w-10 h-10 rounded-full flex items-center justify-center hover:bg-yellow-400 hover:text-white"><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-6 text-center">
-                        <h4 class="text-2xl font-black text-slate-800">श्रीमती रेखा वर्मा</h4>
-                        <p class="text-blue-600 font-bold">Physics Expert</p>
-                    </div>
+            </section>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+                <div class="bg-white p-6 rounded-3xl text-center shadow-lg border-b-4 border-blue-600">
+                    <h3 class="text-4xl font-black text-blue-900" id="statStudents">850+</h3>
+                    <p class="text-gray-500 font-bold uppercase text-xs">कुल छात्र</p>
                 </div>
-                <div class="teacher-card group relative">
-                    <div class="relative overflow-hidden rounded-[30px] h-[400px]">
-                        <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover">
-                    </div>
-                    <div class="mt-6 text-center">
-                        <h4 class="text-2xl font-black text-slate-800">डॉ. विकास खन्ना</h4>
-                        <p class="text-blue-600 font-bold">Chemistry HOD</p>
-                    </div>
+                <div class="bg-white p-6 rounded-3xl text-center shadow-lg border-b-4 border-red-600">
+                    <h3 class="text-4xl font-black text-red-600" id="statTeachers">32+</h3>
+                    <p class="text-gray-500 font-bold uppercase text-xs">शिक्षक</p>
                 </div>
-                <div class="teacher-card group relative">
-                    <div class="relative overflow-hidden rounded-[30px] h-[400px]">
-                        <img src="https://images.unsplash.com/photo-1580894732234-83e9e3ec30b4?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover">
-                    </div>
-                    <div class="mt-6 text-center">
-                        <h4 class="text-2xl font-black text-slate-800">सुश्री अंजलि राज</h4>
-                        <p class="text-blue-600 font-bold">English Professor</p>
-                    </div>
+                <div class="bg-white p-6 rounded-3xl text-center shadow-lg border-b-4 border-green-600">
+                    <h3 class="text-4xl font-black text-green-600" id="statLabs">5+</h3>
+                    <p class="text-gray-500 font-bold uppercase text-xs">लैब्स</p>
+                </div>
+                <div class="bg-white p-6 rounded-3xl text-center shadow-lg border-b-4 border-yellow-600">
+                    <h3 class="text-4xl font-black text-yellow-600" id="statAwards">15+</h3>
+                    <p class="text-gray-500 font-bold uppercase text-xs">अवॉर्ड्स</p>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <section id="gallery" class="py-24 bg-slate-900 text-white">
-        <div class="container mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+            <div class="grid md:grid-cols-2 gap-8 mb-16">
+                <div class="feature-card">
+                    <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-microscope text-3xl text-blue-600"></i>
+                    </div>
+                    <h4 class="text-2xl font-black text-slate-800 mb-4">विज्ञान प्रयोगशाला</h4>
+                    <p class="text-gray-500">भौतिक, रसायन और जीव विज्ञान के लिए पूरी तरह सुसज्जित आधुनिक लैब्स।</p>
+                </div>
+                <div class="feature-card">
+                    <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-laptop-code text-3xl text-red-600"></i>
+                    </div>
+                    <h4 class="text-2xl font-black text-slate-800 mb-4">कंप्यूटर शिक्षा</h4>
+                    <p class="text-gray-500">डिजिटल साक्षरता के लिए समर्पित कंप्यूटर रूम और इंटरनेट की सुविधा।</p>
+                </div>
+                <div class="feature-card">
+                    <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-volleyball-ball text-3xl text-green-600"></i>
+                    </div>
+                    <h4 class="text-2xl font-black text-slate-800 mb-4">खेल एवं कूद</h4>
+                    <p class="text-gray-500">विशाल खेल मैदान जहाँ छात्र क्रिकेट, फुटबॉल और एथलेटिक्स का अभ्यास करते हैं।</p>
+                </div>
+                <div class="feature-card">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-university text-3xl text-yellow-600"></i>
+                    </div>
+                    <h4 class="text-2xl font-black text-slate-800 mb-4">संस्कार शाला</h4>
+                    <p class="text-gray-500">शिक्षा के साथ-साथ नैतिक मूल्यों और अनुशासन पर विशेष ध्यान।</p>
+                </div>
+            </div>
+
+            <section class="bg-blue-900 rounded-[40px] p-10 text-white mb-16 shadow-2xl">
+                <h3 class="text-3xl font-black mb-10 flex items-center gap-4">
+                    <i class="fas fa-bullhorn text-yellow-400"></i> नवीनतम सूचनाएं
+                </h3>
+                <div class="space-y-6" id="noticeBoard">
+                    <div class="bg-white/10 p-6 rounded-2xl border-l-8 border-yellow-400 flex justify-between items-center group hover:bg-white/20 transition">
+                        <div>
+                            <span class="text-xs font-black uppercase text-yellow-400">10 Jan 2026</span>
+                            <h5 class="text-xl font-bold">वार्षिक परीक्षा समय-सारणी घोषित</h5>
+                        </div>
+                        <i class="fas fa-arrow-right opacity-0 group-hover:opacity-100 transition"></i>
+                    </div>
+                    <div class="bg-white/10 p-6 rounded-2xl border-l-8 border-blue-400 flex justify-between items-center group hover:bg-white/20 transition">
+                        <div>
+                            <span class="text-xs font-black uppercase text-blue-400">05 Jan 2026</span>
+                            <h5 class="text-xl font-bold">गणतंत्र दिवस की सांस्कृतिक तैयारियां</h5>
+                        </div>
+                        <i class="fas fa-arrow-right opacity-0 group-hover:opacity-100 transition"></i>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <div id="admissionModal" class="modal-overlay">
+        <div class="modal-content animate__animated animate__zoomIn">
+            <div class="bg-blue-900 p-8 text-white flex justify-between items-center">
                 <div>
-                    <h4 class="text-yellow-400 font-black tracking-widest uppercase">Capturing Moments</h4>
-                    <h2 class="text-5xl font-black mt-2">स्कूल की <span class="text-blue-500">झलकियां</span></h2>
+                    <h3 class="text-3xl font-black uppercase">प्रवेश आवेदन पत्र</h3>
+                    <p class="text-yellow-400 font-bold">शैक्षणिक सत्र <span class="sessionYear">2026</span>-27</p>
                 </div>
-                <div class="flex space-x-4">
-                    <button class="bg-blue-600 px-6 py-2 rounded-full font-bold">Events</button>
-                    <button class="bg-slate-800 px-6 py-2 rounded-full font-bold hover:bg-blue-600 transition">Campus</button>
-                    <button class="bg-slate-800 px-6 py-2 rounded-full font-bold hover:bg-blue-600 transition">Sports</button>
-                </div>
+                <button onclick="toggleModal('admissionModal')" class="text-4xl hover:text-red-500 transition">×</button>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="md:col-span-2 h-[400px] rounded-[40px] overflow-hidden group relative">
-                    <img src="https://images.unsplash.com/photo-1511629091441-ee46146481b6?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500">
-                        <i class="fas fa-expand text-5xl"></i>
+            <div class="p-10">
+                <div id="step1">
+                    <h4 class="text-xl font-black text-slate-700 mb-8 border-b-2 border-slate-100 pb-4">अपनी कक्षा का चयन करें:</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <button onclick="goToForm('9वीं')" class="p-6 bg-slate-50 border-2 border-slate-200 rounded-3xl font-black text-2xl text-blue-900 hover:bg-blue-900 hover:text-white hover:border-blue-900 transition-all shadow-sm">9th</button>
+                        <button onclick="goToForm('10वीं')" class="p-6 bg-slate-50 border-2 border-slate-200 rounded-3xl font-black text-2xl text-blue-900 hover:bg-blue-900 hover:text-white hover:border-blue-900 transition-all shadow-sm">10th</button>
+                        <button onclick="goToForm('11वीं')" class="p-6 bg-slate-50 border-2 border-slate-200 rounded-3xl font-black text-2xl text-blue-900 hover:bg-blue-900 hover:text-white hover:border-blue-900 transition-all shadow-sm">11th</button>
+                        <button onclick="goToForm('12वीं')" class="p-6 bg-slate-50 border-2 border-slate-200 rounded-3xl font-black text-2xl text-blue-900 hover:bg-blue-900 hover:text-white hover:border-blue-900 transition-all shadow-sm">12th</button>
                     </div>
+                    <p class="mt-8 text-sm text-gray-500 text-center"><i class="fas fa-info-circle mr-2"></i> चयन करने के बाद फॉर्म स्वतः खुल जाएगा।</p>
                 </div>
-                <div class="h-[400px] rounded-[40px] overflow-hidden group relative">
-                    <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                </div>
-                <div class="h-[400px] rounded-[40px] overflow-hidden group relative">
-                    <img src="https://images.unsplash.com/photo-1544531585-9837b99046c9?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                </div>
-                <div class="md:col-span-2 h-[400px] rounded-[40px] overflow-hidden group relative">
-                    <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section class="py-24 bg-blue-50">
-        <div class="container mx-auto px-6 grid lg:grid-cols-2 gap-20">
-            <div>
-                <h3 class="text-3xl font-black mb-10 flex items-center"><i class="fas fa-newspaper text-blue-600 mr-4"></i> आगामी कार्यक्रम</h3>
-                <div class="space-y-6" id="newsContainer">
-                    <div class="bg-white p-6 rounded-3xl shadow-sm flex gap-6 hover:shadow-xl transition">
-                        <div class="bg-blue-600 text-white p-4 rounded-2xl text-center min-w-[80px]">
-                            <span class="block text-2xl font-black">15</span>
-                            <span class="text-xs uppercase font-bold">Feb</span>
-                        </div>
-                        <div>
-                            <h4 class="text-xl font-bold mb-2">वार्षिक खेल महोत्सव 2026</h4>
-                            <p class="text-gray-500 text-sm">सभी छात्र अपने खेल ड्रेस में सुबह 8 बजे उपस्थित हों...</p>
-                        </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-3xl shadow-sm flex gap-6 hover:shadow-xl transition">
-                        <div class="bg-yellow-500 text-white p-4 rounded-2xl text-center min-w-[80px]">
-                            <span class="block text-2xl font-black">22</span>
-                            <span class="text-xs uppercase font-bold">Feb</span>
-                        </div>
-                        <div>
-                            <h4 class="text-xl font-bold mb-2">पेरेंट्स-टीचर मीटिंग (PTM)</h4>
-                            <p class="text-gray-500 text-sm">रिपोर्ट कार्ड वितरण और छात्र प्रगति चर्चा के लिए सादर आमंत्रित हैं।</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div>
-                <h3 class="text-3xl font-black mb-10 flex items-center"><i class="fas fa-question-circle text-blue-600 mr-4"></i> अक्सर पूछे जाने वाले सवाल</h3>
-                <div class="space-y-4">
-                    <div class="faq-item bg-white p-6 rounded-2xl shadow-sm cursor-pointer group">
-                        <div class="flex justify-between items-center">
-                            <h4 class="font-bold">एडमिशन की प्रक्रिया क्या है?</h4>
-                            <i class="fas fa-plus text-blue-600 group-hover:rotate-45 transition"></i>
-                        </div>
-                        <div class="hidden mt-4 text-gray-500 text-sm">आप ऑनलाइन फॉर्म भर सकते हैं या सीधे स्कूल ऑफिस में आकर संपर्क कर सकते हैं।</div>
-                    </div>
-                    <div class="faq-item bg-white p-6 rounded-2xl shadow-sm cursor-pointer group">
-                        <div class="flex justify-between items-center">
-                            <h4 class="font-bold">क्या बस सुविधा उपलब्ध है?</h4>
-                            <i class="fas fa-plus text-blue-600 group-hover:rotate-45 transition"></i>
-                        </div>
-                    </div>
-                    <div class="faq-item bg-white p-6 rounded-2xl shadow-sm cursor-pointer group">
-                        <div class="flex justify-between items-center">
-                            <h4 class="font-bold">स्कूल का समय क्या है?</h4>
-                            <i class="fas fa-plus text-blue-600 group-hover:rotate-45 transition"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="py-24 bg-white">
-        <div class="container mx-auto px-6">
-            <div class="bg-slate-900 rounded-[50px] overflow-hidden flex flex-col lg:flex-row shadow-3xl">
-                <div class="lg:w-1/2 h-[500px] bg-slate-800">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3506.2233913127404!2d77.06889751508307!3d28.50290968246755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d196f2647f201%3A0x6b189a690184b06a!2sGurugram%2C%20Haryana!5e0!3m2!1sen!2sin!4v1625574567890!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-                </div>
-                <div class="lg:w-1/2 p-16 text-white">
-                    <h2 class="text-4xl font-black mb-8">हमसे <span class="text-blue-500">जुड़ें</span></h2>
-                    <div class="space-y-8">
-                        <div class="flex items-start gap-6">
-                            <div class="bg-blue-600/20 p-4 rounded-2xl text-blue-500"><i class="fas fa-map-marked-alt text-2xl"></i></div>
-                            <div>
-                                <h4 class="text-xl font-bold">पता</h4>
-                                <p class="text-slate-400" id="contactAddress">123, एजुकेशन स्ट्रीट, सेक्टर 15, गाँव, भारत</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-6">
-                            <div class="bg-yellow-600/20 p-4 rounded-2xl text-yellow-500"><i class="fas fa-phone-volume text-2xl"></i></div>
-                            <div>
-                                <h4 class="text-xl font-bold">फोन</h4>
-                                <p class="text-slate-400" id="contactPhoneMain">+91 99887 76655</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-6">
-                            <div class="bg-green-600/20 p-4 rounded-2xl text-green-500"><i class="fas fa-clock text-2xl"></i></div>
-                            <div>
-                                <h4 class="text-xl font-bold">समय</h4>
-                                <p class="text-slate-400">सोम - शनि: 08:00 AM - 02:00 PM</p>
-                            </div>
-                        </div>
+                <form id="actualForm" class="hidden space-y-6">
+                    <div class="bg-blue-50 p-4 rounded-2xl flex justify-between items-center mb-6">
+                        <span class="font-black text-blue-900 uppercase">चयनित कक्षा: <span id="selectedClassDisplay" class="text-red-600 underline"></span></span>
+                        <button type="button" onclick="backToStep1()" class="text-xs bg-white px-3 py-1 rounded-full shadow font-bold text-gray-600">बदलें</button>
                     </div>
                     
-                    <div class="mt-12 flex space-x-4">
-                        <a href="#" class="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center hover:bg-red-600 transition"><i class="fab fa-youtube"></i></a>
-                        <a href="#" class="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center hover:bg-pink-600 transition"><i class="fab fa-instagram"></i></a>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="font-bold text-sm ml-2">छात्र का नाम (Name)</label>
+                            <input type="text" placeholder="पूरा नाम दर्ज करें" class="w-full p-4 bg-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-100 transition">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="font-bold text-sm ml-2">पिता का नाम (Father's Name)</label>
+                            <input type="text" placeholder="पिता का नाम दर्ज करें" class="w-full p-4 bg-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-100 transition">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="font-bold text-sm ml-2">मोबाइल नंबर (Mobile)</label>
+                            <input type="tel" placeholder="+91 00000 00000" class="w-full p-4 bg-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-100 transition">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="font-bold text-sm ml-2">विषय संकाय (Stream)</label>
+                            <select class="w-full p-4 bg-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-100 transition">
+                                <option>आर्ट्स (Arts)</option>
+                                <option>साइंस (Biology)</option>
+                                <option>साइंस (Maths)</option>
+                                <option>कॉमर्स (Commerce)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="font-bold text-sm ml-2">स्थायी पता (Address)</label>
+                        <textarea placeholder="ग्राम, पोस्ट, तहसील दर्ज करें..." class="w-full p-4 bg-slate-100 rounded-2xl h-32 outline-none focus:ring-4 focus:ring-blue-100 transition"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-green-600 text-white p-5 rounded-2xl font-black text-xl hover:bg-green-700 transition shadow-xl">सबमिट करें (Submit Form)</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-slate-900 text-white pt-24 pb-12">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
+            <div class="space-y-8">
+                <h4 class="text-3xl font-black uppercase">बागरेकसा <span class="text-blue-500">स्कूल</span></h4>
+                <p class="text-slate-400 font-medium">हमारा विद्यालय ग्रामीण प्रतिभाओं को निखारने और उन्हें वैश्विक मंच पर लाने के लिए समर्पित है।</p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-12 h-12 bg-blue-800 rounded-2xl flex items-center justify-center hover:bg-blue-600 transition shadow-lg"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="w-12 h-12 bg-red-800 rounded-2xl flex items-center justify-center hover:bg-red-600 transition shadow-lg"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="w-12 h-12 bg-pink-800 rounded-2xl flex items-center justify-center hover:bg-pink-600 transition shadow-lg"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            
+            <div>
+                <h5 class="text-xl font-black mb-8 border-l-4 border-yellow-400 pl-4">स्कूल कैंपस</h5>
+                <ul class="space-y-4 text-slate-400 font-bold">
+                    <li><a href="#" class="hover:text-white transition">स्मार्ट क्लासरूम</a></li>
+                    <li><a href="#" class="hover:text-white transition">पुस्तकालय (Library)</a></li>
+                    <li><a href="#" class="hover:text-white transition">खेल का मैदान</a></li>
+                    <li><a href="#" class="hover:text-white transition">CCTV सुरक्षा</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="text-xl font-black mb-8 border-l-4 border-blue-400 pl-4">महत्वपूर्ण लिंक</h5>
+                <ul class="space-y-4 text-slate-400 font-bold">
+                    <li><a href="#" class="hover:text-white transition">ऑनलाइन एडमिशन</a></li>
+                    <li><a href="#" class="hover:text-white transition">परीक्षा परिणाम</a></li>
+                    <li><a href="#" class="hover:text-white transition">अवकाश सूचना</a></li>
+                    <li><a href="#" class="hover:text-white transition">एडमिन पोर्टल</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="text-xl font-black mb-8 border-l-4 border-green-400 pl-4">हमसे संपर्क करें</h5>
+                <div class="space-y-6 text-slate-400">
+                    <div class="flex gap-4">
+                        <i class="fas fa-map-marker-alt text-yellow-400 text-xl"></i>
+                        <p>ग्राम व पोस्ट: बागरेकसा, जिला: राजनांदगांव, छत्तीसगढ़ - 491441</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <i class="fas fa-phone-alt text-yellow-400 text-xl"></i>
+                        <p id="footerPhone">+91 99887 76655</p>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-
-    <footer class="bg-slate-50 py-10 text-center border-t border-slate-200">
-        <p class="text-slate-500 font-bold">© 2026 Gav Public School. Developed with Passion for Excellence.</p>
-        <div class="mt-4 space-x-6 text-sm text-blue-600 font-bold">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Admin Login</a>
+        
+        <hr class="border-slate-800 mb-12">
+        
+        <div class="text-center">
+            <p class="text-slate-500 font-black tracking-widest uppercase">
+                © <span id="currentYearDisplay"></span> हायर सेकंडरी स्कूल बागरेकसा | सर्वाधिकार सुरक्षित
+            </p>
+            <p class="text-xs text-blue-800 mt-2">Design & Managed by AI Technical Partner</p>
         </div>
     </footer>
 
     <script type="module">
+        // Firebase URL Placeholder
         const dbURL = "https://school-web-ae1ba-default-rtdb.firebaseio.com/.json";
 
-        async function syncData() {
+        // Auto Year Updater
+        function updateYear() {
+            const year = new Date().getFullYear();
+            document.getElementById('currentYearDisplay').innerText = year;
+            
+            // Session logic (e.g. 2026-27)
+            const sessions = document.querySelectorAll('.sessionYear');
+            sessions.forEach(s => s.innerText = year);
+            
+            const sessionShort = document.querySelectorAll('.sessionYearShort');
+            sessionShort.forEach(s => s.innerText = year.toString().slice(-2));
+        }
+
+        // Modal Controls
+        window.toggleModal = (id) => {
+            const m = document.getElementById(id);
+            m.classList.toggle('active-modal');
+            if(!m.classList.contains('active-modal')) backToStep1();
+        }
+
+        // Admission Form Logic
+        window.goToForm = (cls) => {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('actualForm').classList.remove('hidden');
+            document.getElementById('selectedClassDisplay').innerText = cls;
+        }
+
+        window.backToStep1 = () => {
+            document.getElementById('step1').classList.remove('hidden');
+            document.getElementById('actualForm').classList.add('hidden');
+        }
+
+        // Firebase Sync (Admin Panel Commands)
+        async function fetchAdminConfig() {
             try {
                 const response = await fetch(dbURL);
                 const data = await response.json();
                 
                 if(data) {
-                    // Update Content Dynamically
+                    // Update all dynamic elements if present in Firebase
                     if(data.schoolName) {
-                        document.getElementById('schoolNameMain').innerText = data.schoolName;
-                        document.title = data.schoolName + " | Official Website";
+                        document.getElementById('mainSchoolName').innerText = data.schoolName;
+                        document.getElementById('metaTitle').innerText = data.schoolName;
                     }
-                    if(data.heroHeading) document.getElementById('heroMainHeading').innerHTML = data.heroHeading;
-                    if(data.aboutLong) document.getElementById('aboutTextMain').innerText = data.aboutLong;
+                    if(data.principalName) document.getElementById('principalName').innerText = data.principalName;
+                    if(data.scrollNotice) document.getElementById('scrollNotice').innerText = data.scrollNotice;
                     if(data.phone) {
                         document.getElementById('topPhone').innerText = data.phone;
-                        document.getElementById('contactPhoneMain').innerText = data.phone;
+                        document.getElementById('footerPhone').innerText = data.phone;
                     }
-                    // Adding stats update from firebase
+                    // Stats commands from admin
                     if(data.stats) {
-                        document.getElementById('stat_students').innerText = data.stats.students;
-                        document.getElementById('stat_teachers').innerText = data.stats.teachers;
+                        document.getElementById('statStudents').innerText = data.stats.students;
+                        document.getElementById('statTeachers').innerText = data.stats.teachers;
                     }
                 }
             } catch (err) {
-                console.warn("Firebase fetching failed, showing local data.");
+                console.warn("Using offline mode configuration.");
             }
         }
 
-        // Initialize FAQ toggles
-        document.querySelectorAll('.faq-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const content = item.querySelector('div:last-child');
-                content.classList.toggle('hidden');
-            });
-        });
-
-        window.onload = syncData;
+        // Initialized functions
+        window.onload = () => {
+            updateYear();
+            fetchAdminConfig();
+            
+            // Dynamic News Loader Command
+            console.log("System Ready: High Secondary School Bagreksa Website Active.");
+        };
     </script>
 </body>
 </html>
