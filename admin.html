@@ -2,97 +2,393 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <title>School Admin Panel | Secure Access</title>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gav Public School | ज्ञानं परमं बलम्</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; padding: 40px; }
-        .admin-card { background: white; max-width: 800px; margin: auto; padding: 30px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        h2 { color: #0c2461; border-bottom: 2px solid #f6b93b; padding-bottom: 10px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
-        button { background: #0c2461; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        button:hover { background: #f6b93b; color: #0c2461; }
-        .notice-list { margin-top: 30px; background: #eee; padding: 15px; }
+        :root { --primary: #1e40af; --secondary: #facc15; }
+        body { font-family: 'Poppins', 'Mukta', sans-serif; overflow-x: hidden; }
+        .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .hero-bg { 
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1541339907198-e08756ebafe3?auto=format&fit=crop&w=1500&q=80'); 
+            background-attachment: fixed; background-size: cover; background-position: center;
+        }
+        .card-hover:hover { transform: translateY(-10px); transition: 0.3s; }
+        .section-title::after { content: ''; width: 80px; height: 4px; background: var(--secondary); display: block; margin: 10px auto; }
+        .tab-content { display: none; }
+        .active-tab { display: block; }
     </style>
 </head>
-<body>
+<body class="bg-slate-50">
 
-<div class="admin-card">
-    <h2>🏫 स्कूल वेबसाइट एडमिन पैनल</h2>
-    <p>यहाँ से आप वेबसाइट की हर चीज़ को लाइव बदल सकते हैं।</p>
-
-    <hr><br>
-
-    <div class="form-group">
-        <label>स्कूल का नाम (Main Name)</label>
-        <input type="text" id="schoolName" placeholder="जैसे: राजकीय विद्यालय...">
+    <div class="bg-blue-900 text-white py-2 hidden md:block">
+        <div class="container mx-auto px-6 flex justify-between items-center text-sm">
+            <div>
+                <span class="mr-4"><i class="fas fa-phone mr-2"></i> <span id="topPhone">+91 98XXX XXXXX</span></span>
+                <span><i class="fas fa-envelope mr-2"></i> <span id="topEmail">info@gavschool.com</span></span>
+            </div>
+            <div class="space-x-4">
+                <a href="#" class="hover:text-yellow-400">CBSE Affiliation</a>
+                <a href="#" class="hover:text-yellow-400">Login</a>
+                <a href="#" class="hover:text-yellow-400">Alumni</a>
+            </div>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label>टैगलाइन (Tagline)</label>
-        <input type="text" id="tagline" placeholder="जैसे: अनुशासन ही सेवा है...">
+    <nav class="glass-nav sticky top-0 z-[100] shadow-md">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-700 p-2 rounded-lg">
+                    <i class="fas fa-school text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-blue-900 leading-tight" id="mainSchoolName">GAV SCHOOL</h1>
+                    <p class="text-xs tracking-[3px] text-gray-500 uppercase">Education For Excellence</p>
+                </div>
+            </div>
+            
+            <div class="hidden lg:flex space-x-8 font-semibold text-gray-700">
+                <a href="#home" class="hover:text-blue-700 transition">होम</a>
+                <div class="group relative">
+                    <a href="#about" class="hover:text-blue-700 transition">स्कूल के बारे में <i class="fas fa-chevron-down text-[10px]"></i></a>
+                    <div class="absolute hidden group-hover:block w-48 bg-white shadow-xl mt-2 rounded-lg py-2 border-t-4 border-blue-700">
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">हमारा इतिहास</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">प्रिंसिपल का संदेश</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">मैनेजमेंट टीम</a>
+                    </div>
+                </div>
+                <a href="#academics" class="hover:text-blue-700 transition">एकेडमिक्स</a>
+                <a href="#gallery" class="hover:text-blue-700 transition">गैलरी</a>
+                <a href="#admission" class="hover:text-blue-700 transition">एडमिशन</a>
+                <a href="#contact" class="hover:text-blue-700 transition">संपर्क</a>
+            </div>
+            
+            <button class="bg-yellow-500 text-blue-900 font-bold px-6 py-2 rounded-md shadow-lg hover:bg-yellow-400 transition transform hover:scale-105 active:scale-95">
+                Pay Fee
+            </button>
+        </div>
+    </nav>
+
+    <header id="home" class="hero-bg h-[85vh] flex items-center relative overflow-hidden">
+        <div class="container mx-auto px-6 z-10">
+            <div class="max-w-3xl text-white animate__animated animate__fadeInLeft">
+                <span class="bg-yellow-500 text-blue-900 px-4 py-1 rounded-full font-bold text-sm uppercase mb-4 inline-block">सत्र 2026-27 के प्रवेश खुले हैं</span>
+                <h2 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight" id="heroTitle">बेहतर भविष्य की <span class="text-yellow-400">बुनियाद</span></h2>
+                <p class="text-xl opacity-90 mb-8 border-l-4 border-yellow-400 pl-4" id="heroDesc">हम आपके बच्चों को केवल शिक्षित नहीं करते, बल्कि उन्हें कल की चुनौतियों के लिए सक्षम बनाते हैं।</p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#admission" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-lg font-bold text-lg flex items-center">
+                        <i class="fas fa-user-plus mr-2"></i> अभी पंजीकरण करें
+                    </a>
+                    <a href="#courses" class="bg-white/10 backdrop-blur-md border border-white/30 hover:bg-white/20 px-8 py-4 rounded-lg font-bold text-lg">
+                        कोर्स देखें
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-0 right-0 p-8 hidden md:block">
+            <div class="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/20">
+                <p class="text-white text-sm">कुल छात्र: <span class="font-bold text-yellow-400">1200+</span></p>
+                <p class="text-white text-sm">सफलता दर: <span class="font-bold text-green-400">100%</span></p>
+            </div>
+        </div>
+    </header>
+
+    <div class="bg-red-600 text-white flex items-center overflow-hidden h-12">
+        <div class="bg-red-800 px-6 h-full flex items-center font-bold z-10 whitespace-nowrap shadow-xl">ताज़ा सूचनाएं</div>
+        <marquee class="font-medium text-lg" id="liveNotice">स्कूल में खेल प्रतियोगिता का आयोजन 10 फरवरी से शुरू होगा... वार्षिक परीक्षा मार्च के अंतिम सप्ताह में होगी...</marquee>
     </div>
 
-    <h3>👤 प्रधानाचार्य सेटिंग्स</h3>
-    <div class="form-group">
-        <label>प्रधानाचार्य का नाम</label>
-        <input type="text" id="pName">
-    </div>
-    <div class="form-group">
-        <label>संदेश (Principal Message)</label>
-        <textarea id="pMsg" rows="4"></textarea>
-    </div>
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="text-center p-6 card-hover">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-graduate text-2xl text-blue-700"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-800" id="statStudentCount">500+</h3>
+                <p class="text-gray-500 font-semibold">होनहार छात्र</p>
+            </div>
+            <div class="text-center p-6 card-hover">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-chalkboard-teacher text-2xl text-green-700"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-800" id="statTeacherCount">40+</h3>
+                <p class="text-gray-500 font-semibold">अनुभवी शिक्षक</p>
+            </div>
+            <div class="text-center p-6 card-hover">
+                <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-microscope text-2xl text-yellow-700"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-800" id="statLabCount">10+</h3>
+                <p class="text-gray-500 font-semibold">आधुनिक लैब</p>
+            </div>
+            <div class="text-center p-6 card-hover">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-trophy text-2xl text-purple-700"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-800" id="statAwardCount">25+</h3>
+                <p class="text-gray-500 font-semibold">पुरस्कार</p>
+            </div>
+        </div>
+    </section>
 
-    <button onclick="updateConfig()">वेबसाइट अपडेट करें</button>
+    <section id="about" class="py-20 bg-slate-50">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                <div class="lg:w-1/2 relative animate__animated animate__fadeIn">
+                    <div class="absolute -top-4 -left-4 w-32 h-32 bg-yellow-400 -z-10 rounded-full blur-2xl opacity-40"></div>
+                    <img id="aboutImage" src="https://images.unsplash.com/photo-1577896851231-70ef14603e80?auto=format&fit=crop&w=800&q=80" alt="School" class="rounded-3xl shadow-2xl border-8 border-white">
+                    <div class="absolute -bottom-10 -right-10 bg-blue-700 p-8 rounded-2xl text-white shadow-xl hidden md:block">
+                        <p class="text-4xl font-bold">20+</p>
+                        <p class="text-sm opacity-80 uppercase tracking-widest">वर्षों का अनुभव</p>
+                    </div>
+                </div>
+                <div class="lg:w-1/2">
+                    <h4 class="text-blue-700 font-bold uppercase tracking-widest mb-2">हमारी पहचान</h4>
+                    <h2 class="text-4xl font-bold text-gray-900 mb-6 section-title text-left">Gav के विद्यालय में आपका स्वागत है</h2>
+                    <p class="text-gray-600 text-lg mb-8 leading-relaxed" id="aboutLongText">
+                        हमारा विद्यालय केवल चारदीवारी और कक्षाओं का समूह नहीं है, बल्कि यह एक ऐसी जगह है जहाँ सपनों को पंख मिलते हैं। हम अपने छात्रों में आत्मविश्वास, नैतिकता और नवाचार (innovation) को बढ़ावा देते हैं। यहाँ की आधुनिक प्रयोगशालाएं, विशाल खेल का मैदान और समृद्ध पुस्तकालय छात्रों के सर्वांगीण विकास के लिए समर्पित हैं।
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                            <div>
+                                <h4 class="font-bold">स्मार्ट क्लासरूम</h4>
+                                <p class="text-sm text-gray-500">डिजिटल माध्यम से बेहतर शिक्षण</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                            <div>
+                                <h4 class="font-bold">परिवहन सुविधा</h4>
+                                <p class="text-sm text-gray-500">सुरक्षित बस और वैन सेवा</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="border-2 border-blue-700 text-blue-700 font-bold px-8 py-3 rounded-lg hover:bg-blue-700 hover:text-white transition">अधिक जानें</button>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <br><br>
-    <hr>
-    <h3>📢 नया नोटिस जारी करें</h3>
-    <div class="form-group">
-        <input type="text" id="nTitle" placeholder="नोटिस का शीर्षक">
-        <textarea id="nDesc" placeholder="नोटिस का विवरण" style="margin-top:10px"></textarea>
-        <button onclick="addNotice()" style="margin-top:10px; background: #27ae60;">नोटिस पब्लिश करें</button>
-    </div>
-</div>
+    <section class="py-20 bg-blue-900 text-white">
+        <div class="container mx-auto px-6 grid md:grid-cols-3 gap-12 items-center">
+            <div class="md:col-span-1">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-64 h-64 mx-auto rounded-full border-4 border-yellow-400 p-2" alt="Principal">
+                <div class="text-center mt-4">
+                    <h3 class="text-2xl font-bold" id="principalName">डॉ. आर. के. शर्मा</h3>
+                    <p class="text-yellow-400">प्रिंसिपल (PhD in Education)</p>
+                </div>
+            </div>
+            <div class="md:col-span-2">
+                <i class="fas fa-quote-left text-4xl text-yellow-400 mb-6"></i>
+                <h2 class="text-3xl font-bold mb-6 italic">"शिक्षा ही वह नींव है जिस पर हम अपने भविष्य का निर्माण करते हैं।"</h2>
+                <p class="text-blue-100 text-lg leading-relaxed mb-6" id="principalMessageText">
+                    मेरा मानना है कि हर बच्चे के अंदर एक अनोखी प्रतिभा होती है। हमारी जिम्मेदारी उस प्रतिभा को पहचानना और उसे तराशना है। हम बच्चों को न केवल परीक्षा के लिए, बल्कि जीवन की बड़ी परीक्षाओं के लिए तैयार करते हैं। हमारे शिक्षक हर कदम पर बच्चों का मार्गदर्शन करते हैं।
+                </p>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Signature_of_Bill_Clinton.svg" class="w-32 invert opacity-70" alt="Signature">
+            </div>
+        </div>
+    </section>
 
-<script>
-    const firebaseConfig = { databaseURL: "https://school-web-ae1ba-default-rtdb.firebaseio.com/" };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6 text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4 section-title">मुख्य सुविधाएं</h2>
+            <p class="text-gray-500">हमारा विद्यालय छात्रों को विश्वस्तरीय सुविधाएं प्रदान करता है</p>
+        </div>
+        <div class="container mx-auto px-6 grid md:grid-cols-3 gap-10">
+            <div class="bg-blue-50 p-10 rounded-3xl card-hover border-b-4 border-blue-600 shadow-sm">
+                <i class="fas fa-laptop-code text-5xl text-blue-600 mb-6"></i>
+                <h3 class="text-2xl font-bold mb-4">कंप्यूटर लैब</h3>
+                <p class="text-gray-600 mb-6">हाई-स्पीड इंटरनेट और नवीनतम सॉफ्टवेयर के साथ छात्रों के लिए आधुनिक लैब।</p>
+                <a href="#" class="text-blue-700 font-bold hover:underline">विस्तार से देखें →</a>
+            </div>
+            <div class="bg-yellow-50 p-10 rounded-3xl card-hover border-b-4 border-yellow-600 shadow-sm">
+                <i class="fas fa-running text-5xl text-yellow-600 mb-6"></i>
+                <h3 class="text-2xl font-bold mb-4">खेल का मैदान</h3>
+                <p class="text-gray-600 mb-6">क्रिकेट, फुटबॉल और बास्केटबॉल के लिए विशाल मैदान और प्रशिक्षित कोच।</p>
+                <a href="#" class="text-yellow-700 font-bold hover:underline">विस्तार से देखें →</a>
+            </div>
+            <div class="bg-green-50 p-10 rounded-3xl card-hover border-b-4 border-green-600 shadow-sm">
+                <i class="fas fa-book-reader text-5xl text-green-600 mb-6"></i>
+                <h3 class="text-2xl font-bold mb-4">लाइब्रेरी</h3>
+                <p class="text-gray-600 mb-6">10,000 से अधिक पुस्तकों के साथ एक शांत और अध्ययन के अनुकूल पुस्तकालय।</p>
+                <a href="#" class="text-green-700 font-bold hover:underline">विस्तार से देखें →</a>
+            </div>
+        </div>
+    </section>
 
-    // Configuration Update
-    function updateConfig() {
-        const data = {
-            schoolName: document.getElementById('schoolName').value,
-            tagline: document.getElementById('tagline').value,
-            principalName: document.getElementById('pName').value,
-            principalMsg: document.getElementById('pMsg').value
-        };
-        db.ref('school_config').set(data).then(() => alert("वेबसाइट अपडेट हो गई!"));
-    }
+    <section id="gallery" class="py-20 bg-slate-900">
+        <div class="container mx-auto px-6 text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4 text-white section-title">गैलरी</h2>
+            <div class="flex justify-center space-x-4 mb-10 overflow-x-auto py-4">
+                <button class="bg-blue-600 text-white px-6 py-2 rounded-full font-semibold">सभी</button>
+                <button class="bg-gray-700 text-white px-6 py-2 rounded-full font-semibold hover:bg-blue-600 transition">इवेंट्स</button>
+                <button class="bg-gray-700 text-white px-6 py-2 rounded-full font-semibold hover:bg-blue-600 transition">कैंपस</button>
+                <button class="bg-gray-700 text-white px-6 py-2 rounded-full font-semibold hover:bg-blue-600 transition">स्पोर्ट्स</button>
+            </div>
+        </div>
+        <div class="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-4" id="galleryContainer">
+            <div class="group relative overflow-hidden rounded-xl h-64">
+                <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <i class="fas fa-search-plus text-white text-3xl"></i>
+                </div>
+            </div>
+            <div class="group relative overflow-hidden rounded-xl h-64">
+                <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <i class="fas fa-search-plus text-white text-3xl"></i>
+                </div>
+            </div>
+            <div class="group relative overflow-hidden rounded-xl h-64">
+                <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <i class="fas fa-search-plus text-white text-3xl"></i>
+                </div>
+            </div>
+            <div class="group relative overflow-hidden rounded-xl h-64">
+                <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <i class="fas fa-search-plus text-white text-3xl"></i>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // Add New Notice
-    function addNotice() {
-        const title = document.getElementById('nTitle').value;
-        const desc = document.getElementById('nDesc').value;
-        const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-        const d = new Date();
+    <section id="admission" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="bg-blue-50 rounded-[40px] overflow-hidden shadow-2xl flex flex-col lg:flex-row">
+                <div class="lg:w-1/2 p-12 bg-blue-700 text-white">
+                    <h2 class="text-4xl font-bold mb-6">ऑनलाइन एडमिशन</h2>
+                    <p class="mb-8 opacity-80">कृपया फॉर्म ध्यानपूर्वक भरें। हमारे प्रतिनिधि 24 घंटे के भीतर आपसे संपर्क करेंगे।</p>
+                    <ul class="space-y-4">
+                        <li class="flex items-center"><i class="fas fa-calendar-check mr-4 text-yellow-400"></i> सत्र 2026-27 के लिए आवेदन</li>
+                        <li class="flex items-center"><i class="fas fa-id-card mr-4 text-yellow-400"></i> आधार कार्ड अनिवार्य</li>
+                        <li class="flex items-center"><i class="fas fa-file-invoice mr-4 text-yellow-400"></i> ट्रांसफर सर्टिफिकेट (T.C.)</li>
+                    </ul>
+                    <div class="mt-12 p-6 bg-blue-800 rounded-2xl">
+                        <p class="font-bold">हेल्पलाइन नंबर:</p>
+                        <p class="text-2xl text-yellow-400">+91 0000 000000</p>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 p-12">
+                    <form id="admissionForm" class="space-y-4">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-2">विद्यार्थी का नाम *</label>
+                                <input type="text" class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-blue-500 outline-none" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-2">पिता का नाम *</label>
+                                <input type="text" class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-blue-500 outline-none" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2">संपर्क नंबर *</label>
+                            <input type="tel" class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-blue-500 outline-none" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2">कक्षा जिसमें प्रवेश चाहिए *</label>
+                            <select class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-blue-500 outline-none">
+                                <option>नर्सरी</option>
+                                <option>कक्षा 1</option>
+                                <option>कक्षा 5</option>
+                                <option>कक्षा 9</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-700 text-white font-bold py-4 rounded-lg hover:bg-blue-800 transition">एप्लीकेशन जमा करें</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        db.ref('notices').push({
-            title: title,
-            description: desc,
-            day: d.getDate(),
-            month: monthNames[d.getMonth()],
-            year: d.getFullYear()
-        }).then(() => {
-            alert("नोटिस जारी हो गया!");
-            document.getElementById('nTitle').value = "";
-            document.getElementById('nDesc').value = "";
-        });
-    }
-</script>
+    <footer id="contact" class="bg-gray-900 text-white pt-20 pb-10">
+        <div class="container mx-auto px-6 grid md:grid-cols-4 gap-12 border-b border-gray-800 pb-16">
+            <div class="col-span-1 md:col-span-1">
+                <h3 class="text-2xl font-bold mb-6 text-yellow-400">GAV SCHOOL</h3>
+                <p class="text-gray-400 leading-relaxed mb-6">
+                    शिक्षा के माध्यम से समाज में सकारात्मक बदलाव लाना हमारा लक्ष्य है। हम 20 वर्षों से बच्चों के उज्जवल भविष्य का निर्माण कर रहे हैं।
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#" class="w-10 h-10 bg-blue-800 rounded-full flex items-center justify-center hover:bg-yellow-500 transition"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="w-10 h-10 bg-blue-400 rounded-full flex items-center justify-center hover:bg-yellow-500 transition"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="w-10 h-10 bg-pink-600 rounded-full flex items-center justify-center hover:bg-yellow-500 transition"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-yellow-500 transition"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-6">त्वरित लिंक</h3>
+                <ul class="space-y-4 text-gray-400">
+                    <li><a href="#" class="hover:text-yellow-400 transition">नियम और शर्तें</a></li>
+                    <li><a href="#" class="hover:text-yellow-400 transition">अवकाश सूची</a></li>
+                    <li><a href="#" class="hover:text-yellow-400 transition">डाउनलोड्स</a></li>
+                    <li><a href="#" class="hover:text-yellow-400 transition">करियर</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-6">एकेडमिक्स</h3>
+                <ul class="space-y-4 text-gray-400">
+                    <li><a href="#" class="hover:text-yellow-400 transition">प्राइमरी विंग</a></li>
+                    <li><a href="#" class="hover:text-yellow-400 transition">सेकेंडरी विंग</a></li>
+                    <li><a href="#" class="hover:text-yellow-400 transition">ई-लर्निंग</a></li>
+                    <li><a href="#" class="hover:text-yellow-400 transition">एक्स्ट्रा करिकुलर</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-6">लोकेशन</h3>
+                <div class="rounded-lg overflow-hidden h-40">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3506.2233913121413!2d77.0594344!3d28.5029!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjjCsDMwJzEwLjQiTiA3N8KwMDMnMzQuMCJF!5e0!3m2!1sen!2sin!4v1625000000000!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                <p class="mt-4 text-gray-400"><i class="fas fa-map-marker-alt text-yellow-400 mr-2"></i> सेक्टर 4, गुरुग्राम, हरियाणा</p>
+            </div>
+        </div>
+        <div class="text-center mt-10 text-gray-500 text-sm">
+            &copy; 2026 Gav Public School. All Rights Reserved. Designed by AI Collaborator.
+        </div>
+    </footer>
 
+    <script type="module">
+        const dbURL = "https://school-web-ae1ba-default-rtdb.firebaseio.com/.json";
+
+        async function syncWithFirebase() {
+            try {
+                const res = await fetch(dbURL);
+                const data = await res.json();
+                
+                if(data) {
+                    // Update Texts
+                    if(data.schoolName) {
+                        document.getElementById('mainSchoolName').innerText = data.schoolName;
+                    }
+                    if(data.heroTitle) document.getElementById('heroTitle').innerHTML = data.heroTitle;
+                    if(data.heroDesc) document.getElementById('heroDesc').innerText = data.heroDesc;
+                    if(data.liveNotice) document.getElementById('liveNotice').innerText = data.liveNotice;
+                    if(data.aboutLongText) document.getElementById('aboutLongText').innerText = data.aboutLongText;
+                    if(data.principalMessage) document.getElementById('principalMessageText').innerText = data.principalMessage;
+                    
+                    // Update Stats
+                    if(data.stats) {
+                        document.getElementById('statStudentCount').innerText = data.stats.students || '500+';
+                        document.getElementById('statTeacherCount').innerText = data.stats.teachers || '40+';
+                    }
+                    
+                    // Update Contact
+                    if(data.contact) {
+                        document.getElementById('topPhone').innerText = data.contact.phone;
+                        document.getElementById('topEmail').innerText = data.contact.email;
+                    }
+                }
+            } catch (e) {
+                console.log("Offline or Config Error");
+            }
+        }
+
+        window.onload = syncWithFirebase;
+    </script>
 </body>
 </html>
