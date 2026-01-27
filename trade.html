@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trade Nova Club | Exclusive Access</title>
+    <title id="tabTitle">Trade Nova Club | Exclusive Access</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -33,7 +33,6 @@
             overflow: hidden;
         }
 
-        /* Background Decorative Circles */
         .circle {
             position: absolute;
             border-radius: 50%;
@@ -134,8 +133,6 @@
             box-shadow: 0 5px 15px rgba(0, 229, 255, 0.4);
         }
 
-        button:active { transform: translateY(0); }
-
         .switch {
             text-align: center;
             margin-top: 20px;
@@ -144,14 +141,10 @@
             cursor: pointer;
         }
 
-        .switch span {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
+        .switch span { color: var(--primary); font-weight: 600; }
         .hidden { display: none; }
 
-        .footer {
+        .footer-text {
             text-align: center;
             margin-top: 25px;
             font-size: 11px;
@@ -160,7 +153,6 @@
             opacity: 0.5;
         }
 
-        /* Success Card Styling */
         #courseBox i {
             display: block;
             text-align: center;
@@ -176,8 +168,8 @@
     <div class="circle" style="width: 200px; height: 200px; bottom: -50px; left: -50px;"></div>
 
     <div class="container" id="registerBox">
-        <h1>Trade Nova Club</h1>
-        <p>Create your exclusive trading account</p>
+        <h1 class="site-name">Trade Nova Club</h1>
+        <p class="site-desc">Create your exclusive trading account</p>
 
         <div class="input-group">
             <i class="fa-solid fa-user"></i>
@@ -193,13 +185,12 @@
         </div>
 
         <button onclick="register()">Get Started <i class="fa-solid fa-arrow-right"></i></button>
-
         <div class="switch" onclick="showLogin()">Already a member? <span>Login here</span></div>
-        <div class="footer">SECURE ENCRYPTED ACCESS</div>
+        <div class="footer-text">SECURE ENCRYPTED ACCESS</div>
     </div>
 
     <div class="container hidden" id="loginBox">
-        <h1>Welcome Back</h1>
+        <h1 class="site-name">Welcome Back</h1>
         <p>Enter your details to continue</p>
 
         <div class="input-group">
@@ -212,25 +203,23 @@
         </div>
 
         <button onclick="login()">Login Account</button>
-
         <div class="switch" onclick="showRegister()">New to the club? <span>Join Now</span></div>
-        <div class="footer">OFFICIAL TRADE NOVA PORTAL</div>
+        <div class="footer-text">OFFICIAL ACCESS PORTAL</div>
     </div>
 
     <div class="container hidden" id="courseBox">
         <i class="fa-solid fa-circle-check"></i>
         <h1>Access Granted</h1>
-        <p>Your session is active. Ready to master the markets?</p>
+        <p id="welcomeMsg">Your session is active. Ready to master the markets?</p>
 
-        <a href="https://tradenova.club/" target="_blank" style="text-decoration: none;">
+        <a id="courseLink" href="https://tradenova.club/" target="_blank" style="text-decoration: none;">
             <button>Enter Mastery Platform</button>
         </a>
 
-        <div class="footer">© 2026 Trade Nova Club</div>
+        <div class="footer-text">© 2026 Trade Nova Club</div>
     </div>
 
 <script>
-// Firebase Config (Keep your original keys)
 firebase.initializeApp({
   apiKey: "AIzaSyDdlhcnyqPJACCF0Aen8NLga8bkBzATNFM",
   authDomain: "tradenovaaccess.firebaseapp.com",
@@ -239,94 +228,100 @@ firebase.initializeApp({
 
 const db = firebase.firestore();
 
-// UI Elements
-const registerBox = document.getElementById('registerBox');
-const loginBox = document.getElementById('loginBox');
-const courseBox = document.getElementById('courseBox');
+// --- 1. SETTINGS SYNC (For Admin Panel) ---
+// यह फंक्शन भविष्य में एडमिन पैनल से नाम आदि बदलने में मदद करेगा
+async function loadSiteSettings() {
+    try {
+        const settings = await db.collection("config").doc("siteSettings").get();
+        if (settings.exists) {
+            const data = settings.data();
+            if(data.name) document.querySelectorAll('.site-name').forEach(el => el.innerText = data.name);
+            if(data.desc) document.querySelector('.site-desc').innerText = data.desc;
+            if(data.footer) document.querySelectorAll('.footer-text').forEach(el => el.innerText = data.footer);
+            if(data.courseUrl) document.getElementById('courseLink').href = data.courseUrl;
+        }
+    } catch(e) { console.log("Using default settings"); }
+}
+loadSiteSettings();
 
+// --- 2. HASH FUNCTION ---
 function hash(p){ return btoa(p); }
 
+// --- 3. UI CONTROLS ---
 function showLogin(){
-  registerBox.style.opacity = '0';
-  setTimeout(() => {
-    registerBox.classList.add('hidden');
-    loginBox.classList.remove('hidden');
-    loginBox.style.opacity = '1';
-  }, 300);
+  registerBox.classList.add('hidden');
+  loginBox.classList.remove('hidden');
 }
-
 function showRegister(){
-  loginBox.style.opacity = '0';
-  setTimeout(() => {
-    loginBox.classList.add('hidden');
-    registerBox.classList.remove('hidden');
-    registerBox.style.opacity = '1';
-  }, 300);
+  loginBox.classList.add('hidden');
+  registerBox.classList.remove('hidden');
 }
 
+// --- 4. REGISTER (Admin Ready) ---
 async function register(){
   const btn = event.target;
   const name=rName.value.trim();
   const phone=rPhone.value.trim();
   const pass=rPass.value.trim();
 
-  if(!name||!phone||!pass){
-    alert("Please fill all fields");
-    return;
-  }
+  if(!name||!phone||!pass){ alert("Fill all fields"); return; }
 
   btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
   btn.disabled = true;
 
   try {
-    const doc = db.collection("users").doc(phone);
-    const snap = await doc.get();
+    const docRef = db.collection("users").doc(phone);
+    const snap = await docRef.get();
 
     if(snap.exists){
-      alert("This number is already registered.");
-      btn.innerHTML = 'Get Started <i class="fa-solid fa-arrow-right"></i>';
+      alert("Number already registered.");
+      btn.innerHTML = 'Get Started';
       btn.disabled = false;
       return;
     }
 
-    await doc.set({
+    await docRef.set({
       name,
       phone,
-      password: hash(pass),
+      password: hash(pass), // एडमिन पैनल से आप इस पासवर्ड को अपडेट कर सकेंगे
+      status: "active",
       created: new Date()
     });
 
-    localStorage.setItem("user", phone);
+    // Auto Logout के लिए sessionStorage का उपयोग
+    sessionStorage.setItem("user", phone);
     openCourse();
   } catch(e) {
-    alert("Error connecting to server");
+    alert("Error: " + e.message);
     btn.disabled = false;
   }
 }
 
+// --- 5. LOGIN ---
 async function login(){
   const btn = event.target;
   const phone=lPhone.value.trim();
   const pass=lPass.value.trim();
 
-  if(!phone || !pass) { alert("Fill all fields"); return; }
+  if(!phone || !pass) return;
 
-  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...';
+  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Loading...';
   btn.disabled = true;
 
   try {
     const doc = await db.collection("users").doc(phone).get();
     if(!doc.exists || doc.data().password !== hash(pass)){
-      alert("Invalid credentials");
+      alert("Invalid Phone or Password");
       btn.innerHTML = 'Login Account';
       btn.disabled = false;
       return;
     }
 
-    localStorage.setItem("user", phone);
+    // ब्राउज़र बंद होते ही लॉगआउट होने के लिए sessionStorage
+    sessionStorage.setItem("user", phone);
     openCourse();
   } catch(e) {
-    alert("Login failed");
+    alert("Login Error");
     btn.disabled = false;
   }
 }
@@ -337,7 +332,8 @@ function openCourse(){
   courseBox.classList.remove('hidden');
 }
 
-if(localStorage.getItem("user")){
+// Auto-check session (Sirf current tab/window ke liye)
+if(sessionStorage.getItem("user")){
   openCourse();
 }
 </script>
