@@ -1,239 +1,344 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Trade Nova.Club | Secure Access</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Nova Club | Exclusive Access</title>
 
-<!-- Firebase CDN -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-<style>
-*{box-sizing:border-box;font-family:Inter,Arial,sans-serif}
-body{
-  margin:0;
-  min-height:100vh;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:#fff;
-}
-.container{
-  width:100%;
-  max-width:420px;
-  padding:20px;
-}
-.brand{
-  text-align:center;
-  margin-bottom:20px;
-}
-.brand h1{
-  margin:0;
-  font-size:32px;
-}
-.brand span{color:#00e0ff}
-.brand p{
-  font-size:14px;
-  opacity:.8;
-}
-.card{
-  background:rgba(255,255,255,.08);
-  padding:20px;
-  border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.35);
-  margin-bottom:15px;
-}
-.card h2{
-  text-align:center;
-  margin-bottom:12px;
-}
-input{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:8px;
-  margin:8px 0;
-  font-size:15px;
-}
-button{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:8px;
-  background:#00e0ff;
-  color:#000;
-  font-weight:600;
-  font-size:16px;
-  cursor:pointer;
-  margin-top:10px;
-}
-button:hover{background:#00c4dd}
-.hidden{display:none}
-.info{
-  font-size:14px;
-  opacity:.9;
-}
-ul{
-  padding-left:18px;
-  font-size:14px;
-}
-ul li{margin-bottom:6px}
-.courseBox{
-  margin-top:15px;
-  padding:15px;
-  background:rgba(0,0,0,.35);
-  border-radius:12px;
-  text-align:center;
-}
-.courseBox a{
-  display:inline-block;
-  margin-top:10px;
-  padding:10px 18px;
-  background:#00e0ff;
-  color:#000;
-  text-decoration:none;
-  border-radius:6px;
-  font-weight:600;
-}
-.footer{
-  text-align:center;
-  font-size:12px;
-  opacity:.6;
-  margin-top:10px;
-}
-</style>
+    <style>
+        :root {
+            --primary: #00e5ff;
+            --primary-hover: #00bcd4;
+            --bg-dark: #020b13;
+            --card-bg: rgba(11, 31, 45, 0.8);
+            --text-main: #ffffff;
+            --text-dim: #b5dfff;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, #0a2e46, #020b13);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Background Decorative Circles */
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), transparent);
+            z-index: -1;
+            filter: blur(80px);
+            opacity: 0.2;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-dim);
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            outline: none;
+            box-sizing: border-box;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            background: var(--primary);
+            color: #002;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 229, 255, 0.4);
+        }
+
+        button:active { transform: translateY(0); }
+
+        .switch {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--text-dim);
+            cursor: pointer;
+        }
+
+        .switch span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .hidden { display: none; }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            opacity: 0.5;
+        }
+
+        /* Success Card Styling */
+        #courseBox i {
+            display: block;
+            text-align: center;
+            font-size: 50px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
+    <div class="circle" style="width: 300px; height: 300px; top: -100px; right: -50px;"></div>
+    <div class="circle" style="width: 200px; height: 200px; bottom: -50px; left: -50px;"></div>
 
-  <div class="brand">
-    <h1>Trade Nova<span>.Club</span></h1>
-    <p id="subText">Professional Trading Education Platform</p>
-  </div>
+    <div class="container" id="registerBox">
+        <h1>Trade Nova Club</h1>
+        <p>Create your exclusive trading account</p>
 
-  <!-- LOGIN -->
-  <div id="loginBox" class="card">
-    <h2>Secure Login</h2>
-    <input id="phone" placeholder="Enter Mobile Number">
-    <div id="recaptcha"></div>
-    <button onclick="sendOTP()">Send OTP</button>
-  </div>
+        <div class="input-group">
+            <i class="fa-solid fa-user"></i>
+            <input id="rName" placeholder="Full Name">
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-phone"></i>
+            <input id="rPhone" placeholder="Phone Number">
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input id="rPass" type="password" placeholder="Create Password">
+        </div>
 
-  <!-- OTP -->
-  <div id="otpBox" class="card hidden">
-    <h2>Verify OTP</h2>
-    <input id="otp" placeholder="Enter OTP">
-    <button onclick="verifyOTP()">Verify & Continue</button>
-  </div>
+        <button onclick="register()">Get Started <i class="fa-solid fa-arrow-right"></i></button>
 
-  <!-- DASHBOARD -->
-  <div id="dashboard" class="card hidden">
-    <h2 id="headline">Trade Nova Mastery Program</h2>
-
-    <p class="info" id="desc">
-      Yeh platform un logon ke liye hai jo trading ko professional skill banana chahte hain.
-    </p>
-
-    <ul id="points">
-      <li>✔ Color Trading – Practical Learning</li>
-      <li>✔ 2–5 Level Strategy Logic</li>
-      <li>✔ Entry, Exit & Discipline</li>
-      <li>✔ Professional Mindset Development</li>
-    </ul>
-
-    <div class="courseBox">
-      <p id="buttonInfo">
-        Aage badhne ke liye Mastery Course access karein:
-      </p>
-      <a id="courseLink" href="https://tradenova.club/" target="_blank">
-        Proceed to Mastery Course →
-      </a>
+        <div class="switch" onclick="showLogin()">Already a member? <span>Login here</span></div>
+        <div class="footer">SECURE ENCRYPTED ACCESS</div>
     </div>
-  </div>
 
-  <div class="footer">© Trade Nova.Club</div>
+    <div class="container hidden" id="loginBox">
+        <h1>Welcome Back</h1>
+        <p>Enter your details to continue</p>
 
-</div>
+        <div class="input-group">
+            <i class="fa-solid fa-phone"></i>
+            <input id="lPhone" placeholder="Phone Number">
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input id="lPass" type="password" placeholder="Password">
+        </div>
+
+        <button onclick="login()">Login Account</button>
+
+        <div class="switch" onclick="showRegister()">New to the club? <span>Join Now</span></div>
+        <div class="footer">OFFICIAL TRADE NOVA PORTAL</div>
+    </div>
+
+    <div class="container hidden" id="courseBox">
+        <i class="fa-solid fa-circle-check"></i>
+        <h1>Access Granted</h1>
+        <p>Your session is active. Ready to master the markets?</p>
+
+        <a href="https://tradenova.club/" target="_blank" style="text-decoration: none;">
+            <button>Enter Mastery Platform</button>
+        </a>
+
+        <div class="footer">© 2026 Trade Nova Club</div>
+    </div>
 
 <script>
-// 🔥 Firebase Config
+// Firebase Config (Keep your original keys)
 firebase.initializeApp({
   apiKey: "AIzaSyDdlhcnyqPJACCF0Aen8NLga8bkBzATNFM",
   authDomain: "tradenovaaccess.firebaseapp.com",
-  projectId: "tradenovaaccess",
-  storageBucket: "tradenovaaccess.firebasestorage.app",
-  messagingSenderId: "23644416261",
-  appId: "1:23644416261:web:eeb691ed6e3f3fddc0ef6c"
+  projectId: "tradenovaaccess"
 });
 
-const auth = firebase.auth();
 const db = firebase.firestore();
-let confirmationResult;
 
-// Recaptcha
-window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-  'recaptcha',
-  { size: 'invisible' }
-);
+// UI Elements
+const registerBox = document.getElementById('registerBox');
+const loginBox = document.getElementById('loginBox');
+const courseBox = document.getElementById('courseBox');
 
-// Send OTP
-function sendOTP(){
-  const phone = document.getElementById("phone").value;
-  if(phone.length < 10){ alert("Enter valid number"); return; }
+function hash(p){ return btoa(p); }
 
-  auth.signInWithPhoneNumber("+91"+phone, window.recaptchaVerifier)
-    .then(result=>{
-      confirmationResult = result;
-      document.getElementById("loginBox").classList.add("hidden");
-      document.getElementById("otpBox").classList.remove("hidden");
-    })
-    .catch(err=>alert(err.message));
+function showLogin(){
+  registerBox.style.opacity = '0';
+  setTimeout(() => {
+    registerBox.classList.add('hidden');
+    loginBox.classList.remove('hidden');
+    loginBox.style.opacity = '1';
+  }, 300);
 }
 
-// Verify OTP
-function verifyOTP(){
-  const otp = document.getElementById("otp").value;
-  confirmationResult.confirm(otp)
-    .then(res=>{
-      localStorage.setItem("loggedIn","true");
-      document.getElementById("otpBox").classList.add("hidden");
-      document.getElementById("dashboard").classList.remove("hidden");
-      saveUser(res.user.phoneNumber);
-      loadContent();
-    })
-    .catch(()=>alert("Invalid OTP"));
+function showRegister(){
+  loginBox.style.opacity = '0';
+  setTimeout(() => {
+    loginBox.classList.add('hidden');
+    registerBox.classList.remove('hidden');
+    registerBox.style.opacity = '1';
+  }, 300);
 }
 
-// Save user
-function saveUser(phone){
-  db.collection("users").doc(phone).set({
-    phone,
-    created: firebase.firestore.FieldValue.serverTimestamp()
-  },{merge:true});
+async function register(){
+  const btn = event.target;
+  const name=rName.value.trim();
+  const phone=rPhone.value.trim();
+  const pass=rPass.value.trim();
+
+  if(!name||!phone||!pass){
+    alert("Please fill all fields");
+    return;
+  }
+
+  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+  btn.disabled = true;
+
+  try {
+    const doc = db.collection("users").doc(phone);
+    const snap = await doc.get();
+
+    if(snap.exists){
+      alert("This number is already registered.");
+      btn.innerHTML = 'Get Started <i class="fa-solid fa-arrow-right"></i>';
+      btn.disabled = false;
+      return;
+    }
+
+    await doc.set({
+      name,
+      phone,
+      password: hash(pass),
+      created: new Date()
+    });
+
+    localStorage.setItem("user", phone);
+    openCourse();
+  } catch(e) {
+    alert("Error connecting to server");
+    btn.disabled = false;
+  }
 }
 
-// Load live content (Admin Control Ready)
-function loadContent(){
-  db.collection("siteContent").doc("main").get().then(doc=>{
-    if(!doc.exists) return;
-    const d = doc.data();
-    if(d.headline) document.getElementById("headline").innerText=d.headline;
-    if(d.subText) document.getElementById("subText").innerText=d.subText;
-    if(d.desc) document.getElementById("desc").innerText=d.desc;
-    if(d.courseLink) document.getElementById("courseLink").href=d.courseLink;
-  });
+async function login(){
+  const btn = event.target;
+  const phone=lPhone.value.trim();
+  const pass=lPass.value.trim();
+
+  if(!phone || !pass) { alert("Fill all fields"); return; }
+
+  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...';
+  btn.disabled = true;
+
+  try {
+    const doc = await db.collection("users").doc(phone).get();
+    if(!doc.exists || doc.data().password !== hash(pass)){
+      alert("Invalid credentials");
+      btn.innerHTML = 'Login Account';
+      btn.disabled = false;
+      return;
+    }
+
+    localStorage.setItem("user", phone);
+    openCourse();
+  } catch(e) {
+    alert("Login failed");
+    btn.disabled = false;
+  }
 }
 
-// Auto login
-if(localStorage.getItem("loggedIn")==="true"){
-  document.getElementById("loginBox").classList.add("hidden");
-  document.getElementById("dashboard").classList.remove("hidden");
-  loadContent();
+function openCourse(){
+  registerBox.classList.add('hidden');
+  loginBox.classList.add('hidden');
+  courseBox.classList.remove('hidden');
+}
+
+if(localStorage.getItem("user")){
+  openCourse();
 }
 </script>
 
