@@ -125,6 +125,10 @@
             transition: 0.3s;
             text-transform: uppercase;
             letter-spacing: 1px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
 
         button:hover {
@@ -184,7 +188,7 @@
             <input id="rPass" type="password" placeholder="Create Password">
         </div>
 
-        <button onclick="register()">Get Started <i class="fa-solid fa-arrow-right"></i></button>
+        <button onclick="register()"><span>Get Started</span> <i class="fa-solid fa-arrow-right"></i></button>
         <div class="switch" onclick="showLogin()">Already a member? <span>Login here</span></div>
         <div class="footer-text">SECURE ENCRYPTED ACCESS</div>
     </div>
@@ -215,6 +219,7 @@
         <a id="courseLink" href="https://tradenova.club/" target="_blank" style="text-decoration: none;">
             <button>Enter Mastery Platform</button>
         </a>
+        <div class="switch" onclick="logoutSession()"><span>Logout & Close Session</span></div>
 
         <div class="footer-text">© 2026 Trade Nova Club</div>
     </div>
@@ -227,9 +232,9 @@ firebase.initializeApp({
 });
 
 const db = firebase.firestore();
+let courseWin = null;
 
-// --- 1. SETTINGS SYNC (For Admin Panel) ---
-// यह फंक्शन भविष्य में एडमिन पैनल से नाम आदि बदलने में मदद करेगा
+// --- 1. SETTINGS SYNC ---
 async function loadSiteSettings() {
     try {
         const settings = await db.collection("config").doc("siteSettings").get();
@@ -244,10 +249,8 @@ async function loadSiteSettings() {
 }
 loadSiteSettings();
 
-// --- 2. HASH FUNCTION ---
 function hash(p){ return btoa(p); }
 
-// --- 3. UI CONTROLS ---
 function showLogin(){
   registerBox.classList.add('hidden');
   loginBox.classList.remove('hidden');
@@ -257,38 +260,32 @@ function showRegister(){
   registerBox.classList.remove('hidden');
 }
 
-// --- 4. REGISTER (Admin Ready) ---
+// --- 4. REGISTER ---
 async function register(){
-  const btn = event.target;
+  const btn = event.target.closest('button');
   const name=rName.value.trim();
   const phone=rPhone.value.trim();
   const pass=rPass.value.trim();
 
   if(!name||!phone||!pass){ alert("Fill all fields"); return; }
-
   btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
   btn.disabled = true;
 
   try {
     const docRef = db.collection("users").doc(phone);
     const snap = await docRef.get();
-
     if(snap.exists){
       alert("Number already registered.");
-      btn.innerHTML = 'Get Started';
+      btn.innerHTML = '<span>Get Started</span> <i class="fa-solid fa-arrow-right"></i>';
       btn.disabled = false;
       return;
     }
-
     await docRef.set({
-      name,
-      phone,
-      password: hash(pass), // एडमिन पैनल से आप इस पासवर्ड को अपडेट कर सकेंगे
+      name, phone,
+      password: hash(pass),
       status: "active",
       created: new Date()
     });
-
-    // Auto Logout के लिए sessionStorage का उपयोग
     sessionStorage.setItem("user", phone);
     openCourse();
   } catch(e) {
@@ -299,12 +296,11 @@ async function register(){
 
 // --- 5. LOGIN ---
 async function login(){
-  const btn = event.target;
+  const btn = event.target.closest('button');
   const phone=lPhone.value.trim();
   const pass=lPass.value.trim();
 
   if(!phone || !pass) return;
-
   btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Loading...';
   btn.disabled = true;
 
@@ -316,8 +312,6 @@ async function login(){
       btn.disabled = false;
       return;
     }
-
-    // ब्राउज़र बंद होते ही लॉगआउट होने के लिए sessionStorage
     sessionStorage.setItem("user", phone);
     openCourse();
   } catch(e) {
@@ -326,13 +320,29 @@ async function login(){
   }
 }
 
+// --- 6. OPEN COURSE & AUTO-CLOSE LOGIC ---
 function openCourse(){
   registerBox.classList.add('hidden');
   loginBox.classList.add('hidden');
   courseBox.classList.remove('hidden');
+  
+  // Auto-open course URL in new tab
+  const url = document.getElementById('courseLink').href;
+  courseWin = window.open(url, '_blank');
 }
 
-// Auto-check session (Sirf current tab/window ke liye)
+function logoutSession() {
+    sessionStorage.clear();
+    if(courseWin) courseWin.close();
+    location.reload();
+}
+
+// Browser बंद होने पर logout (Session Storage handles this automatically)
+// लेकिन अगर आप चाहते हैं कि कोर्स टैब भी बंद हो जाए:
+window.addEventListener('unload', function() {
+    if(courseWin) courseWin.close();
+});
+
 if(sessionStorage.getItem("user")){
   openCourse();
 }
