@@ -19,6 +19,7 @@
             --glass-bg: rgba(30, 0, 0, 0.85);
             --neon-glow: 0 0 15px rgba(255, 215, 0, 0.6);
             --transition-speed: 0.8s;
+            --row-count: 10; /* Fixed view count per page */
         }
 
         /* --- Global Reset --- */
@@ -45,14 +46,13 @@
         #live-container {
             width: 95vw;
             max-width: 1280px;
-            height: 480px;
+            height: 520px; /* Slightly increased for better 10-row visibility */
             margin: 30px auto;
             position: relative;
             perspective: 1000px;
             transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Sidebar Hidden State with 3D Effect */
         .sidebar-hidden {
             transform: rotateY(90deg) scale(0.5) translateX(2000px);
             opacity: 0;
@@ -79,18 +79,12 @@
             100% { border-color: var(--gold-secondary); box-shadow: 0 0 40px rgba(255, 165, 0, 0.7); }
         }
 
-        /* --- CONTINUOUS SHINE EFFECT --- */
         .master-frame::before {
             content: '';
             position: absolute;
             top: -100%; left: -100%;
             width: 300%; height: 300%;
-            background: linear-gradient(
-                45deg,
-                transparent 45%,
-                rgba(255, 215, 0, 0.1) 50%,
-                transparent 55%
-            );
+            background: linear-gradient(45deg, transparent 45%, rgba(255, 215, 0, 0.1) 50%, transparent 55%);
             animation: continuousShine 8s linear infinite;
             pointer-events: none;
             z-index: 1;
@@ -101,32 +95,32 @@
             100% { transform: translate(-20%, -20%) rotate(360deg); }
         }
 
-        /* --- HEADER SECTION --- */
         .header-box {
             width: 100%;
-            padding: 20px 0;
+            height: 100px;
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
             border-bottom: 2px solid var(--gold-primary);
             text-align: center;
             z-index: 2;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .main-title-text {
             font-family: 'Rozha One', serif;
-            font-size: 42px;
+            font-size: 38px;
             color: var(--gold-primary);
             text-transform: uppercase;
             letter-spacing: 2px;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.3);
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
         }
 
         .sub-title-text {
-            font-size: 22px;
+            font-size: 20px;
             color: #ffffff;
             font-weight: 500;
-            margin-top: 5px;
             opacity: 0.9;
         }
 
@@ -134,95 +128,115 @@
         .content-body {
             display: flex;
             flex: 1;
-            padding: 20px 40px;
-            gap: 40px;
+            padding: 10px 30px;
+            gap: 20px;
             z-index: 2;
-            align-items: center;
+            overflow: hidden; /* No scroll allowed */
         }
 
-        /* Left Side: Schedule Table */
         .schedule-container {
-            flex: 2.8;
+            flex: 3;
             height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         .schedule-table {
             width: 100%;
+            height: 100%;
             border-collapse: separate;
-            border-spacing: 0 12px;
+            border-spacing: 0 6px;
+            table-layout: fixed; /* Ensures rigid column widths */
         }
 
-        /* Fade and Slide Animation for Table Rows */
         #out-tbody {
-            transition: all 0.8s ease-in-out;
+            transition: opacity 0.6s ease, transform 0.6s ease;
         }
 
+        /* --- ROW STYLING --- */
         .row-item {
-            transform: translateX(0);
-            transition: all 0.5s ease;
+            transition: all 0.4s ease;
         }
 
         .row-item td {
-            padding: 15px 25px;
-            font-size: 26px;
-            font-weight: 600;
             background: rgba(255, 255, 255, 0.04);
-            border-top: 1px solid rgba(255, 215, 0, 0.1);
-            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            border-top: 1px solid rgba(255, 215, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .row-item td:first-child {
-            border-radius: 15px 0 0 15px;
-            border-left: 1px solid rgba(255, 215, 0, 0.1);
+        /* Number Badge */
+        .row-index {
+            width: 45px;
+            text-align: center;
+            border-radius: 8px 0 0 8px;
+            border-left: 2px solid var(--gold-primary);
         }
 
-        .row-item td:last-child {
-            border-radius: 0 15px 15px 0;
-            border-right: 1px solid rgba(255, 215, 0, 0.1);
+        .index-badge {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--gold-primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--gold-primary);
+            font-size: 0.8em;
+            display: inline-block;
+        }
+
+        .row-name {
+            padding-left: 15px !important;
+        }
+
+        .row-time {
+            width: 120px;
             text-align: right;
+            padding-right: 20px !important;
+            border-radius: 0 8px 8px 0;
+            border-right: 1px solid rgba(255, 215, 0, 0.15);
             color: var(--gold-primary);
         }
 
         /* LIVE ROW SPECIAL EFFECT */
-        .is-live {
-            background: linear-gradient(90deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.05)) !important;
-            animation: liveRowPulse 2.5s infinite;
-        }
-
-        @keyframes liveRowPulse {
-            0% { transform: scale(1); box-shadow: 0 0 10px rgba(255,215,0,0); }
-            50% { transform: scale(1.02); box-shadow: 0 0 25px rgba(255,215,0,0.3); }
-            100% { transform: scale(1); box-shadow: 0 0 10px rgba(255,215,0,0); }
-        }
-
         .is-live td {
-            color: var(--gold-primary) !important;
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.25), rgba(255, 215, 0, 0.05)) !important;
             border-color: var(--gold-primary) !important;
+            color: var(--gold-primary) !important;
         }
 
-        /* Right Side: QR Sidebar */
+        .is-live .index-badge {
+            background: var(--gold-primary);
+            color: #000;
+            box-shadow: 0 0 10px var(--gold-primary);
+        }
+
+        /* --- QR SECTION (FIXED POSITION) --- */
         .qr-section {
-            flex: 1;
+            width: 260px; /* Locked Width */
+            flex-shrink: 0; /* Prevents compression */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             background: rgba(0, 0, 0, 0.4);
-            border-radius: 30px;
+            border-radius: 25px;
             border: 2px solid rgba(255, 215, 0, 0.2);
-            padding: 20px;
-            height: 90%;
+            padding: 15px;
+            margin: 5px 0;
+            align-self: center;
+            height: 95%;
         }
 
         .qr-frame {
-            width: 190px;
-            height: 190px;
+            width: 180px;
+            height: 180px;
             background: #ffffff;
-            padding: 10px;
-            border-radius: 20px;
-            border: 4px solid var(--gold-primary);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(255,215,0,0.2);
-            position: relative;
+            padding: 8px;
+            border-radius: 15px;
+            border: 3px solid var(--gold-primary);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .qr-frame img {
@@ -232,18 +246,19 @@
         }
 
         .org-name-display {
-            margin-top: 20px;
-            font-size: 28px;
+            margin-top: 15px;
+            font-size: 24px;
             font-weight: 700;
             color: var(--gold-primary);
             text-align: center;
             line-height: 1.2;
+            width: 100%;
         }
 
-        /* --- BOTTOM TICKER (MARQUEE) --- */
+        /* --- BOTTOM TICKER --- */
         .bottom-ticker {
             width: 100%;
-            height: 40px;
+            height: 35px;
             background: var(--gold-primary);
             color: #000;
             overflow: hidden;
@@ -255,7 +270,7 @@
         .ticker-text {
             white-space: nowrap;
             font-weight: 700;
-            font-size: 20px;
+            font-size: 18px;
             animation: tickerMove 25s linear infinite;
         }
 
@@ -336,22 +351,15 @@
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
         }
 
-        /* PROGRAM ROW PCR */
         .program-row {
             background: #222;
-            padding: 20px;
+            padding: 15px;
             border-radius: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             display: flex;
             gap: 20px;
             align-items: center;
             border-left: 5px solid #444;
-            transition: 0.3s;
-        }
-
-        .program-row:hover {
-            border-left-color: var(--gold-primary);
-            background: #282828;
         }
 
         .btn-add {
@@ -363,7 +371,6 @@
             font-weight: 700;
             cursor: pointer;
             font-size: 18px;
-            transition: 0.3s;
         }
 
         .btn-delete {
@@ -421,7 +428,7 @@
             </div>
 
             <div class="content-body">
-                <div class="schedule-container">
+                <div class="schedule-container" id="schedule-container">
                     <table class="schedule-table">
                         <tbody id="out-tbody">
                             </tbody>
@@ -438,7 +445,7 @@
 
             <div class="bottom-ticker">
                 <div class="ticker-text" id="out-ticker">
-                    ।। जय श्री कृष्णा ।। आपका स्वागत है ।। श्रीमद्‍भगवत् महापुराण कथा ।। श्री राधे सेवा समिति ।। ।। जय श्री कृष्णा ।। आपका स्वागत है ।। श्रीमद्‍भगवत् महापुराण कथा ।। श्री राधे सेवा समिति ।।
+                    ।। जय श्री कृष्णा ।। आपका स्वागत है ।। श्रीमद्‍भगवत् महापुराण कथा ।। श्री राधे सेवा समिति ।।
                 </div>
             </div>
         </div>
@@ -446,7 +453,7 @@
 
     <div id="pcr-panel">
         <div class="pcr-header">
-            <div class="pcr-title">🚀 प्रोफेशनल पीसीआर कंट्रोल पैनल (V3.0)</div>
+            <div class="pcr-title">🚀 प्रोफेशनल पीसीआर कंट्रोल पैनल (V3.1)</div>
             <button id="visibility-btn" class="visibility-btn hidden-mode" onclick="toggleSidebarRemote()">SIDEBAR: VISIBLE</button>
         </div>
 
@@ -484,8 +491,7 @@
 
         <div class="group-box">
             <span class="group-title">कार्यक्रमों की सूची (Program Management)</span>
-            <div id="pcr-rows-container">
-                </div>
+            <div id="pcr-rows-container"></div>
             <div style="margin-top: 20px;">
                 <button class="btn-add" onclick="addNewPcrRow('', '', false)">+ नया कार्यक्रम जोड़ें</button>
                 <button class="btn-add" style="background:#555;" onclick="clearAllRows()">सभी साफ करें (Reset)</button>
@@ -508,6 +514,7 @@
         let currentPage = 0;
         let cycleInterval = null;
         let qrBase64Data = "";
+        const ITEMS_PER_PAGE = 10;
 
         // --- File Upload Logic ---
         document.getElementById('in-qr-file').addEventListener('change', function(e) {
@@ -516,7 +523,7 @@
                 qrBase64Data = reader.result;
                 document.getElementById('qr-out-img').src = qrBase64Data;
             }
-            reader.readAsDataURL(e.target.files[0]);
+            if(e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
         });
 
         // --- UI Panel Row Logic ---
@@ -533,10 +540,10 @@
                     <input type="radio" name="live-sel" ${isLive ? 'checked' : ''} style="width:25px; height:25px; cursor:pointer;">
                 </div>
                 <div class="input-field" style="flex:3;">
-                    <input type="text" class="pcr-name" placeholder="कार्यक्रम का नाम (उदा: मंगल आरती)" value="${name}">
+                    <input type="text" class="pcr-name" placeholder="कार्यक्रम का नाम" value="${name}">
                 </div>
                 <div class="input-field" style="flex:1;">
-                    <input type="text" class="pcr-time" placeholder="समय (उदा: 08:00 AM)" value="${time}">
+                    <input type="text" class="pcr-time" placeholder="समय" value="${time}">
                 </div>
                 <button class="btn-delete" onclick="document.getElementById('${rowId}').remove()">X</button>
             `;
@@ -544,7 +551,7 @@
         }
 
         function clearAllRows() {
-            if(confirm("Kya aap sabhi rows ko hatana chahte hain?")) {
+            if(confirm("Are you sure you want to clear all rows?")) {
                 document.getElementById('pcr-rows-container').innerHTML = "";
             }
         }
@@ -574,7 +581,7 @@
             };
 
             db.ref('bhagwatSidebar/data').set(fullData).then(() => {
-                alert("Cloud Sync Successful! Sidebar has been updated.");
+                alert("Cloud Sync Successful!");
             });
         }
 
@@ -590,27 +597,27 @@
             const data = snapshot.val();
             if(!data) return;
 
-            // Update UI Sidebar Elements
             document.getElementById('out-main-title').innerText = data.mainTitle;
             document.getElementById('out-sub-title').innerText = data.subTitle;
             document.getElementById('out-org-name').innerText = data.orgName;
             document.getElementById('out-ticker').innerText = data.tickerText;
             document.getElementById('qr-out-img').src = data.qrImage;
 
-            // Sync Inputs in Panel (Only if someone else updated)
-            document.getElementById('in-main-title').value = data.mainTitle;
-            document.getElementById('in-sub-title').value = data.subTitle;
-            document.getElementById('in-org-name').value = data.orgName;
-            document.getElementById('in-ticker').value = data.tickerText;
+            // Update Panel Inputs (sync only if not typing)
+            if (document.activeElement.tagName !== 'INPUT') {
+                document.getElementById('in-main-title').value = data.mainTitle;
+                document.getElementById('in-sub-title').value = data.subTitle;
+                document.getElementById('in-org-name').value = data.orgName;
+                document.getElementById('in-ticker').value = data.tickerText;
+            }
 
-            // Update local state and restart cycling
             allItems = data.programList || [];
             currentPage = 0;
             if(cycleInterval) clearInterval(cycleInterval);
             
             renderTablePage(); 
-            if (allItems.length > 5) {
-                cycleInterval = setInterval(renderTablePage, 6000); // 6 Second Cycle
+            if (allItems.length > ITEMS_PER_PAGE) {
+                cycleInterval = setInterval(renderTablePage, 8000); 
             }
         });
 
@@ -631,27 +638,36 @@
             }
         });
 
-        // --- Detailed Table Rendering Logic ---
+        // --- Dynamic Scaling & Pagination Logic ---
         function renderTablePage() {
             const tbody = document.getElementById('out-tbody');
+            const container = document.getElementById('schedule-container');
             
             // Step 1: Fade out
             tbody.style.opacity = '0';
-            tbody.style.transform = 'translateY(10px)';
+            tbody.style.transform = 'translateY(15px)';
 
             setTimeout(() => {
                 tbody.innerHTML = '';
-                const start = currentPage * 5;
-                const pageItems = allItems.slice(start, start + 5);
+                const start = currentPage * ITEMS_PER_PAGE;
+                const pageItems = allItems.slice(start, start + ITEMS_PER_PAGE);
+
+                // Calculate Dynamic Row Height based on container (approx 360px height)
+                const availableH = container.clientHeight;
+                const dynamicRowHeight = (availableH / ITEMS_PER_PAGE) - 6; // subtracting spacing
+                const dynamicFontSize = Math.min(24, dynamicRowHeight * 0.55);
 
                 pageItems.forEach((item, index) => {
+                    const actualIndex = start + index + 1;
                     const tr = document.createElement('tr');
                     tr.className = `row-item ${item.isLive ? 'is-live' : ''}`;
-                    tr.style.transitionDelay = (index * 0.1) + 's';
                     
                     tr.innerHTML = `
-                        <td style="width:75%">${item.name}</td>
-                        <td style="text-align:right;">${item.time}</td>
+                        <td class="row-index" style="height:${dynamicRowHeight}px; font-size:${dynamicFontSize}px;">
+                            <span class="index-badge">${actualIndex}</span>
+                        </td>
+                        <td class="row-name" style="font-size:${dynamicFontSize}px;">${item.name}</td>
+                        <td class="row-time" style="font-size:${dynamicFontSize}px;">${item.time}</td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -660,16 +676,17 @@
                 tbody.style.opacity = '1';
                 tbody.style.transform = 'translateY(0)';
                 
-                // Logic for next page
+                // Paging Logic
                 currentPage++;
-                if (currentPage * 5 >= allItems.length) {
+                if (currentPage * ITEMS_PER_PAGE >= allItems.length) {
                     currentPage = 0; 
                 }
-            }, 800);
+            }, 600);
         }
 
-        // --- Initialize with a sample row if empty ---
         window.onload = () => {
+            // Initial render call for sizing
+            renderTablePage();
             if(document.querySelectorAll('.program-row').length === 0) {
                 addNewPcrRow("कथा प्रारंभ", "03:00 PM", true);
             }
