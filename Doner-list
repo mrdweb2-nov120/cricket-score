@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>Firebase Live Broadcast Overlay</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        // आपका कॉन्फ़िगरेशन
+        const firebaseConfig = {
+            apiKey: "AIzaSyBTbD8UfPZNrIUu6zIamoPeAPp_jnuxTpE",
+            authDomain: "doner-speaker-list.firebaseapp.com",
+            projectId: "doner-speaker-list",
+            storageBucket: "doner-speaker-list.firebasestorage.app",
+            messagingSenderId: "198403143772",
+            appId: "1:198403143772:web:51cbcf39e3c608d9afce99",
+            measurementId: "G-M2X4SPPJ5W",
+            databaseURL: "https://doner-speaker-list-default-rtdb.firebaseio.com"
+        };
+
+        // Initialize
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // --- डेटा पढ़ना (Display Logic) ---
+        const donorRef = ref(db, 'broadcastData');
+        onValue(donorRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                document.getElementById('disp-viewers').innerText = data.viewers || "0";
+                document.getElementById('disp-handle').innerText = data.socialHandle || "@Channel";
+                document.getElementById('disp-donors').innerHTML = (data.donors || "").replace(/\n/g, '<br>');
+                document.getElementById('disp-speaker').innerText = data.speaker || "मुख्य वक्ता";
+            }
+        });
+
+        // --- डेटा भेजना (Admin Logic) ---
+        window.updateData = function() {
+            const v = document.getElementById('in-viewers').value;
+            const s = document.getElementById('in-handle').value;
+            const d = document.getElementById('in-donors').value;
+            const sp = document.getElementById('in-speaker').value;
+
+            set(ref(db, 'broadcastData'), {
+                viewers: v,
+                socialHandle: s,
+                donors: d,
+                speaker: sp
+            }).then(() => alert("Data Updated Successfully!"));
+        };
+    </script>
+
+    <style>
+        :root { --gold: #D4AF37; --dark-red: #8B0000; }
+        body { margin: 0; padding: 0; background: #000; color: white; font-family: 'Segoe UI', sans-serif; }
+        
+        /* डिस्प्ले एरिया */
+        .display-area { width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #050505; }
+        
+        .social-box { position: absolute; top: 40px; left: 50px; border: 2px solid var(--gold); padding: 15px 30px; border-radius: 50px; background: var(--dark-red); font-size: 24px; box-shadow: 0 0 15px rgba(212,175,55,0.5); }
+        
+        .viewer-box { position: absolute; top: 150px; left: 50px; border: 2px solid var(--gold); padding: 20px; background: rgba(0,0,0,0.7); border-radius: 10px; min-width: 200px; text-align: center; }
+        .viewer-count { font-size: 45px; color: var(--gold); font-weight: bold; }
+
+        .donor-panel { position: absolute; right: 50px; top: 50px; width: 350px; background: rgba(0,0,0,0.8); border: 2px solid var(--gold); border-radius: 15px; }
+        .donor-title { background: var(--gold); color: black; padding: 10px; text-align: center; font-weight: bold; font-size: 20px; }
+
+        .speaker-box { position: absolute; bottom: 50px; right: 50px; background: linear-gradient(90deg, var(--dark-red), #330000); padding: 15px 40px; border-radius: 100px; border: 2px solid var(--gold); font-size: 30px; }
+
+        /* एडमिन एरिया */
+        .admin-area { width: 1920px; background: #222; padding: 50px; box-sizing: border-box; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; border-top: 5px dashed yellow; }
+        .admin-card { background: #333; padding: 20px; border-radius: 10px; }
+        input, textarea { width: 100%; padding: 10px; margin-top: 10px; background: #111; border: 1px solid var(--gold); color: white; }
+        button { width: 100%; padding: 15px; background: var(--gold); border: none; font-weight: bold; margin-top: 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="display-area">
+        <div class="social-box">Live on: <span id="disp-handle">@Loading...</span></div>
+        
+        <div class="viewer-box">
+            <div style="font-size: 14px;">LIVE VIEWERS</div>
+            <div class="viewer-count" id="disp-viewers">0</div>
+        </div>
+
+        <div class="donor-panel">
+            <div class="donor-title">सहयोग राशि (Donors)</div>
+            <div id="disp-donors" style="padding: 20px; font-size: 18px; line-height: 1.6; height: 300px; overflow-y: auto;"></div>
+        </div>
+
+        <div class="speaker-box">वक्ता: <span id="disp-speaker" style="color: var(--gold);">आचार्य जी</span></div>
+    </div>
+
+    <div class="admin-area">
+        <div class="admin-card">
+            <h3>सोशल हैंडल</h3>
+            <input type="text" id="in-handle" placeholder="@YouTubeHandle">
+        </div>
+        <div class="admin-card">
+            <h3>लाइव व्यूअर्स</h3>
+            <input type="number" id="in-viewers" placeholder="1234">
+        </div>
+        <div class="admin-card">
+            <h3>मुख्य वक्ता</h3>
+            <input type="text" id="in-speaker" placeholder="नाम लिखें">
+        </div>
+        <div class="admin-card">
+            <h3>डोनर लिस्ट</h3>
+            <textarea id="in-donors" rows="4" placeholder="नाम - राशि (नई लाइन)"></textarea>
+        </div>
+        <div style="grid-column: span 4;">
+            <button onclick="updateData()">UPDATE ALL SCREENS</button>
+        </div>
+    </div>
+
+</body>
+</html>
