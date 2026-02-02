@@ -2,13 +2,13 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <title>Satsang Live Overlay (Firebase Direct)</title>
+    <title>Satsang Live Fixed</title>
     
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-        // आपका Firebase कॉन्फ़िगरेशन और आपका दिया हुआ लिंक
+    <script>
+        // आपका Config और Database URL
         const firebaseConfig = {
             apiKey: "AIzaSyBTbD8UfPZNrIUu6zIamoPeAPp_jnuxTpE",
             authDomain: "doner-speaker-list.firebaseapp.com",
@@ -16,99 +16,94 @@
             storageBucket: "doner-speaker-list.firebasestorage.app",
             messagingSenderId: "198403143772",
             appId: "1:198403143772:web:51cbcf39e3c608d9afce99",
-            databaseURL: "https://doner-speaker-list-default-rtdb.firebaseio.com/" // आपका दिया हुआ लिंक यहाँ सेट है
+            databaseURL: "https://doner-speaker-list-default-rtdb.firebaseio.com"
         };
 
         // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const dataRef = ref(db, 'liveData');
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const database = firebase.database();
+        const dataRef = database.ref('liveData');
 
-        // डेटा सुनना (Display Logic) - जैसे ही डेटाबेस में कुछ बदलेगा, यहाँ अपडेट होगा
-        onValue(dataRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                document.getElementById('viewers').innerText = data.viewers || "0";
-                document.getElementById('speaker').innerText = data.speaker || "वक्ता का नाम";
-                document.getElementById('handle').innerText = data.handle || "@YourChannel";
-                document.getElementById('scroll-donors').innerHTML = (data.donors || "").replace(/\n/g, '<br> • ');
-            }
-        });
-
-        // डेटा भेजना (Admin Logic) - बटन दबाने पर डेटाबेस में सेव होगा
-        window.saveToFirebase = function() {
-            set(dataRef, {
-                viewers: document.getElementById('in-v').value,
-                speaker: document.getElementById('in-s').value,
-                handle: document.getElementById('in-h').value,
-                donors: document.getElementById('in-d').value
-            }).then(() => {
-                alert("डाटा लाइव हो गया है!");
-            }).catch((error) => {
-                alert("एरर: " + error.message);
+        // डेटा सुनना (Display)
+        function listenData() {
+            dataRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('viewers').innerText = data.viewers || "0";
+                    document.getElementById('speaker').innerText = data.speaker || "वक्ता का नाम";
+                    document.getElementById('handle').innerText = data.handle || "@YourChannel";
+                    document.getElementById('scroll-donors').innerHTML = (data.donors || "").replace(/\n/g, '<br> • ');
+                }
             });
-        };
+        }
+
+        // डेटा भेजना (Admin)
+        function saveToFirebase() {
+            const v = document.getElementById('in-v').value;
+            const s = document.getElementById('in-s').value;
+            const h = document.getElementById('in-h').value;
+            const d = document.getElementById('in-d').value;
+
+            dataRef.set({
+                viewers: v,
+                speaker: s,
+                handle: h,
+                donors: d
+            }).then(() => alert("डाटा अपडेट हो गया!"))
+              .catch((e) => alert("Error: " + e.message));
+        }
+
+        window.onload = listenData;
     </script>
 
     <style>
         :root { --gold: #D4AF37; --red: #8B0000; }
-        body { margin: 0; background: transparent; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { margin: 0; background: #000; color: white; font-family: sans-serif; overflow-x: hidden; }
         
-        /* 16:9 Display Area (1920x1080) */
-        .screen { width: 1920px; height: 1080px; position: relative; overflow: hidden; background: rgba(0,0,0,0.1); }
+        /* 16:9 Display */
+        .screen { width: 1920px; height: 1080px; position: relative; background: #0a0a0a; }
 
-        /* टॉप सोशल बार */
-        .social { position: absolute; top: 30px; left: 30px; background: var(--red); border: 2px solid var(--gold); padding: 10px 25px; border-radius: 50px; font-size: 24px; box-shadow: 0 0 15px rgba(212,175,55,0.4); }
-        
-        /* लाइव व्यूअर बॉक्स */
-        .v-box { position: absolute; top: 120px; left: 30px; background: rgba(0,0,0,0.7); border: 2px solid var(--gold); padding: 15px; border-radius: 10px; text-align: center; min-width: 150px; }
-        .v-num { font-size: 45px; color: var(--gold); font-weight: bold; }
+        .social { position: absolute; top: 40px; left: 40px; background: var(--red); border: 2px solid var(--gold); padding: 10px 30px; border-radius: 50px; font-size: 26px; }
+        .v-box { position: absolute; top: 140px; left: 40px; background: rgba(0,0,0,0.8); border: 2px solid var(--gold); padding: 15px; border-radius: 10px; text-align: center; }
+        .v-num { font-size: 50px; color: var(--gold); font-weight: bold; }
 
-        /* डोनर लिस्ट (राइट साइड) */
-        .donor-box { position: absolute; right: 40px; top: 40px; width: 350px; height: 500px; background: rgba(0,0,0,0.85); border: 2px solid var(--gold); border-radius: 15px; overflow: hidden; }
-        .d-head { background: var(--gold); color: black; padding: 12px; text-align: center; font-weight: bold; font-size: 24px; text-transform: uppercase; }
+        .donor-box { position: absolute; right: 50px; top: 50px; width: 380px; height: 550px; background: rgba(0,0,0,0.9); border: 2px solid var(--gold); border-radius: 15px; overflow: hidden; }
+        .d-head { background: var(--gold); color: black; padding: 15px; text-align: center; font-weight: bold; font-size: 24px; }
         
-        /* ऑटो-स्क्रॉल एनीमेशन */
-        .marquee { height: 430px; overflow: hidden; position: relative; padding: 20px; font-size: 22px; line-height: 2; }
+        .marquee { height: 480px; overflow: hidden; position: relative; padding: 20px; font-size: 24px; line-height: 2.2; }
         #scroll-donors { position: absolute; width: 90%; animation: scrollUp 20s linear infinite; }
-        @keyframes scrollUp { 0% { top: 100%; } 100% { top: -100%; } }
+        @keyframes scrollUp { 0% { top: 100%; } 100% { top: -110%; } }
 
-        /* वक्ता का नाम (बॉटम राइट) */
-        .speaker-tag { position: absolute; bottom: 50px; right: 50px; background: linear-gradient(to right, var(--red), #440000); padding: 20px 60px; border: 3px solid var(--gold); border-radius: 100px; font-size: 40px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+        .speaker-tag { position: absolute; bottom: 60px; right: 60px; background: linear-gradient(to right, var(--red), #400); padding: 20px 70px; border: 3px solid var(--gold); border-radius: 100px; font-size: 45px; font-weight: bold; }
 
-        /* एडमिन पैनल (OBS के लिए नीचे रखा गया है) */
-        .admin { width: 1920px; background: #1a1a1a; border-top: 10px solid var(--gold); padding: 50px; box-sizing: border-box; display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
-        .admin h3 { color: var(--gold); margin-bottom: 10px; }
-        input, textarea { width: 100%; background: #333; border: 1px solid var(--gold); color: white; padding: 12px; border-radius: 5px; font-size: 16px; }
-        button { grid-column: span 4; background: var(--gold); color: black; font-weight: bold; font-size: 20px; padding: 20px; cursor: pointer; border: none; border-radius: 10px; transition: 0.3s; }
-        button:hover { background: #fff; }
+        /* Admin Section */
+        .admin { width: 1920px; background: #222; padding: 40px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; border-top: 10px solid var(--gold); }
+        input, textarea { width: 100%; background: #111; border: 1px solid var(--gold); color: white; padding: 15px; }
+        button { grid-column: span 4; background: var(--gold); padding: 20px; font-weight: bold; font-size: 22px; cursor: pointer; border: none; }
     </style>
 </head>
 <body>
 
     <div class="screen">
-        <div class="social">यूट्यूब लाइव: <span id="handle">@...</span></div>
-        <div class="v-box">
-            <div style="font-size:14px; letter-spacing: 2px;">LIVE VIEWERS</div>
-            <div class="v-num" id="viewers">0</div>
-        </div>
+        <div class="social">यूट्यूब: <span id="handle">@...</span></div>
+        <div class="v-box"><div style="font-size:14px">LIVE VIEWERS</div><div class="v-num" id="viewers">0</div></div>
         
         <div class="donor-box">
             <div class="d-head">सहयोग राशि</div>
-            <div class="marquee">
-                <div id="scroll-donors">डेटा लोड हो रहा है...</div>
-            </div>
+            <div class="marquee"><div id="scroll-donors">डेटा लोड हो रहा है...</div></div>
         </div>
 
         <div class="speaker-tag">वक्ता: <span id="speaker" style="color:var(--gold)">...</span></div>
     </div>
 
     <div class="admin">
-        <div><h3>Social Handle</h3><input id="in-h" type="text" placeholder="@ChannelHandle"></div>
-        <div><h3>Viewers</h3><input id="in-v" type="number" placeholder="1000"></div>
-        <div><h3>Speaker Name</h3><input id="in-s" type="text" placeholder="आचार्य जी का नाम"></div>
-        <div><h3>Donors List</h3><textarea id="in-d" rows="5" placeholder="नाम - राशि (हर लाइन पर एक नया नाम)"></textarea></div>
-        <button onclick="saveToFirebase()">UPDATE LIVE STREAM NOW</button>
+        <div><h3>Social Handle</h3><input id="in-h" type="text" value="@SatsangLive"></div>
+        <div><h3>Viewers</h3><input id="in-v" type="number" value="1050"></div>
+        <div><h3>Speaker</h3><input id="in-s" type="text" value="आचार्य जी"></div>
+        <div><h3>Donors</h3><textarea id="in-d" rows="5">राम - ₹501&#10;श्याम - ₹1100</textarea></div>
+        <button onclick="saveToFirebase()">UPDATE LIVE DATA</button>
     </div>
 
 </body>
