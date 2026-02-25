@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuber Enterprises - Wholesale Kirana & Khajani</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Yatra+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* भगवा (Saffron) थीम कलर्स */
+            --primary-color: #FF7A00; 
+            --secondary-color: #E65100;
+            --dark-bg: #212121;
+            --light-bg: #FFF3E0;
+            --whatsapp-green: #25D366;
+            --text-color: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: #fcfcfc; color: var(--text-color); }
+
+        /* --- Header & Navigation --- */
+        header { background: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-bottom: 3px solid var(--primary-color); }
+        .logo-container { display: flex; align-items: center; gap: 10px; }
+        /* Logo Placeholder */
+        .logo-img { width: 50px; height: 50px; background: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 10px; text-align: center; }
+        .logo-text h1 { font-family: 'Yatra One', cursive; font-size: 1.8rem; color: var(--secondary-color); text-transform: uppercase; margin: 0; }
+        .logo-text p { font-size: 0.8rem; color: #555; font-weight: 600; }
+        
+        .cart-icon { position: relative; font-size: 1.5rem; cursor: pointer; color: var(--dark-bg); }
+        .cart-count { position: absolute; top: -8px; right: -10px; background: var(--primary-color); color: white; font-size: 0.8rem; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+
+        /* --- Hero Section --- */
+        .hero { background: linear-gradient(rgba(230, 81, 0, 0.8), rgba(255, 122, 0, 0.6)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80') center/cover; height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white; padding: 20px; }
+        .hero h2 { font-size: 3rem; font-family: 'Yatra One', cursive; margin-bottom: 15px; text-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
+        .hero p { font-size: 1.3rem; font-weight: 600; margin-bottom: 25px; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 5px; }
+
+        /* --- Marquee Brands --- */
+        .brand-marquee { background: var(--dark-bg); color: white; padding: 10px; overflow: hidden; white-space: nowrap; border-top: 3px solid var(--primary-color); border-bottom: 3px solid var(--primary-color); }
+        .marquee-content { display: inline-block; animation: scroll 15s linear infinite; font-size: 1.2rem; font-weight: bold; letter-spacing: 2px; }
+        .marquee-content span { margin: 0 30px; color: var(--primary-color); }
+        @keyframes scroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+
+        /* --- Special Wholesale Dynamic Box (For Firebase) --- */
+        .dynamic-wholesale { padding: 40px 20px; background: var(--light-bg); margin: 30px auto; max-width: 1200px; border-radius: 15px; border: 2px dashed var(--secondary-color); }
+        .section-title { text-align: center; font-size: 2.2rem; color: var(--secondary-color); margin-bottom: 20px; font-family: 'Yatra One', cursive; }
+        .section-desc { text-align: center; margin-bottom: 30px; font-weight: 600; color: #555; }
+        
+        .wholesale-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .product-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.08); transition: 0.3s; position: relative; padding-bottom: 15px; text-align: center; border: 1px solid #eee; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(255, 122, 0, 0.3); }
+        .product-img { width: 100%; height: 200px; object-fit: cover; }
+        
+        /* Stock Tags */
+        .tag-available { position: absolute; top: 10px; left: 10px; background: #4CAF50; color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; }
+        .tag-unavailable { position: absolute; top: 10px; left: 10px; background: #F44336; color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; }
+
+        .product-info { padding: 15px; }
+        .product-info h3 { font-size: 1.2rem; color: var(--dark-bg); margin-bottom: 5px; }
+        .product-info p { font-size: 0.9rem; color: #666; margin-bottom: 15px; }
+        
+        /* Add to Cart Button */
+        .btn-add { background: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; transition: 0.3s; width: 80%; }
+        .btn-add:hover { background: var(--secondary-color); }
+        .btn-add:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* --- Regular Categories Section --- */
+        .categories { padding: 50px 20px; max-width: 1200px; margin: auto; }
+        .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .cat-card { background: white; padding: 20px; border-radius: 10px; text-align: center; border-left: 5px solid var(--primary-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .cat-card i { font-size: 3rem; color: var(--primary-color); margin-bottom: 15px; }
+
+        /* --- Cart Modal (Sidebar) --- */
+        .cart-modal { position: fixed; top: 0; right: -400px; width: 350px; height: 100vh; background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.2); transition: 0.4s; z-index: 2000; display: flex; flex-direction: column; }
+        .cart-modal.active { right: 0; }
+        .cart-header { background: var(--secondary-color); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .close-cart { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        .cart-items { flex-grow: 1; padding: 20px; overflow-y: auto; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding: 10px 0; }
+        .cart-footer { padding: 20px; background: #f9f9f9; border-top: 1px solid #ddd; }
+        .btn-whatsapp { display: block; width: 100%; background: var(--whatsapp-green); color: white; text-align: center; padding: 15px; text-decoration: none; font-weight: bold; border-radius: 5px; font-size: 1.1rem; border: none; cursor: pointer; }
+
+        /* --- Features & Footer --- */
+        .features { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; background: var(--dark-bg); color: white; padding: 40px 20px; }
+        .feat-box { text-align: center; max-width: 250px; }
+        .feat-box i { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 10px; }
+
+        footer { background: #111; color: #ccc; text-align: center; padding: 30px 20px; }
+        footer h3 { color: var(--primary-color); margin-bottom: 10px; }
+
+        @media (max-width: 768px) {
+            .hero h2 { font-size: 2.2rem; }
+            .cart-modal { width: 100%; right: -100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <div class="logo-img">Logo<br>Here</div>
+            <div class="logo-text">
+                <h1>KUBER ENTERPRISES</h1>
+                <p>खजानी और किराना के थोक व चिल्लर विक्रेता</p>
+            </div>
+        </div>
+        <div class="cart-icon" onclick="toggleCart()">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" id="cartCount">0</span>
+        </div>
+    </header>
+
+    <div class="brand-marquee">
+        <div class="marquee-content">
+            उपलब्ध ब्रांड्स: <span>SAMAY</span> • <span>TU HI TU</span> • <span>HALDIRAMS</span> • <span>CELESTY</span> • <span>2BY2</span> • <span>PARAGON</span>
+        </div>
+    </div>
+
+    <section class="hero">
+        <h2>थोक दाम और बेहतरीन क्वालिटी<br>आपके परिवार की पहली पसंद!</h2>
+        <p>जन्मदिन केक, आइसक्रीम, पटाखे और रोजमर्रा की सभी जरूरतें होलसेल रेट पर उपलब्ध।</p>
+    </section>
+
+    <section class="dynamic-wholesale">
+        <h2 class="section-title">🔥 आज के नए होलसेल आइटम्स</h2>
+        <p class="section-desc">इस बॉक्स में रोज़ाना नया माल अपडेट होता है। सीधा कार्ट में डालें और ऑर्डर करें।</p>
+        
+        <div class="wholesale-grid" id="dynamicProducts">
+            </div>
+    </section>
+
+    <section class="categories">
+        <h2 class="section-title">हमारी मुख्य कैटेगरी</h2>
+        <div class="cat-grid">
+            <div class="cat-card">
+                <i class="fas fa-cookie-bite"></i>
+                <h3>खजानी व स्नैक्स</h3>
+                <p>बिस्किट्स, टोस्ट और बच्चों के खाने के आइटम थोक में।</p>
+            </div>
+            <div class="cat-card">
+                <i class="fas fa-birthday-cake"></i>
+                <h3>केक और आइसक्रीम</h3>
+                <p>पार्टी और जन्मदिन के लिए फ्रेश आइटम।</p>
+            </div>
+            <div class="cat-card">
+                <i class="fas fa-shopping-basket"></i>
+                <h3>डेली नीड्स (किराना)</h3>
+                <p>रोजमर्रा की जरूरत का हर सामान एक ही छत के नीचे।</p>
+            </div>
+            <div class="cat-card">
+                <i class="fas fa-fire"></i>
+                <h3>पटाखे (ऑल वैरायटी)</h3>
+                <p>स्काई शॉट्स, सुतली बम और छोटे-बड़े सभी पटाखे।</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feat-box">
+            <i class="fas fa-tags"></i>
+            <h4>होलसेल रेट</h4>
+            <p>सभी सामान थोक और किफायती दामों पर उपलब्ध।</p>
+        </div>
+        <div class="feat-box">
+            <i class="fas fa-clock"></i>
+            <h4>समय</h4>
+            <p>सुबह 7:00 AM से रात 9:00 PM तक खुला।</p>
+        </div>
+        <div class="feat-box">
+            <i class="fas fa-map-marker-alt"></i>
+            <h4>पता</h4>
+            <p>बगरेकसा, डोंगरगढ़ (C.G.)</p>
+        </div>
+    </section>
+
+    <footer>
+        <h3>KUBER ENTERPRISES</h3>
+        <p>संपर्क: 9617413705 | बगरेकसा, डोंगरगढ़</p>
+        <p style="margin-top: 10px; font-size: 0.8rem;">&copy; 2026 Kuber Enterprises. All Rights Reserved.</p>
+    </footer>
+
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-header">
+            <h3>आपका कार्ट</h3>
+            <button class="close-cart" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cartItemsList">
+            <p style="text-align:center; color:#888; margin-top:50px;">कार्ट खाली है</p>
+        </div>
+        <div class="cart-footer">
+            <button class="btn-whatsapp" onclick="sendToWhatsApp()"><i class="fab fa-whatsapp"></i> WhatsApp पर आर्डर भेजें</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. FIREBASE CONFIGURATION PLACEHOLDER ---
+        // देवदास जी, जब आप एडमिन पैनल बनाएंगे, तो यहाँ Firebase का कोड डालेंगे
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        // firebase.initializeApp(firebaseConfig);
+        // const db = firebase.firestore();
+
+        // --- 2. DYNAMIC PRODUCTS DATA (Simulation) ---
+        // अभी के लिए हम इसे एक Array से चला रहे हैं। बाद में ये डाटा Firebase Database से आएगा।
+        const productsData = [
+            { id: 1, name: "Haldiram Bhujia (1 Box)", category: "Khajani", status: "Available", img: "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=500&q=80" },
+            { id: 2, name: "Samay Toast (Wholesale Pack)", category: "Snacks", status: "Available", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500&q=80" },
+            { id: 3, name: "Sky Shots Crackers", category: "Firecrackers", status: "Out of Stock", img: "https://images.unsplash.com/photo-1544868516-7d6fb41e6c38?w=500&q=80" },
+            { id: 4, name: "Birthday Cake (Pre-order)", category: "Cake", status: "Available", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&q=80" }
+        ];
+
+        // --- 3. RENDER PRODUCTS TO HTML ---
+        const productContainer = document.getElementById('dynamicProducts');
+        
+        productsData.forEach(product => {
+            let isAvailable = product.status === "Available";
+            let tagClass = isAvailable ? "tag-available" : "tag-unavailable";
+            let tagText = isAvailable ? "उपलब्ध है" : "स्टॉक खत्म";
+            let btnState = isAvailable ? "" : "disabled";
+            let btnText = isAvailable ? "कार्ट में डालें" : "उपलब्ध नहीं";
+
+            let cardHTML = `
+                <div class="product-card">
+                    <span class="${tagClass}">${tagText}</span>
+                    <img src="${product.img}" alt="${product.name}" class="product-img">
+                    <div class="product-info">
+                        <h3>${product.name}</h3>
+                        <p>कैटेगरी: ${product.category}</p>
+                        <button class="btn-add" ${btnState} onclick="addToCart('${product.name}')">${btnText}</button>
+                    </div>
+                </div>
+            `;
+            productContainer.innerHTML += cardHTML;
+        });
+
+        // --- 4. CART LOGIC ---
+        let cart = [];
+
+        function addToCart(itemName) {
+            let existingItem = cart.find(i => i.name === itemName);
+            if(existingItem) {
+                existingItem.qty += 1;
+            } else {
+                cart.push({ name: itemName, qty: 1 });
+            }
+            updateCartUI();
+            alert(itemName + " कार्ट में जुड़ गया!");
+        }
+
+        function updateCartUI() {
+            document.getElementById('cartCount').innerText = cart.length;
+            let cartList = document.getElementById('cartItemsList');
+            
+            if(cart.length === 0) {
+                cartList.innerHTML = `<p style="text-align:center; color:#888; margin-top:50px;">कार्ट खाली है</p>`;
+                return;
+            }
+
+            cartList.innerHTML = '';
+            cart.forEach((item, index) => {
+                cartList.innerHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <strong>${item.name}</strong><br>
+                            <small>मात्रा: ${item.qty}</small>
+                        </div>
+                        <button onclick="removeFromCart(${index})" style="color:red; background:none; border:none; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+            });
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function toggleCart() {
+            document.getElementById('cartModal').classList.toggle('active');
+        }
+
+        // --- 5. SEND TO WHATSAPP LOGIC ---
+        function sendToWhatsApp() {
+            if(cart.length === 0) {
+                alert("आपका कार्ट खाली है! पहले सामान डालें।");
+                return;
+            }
+
+            let message = "नमस्ते Kuber Enterprises,%0Aमैं ये सामान आर्डर करना चाहता हूँ:%0A%0A";
+            cart.forEach((item, i) => {
+                message += `${i+1}. ${item.name} - ${item.qty} पीस%0A`;
+            });
+            message += "%0Aकृपया मुझे इनका होलसेल रेट और बिल बताएं।";
+
+            // Shop Owner WhatsApp Number
+            let waNumber = "919617413705"; 
+            let waLink = `https://wa.me/${waNumber}?text=${message}`;
+            
+            window.open(waLink, '_blank');
+        }
+    </script>
+</body>
+</html>
