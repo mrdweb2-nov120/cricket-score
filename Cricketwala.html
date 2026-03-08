@@ -3,261 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPL BROADCAST PRO | DEVDAS MALEKAR EDITION</title>
+    <title>CPL BROADCAST ULTIMATE | DEVDAS MALEKAR SPECIAL</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Orbitron:wght@400;700;900&family=Teko:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,400;0,700;0,900;1,700&family=Orbitron:wght@400;700;900&family=Teko:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
         /* =================================================================================
-           1. ADVANCED DESIGN SYSTEM & UI VARIABLES
+           1. CORE DESIGN SYSTEM (CSS VARIABLES)
            ================================================================================= */
         :root {
-            --primary-bg: #1a0633; /* Professional Dark Purple */
+            /* Theme Colors - Matching your image exactly */
+            --primary-deep: #1a0633;
+            --secondary-deep: #0f172a;
             --accent-pink: #e91e63;
-            --gold-accent: #fbbf24;
+            --gold: #fbbf24;
+            --glass-white: rgba(255, 255, 255, 0.1);
             --pure-white: #ffffff;
-            --text-gray: #ccc;
+            --text-gray: #bdc3c7;
+            
+            /* Typo */
             --font-head: 'Orbitron', sans-serif;
             --font-body: 'Exo 2', sans-serif;
             --font-stat: 'Teko', sans-serif;
+            
+            /* Motion */
+            --transition-smooth: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        * { box-sizing: border-box; user-select: none; }
+        * { box-sizing: border-box; user-select: none; -webkit-font-smoothing: antialiased; }
 
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #0c0c0c; /* For testing; usually transparent in OBS */
-            font-family: var(--font-body);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow-x: hidden;
+            margin: 0; padding: 0; background: transparent;
+            font-family: var(--font-body); overflow: hidden; height: 100vh;
         }
 
         /* =================================================================================
-           2. PROFESSIONAL SCORE BUG (OVERLAY) - THE NEW DESIGN
+           2. ANIMATION KEYFRAMES
            ================================================================================= */
-        .overlay-wrapper {
-            position: fixed;
-            bottom: 40px;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: center;
-            z-index: 100;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8));
+        @keyframes shine-sweep { 0% { left: -100%; } 100% { left: 100%; } }
+        @keyframes pulse-gold { 0% { transform: scale(1); box-shadow: 0 0 0 0 var(--gold); } 70% { transform: scale(1.05); box-shadow: 0 0 10px 10px rgba(0,0,0,0); } 100% { transform: scale(1); } }
+        @keyframes bg-pan { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
+        .shine-effect { position: relative; overflow: hidden; }
+        .shine-effect::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-25deg); animation: shine-sweep 4s infinite linear;
         }
 
-        .score-bug {
-            display: flex;
-            height: 70px;
-            background: var(--pure-white);
-            border-radius: 4px;
-            overflow: hidden;
-            animation: slideUp 1s cubic-bezier(0.19, 1, 0.22, 1);
+        /* =================================================================================
+           3. TOP SCORE BUG (MAIN GRAPHIC)
+           ================================================================================= */
+        .broadcast-container {
+            position: fixed; top: 25px; left: 0; right: 0;
+            display: flex; justify-content: center; z-index: 1000;
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(150px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .main-score-bug {
+            display: flex; height: 75px; background: var(--pure-white);
+            border-radius: 4px; overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            animation: slideInDown 1s var(--transition-smooth);
         }
 
-        /* Batting Side (Left) */
-        .seg-batting {
-            background: var(--primary-bg);
-            color: white;
-            min-width: 320px;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            clip-path: polygon(0% 0%, 92% 0%, 100% 50%, 92% 100%, 0% 100%);
+        /* Flag Areas */
+        .flag-seg {
+            width: 60px; height: 100%; background: #000;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .flag-seg img { width: 42px; height: 26px; object-fit: cover; border: 1px solid #333; }
+
+        /* Batting Section */
+        .bat-seg {
+            background: var(--primary-deep); color: white; min-width: 320px;
+            padding: 0 20px; display: flex; flex-direction: column; justify-content: center;
+            clip-path: polygon(0% 0%, 93% 0%, 100% 50%, 93% 100%, 0% 100%);
             position: relative;
         }
+        .bat-row { display: flex; justify-content: space-between; margin: 2px 0; transition: var(--transition-smooth); }
+        .bat-name { font-weight: 700; text-transform: uppercase; font-size: 1rem; letter-spacing: 1px; }
+        .bat-score { font-family: var(--font-head); color: var(--gold); font-size: 1.2rem; }
+        .bat-score span { font-size: 0.8rem; color: var(--text-gray); margin-left: 5px; }
 
-        .bat-players-box { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
-        .bat-p-row { display: flex; justify-content: space-between; align-items: center; margin: 2px 0; transition: 0.3s; }
-        .bat-p-name { font-weight: 700; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
-        .bat-p-score { font-family: var(--font-head); color: var(--gold-accent); font-size: 1.1rem; }
-        .bat-p-score span { font-size: 0.7rem; color: #aaa; margin-left: 4px; }
+        /* Center Score Section */
+        .info-seg {
+            background: #fff; color: #000; min-width: 380px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 0 15px; position: relative;
+        }
+        .tour-name { font-size: 0.65rem; font-weight: 900; color: #777; letter-spacing: 2px; text-transform: uppercase; }
+        .match-vs { font-size: 1.2rem; font-weight: 400; margin: 2px 0; }
+        .match-vs b { font-weight: 900; color: #000; font-size: 1.4rem; }
         
-        /* Striker Indicator */
-        .is-striker { color: var(--gold-accent) !important; position: relative; }
-        .is-striker::before { content: '🏏'; position: absolute; left: -20px; font-size: 0.7rem; }
-
-        /* Match Info (Center) */
-        .seg-info {
-            background: white;
-            color: black;
-            min-width: 380px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 0 10px;
+        .score-pill-row { display: flex; align-items: center; gap: 15px; }
+        .score-pill { 
+            background: var(--accent-pink); color: #fff; padding: 2px 20px;
+            border-radius: 30px; font-family: var(--font-head); font-size: 2.2rem; line-height: 1;
         }
+        .overs-text { font-family: var(--font-head); font-size: 1.4rem; font-weight: 700; color: #222; }
 
-        .match-title { font-size: 0.7rem; font-weight: 900; color: #555; text-transform: uppercase; margin-bottom: 2px; }
-        .teams-vs { font-size: 1.1rem; font-weight: 400; margin-bottom: 4px; }
-        .teams-vs b { font-weight: 900; color: #000; font-size: 1.3rem; }
-
-        .score-box { display: flex; align-items: center; gap: 12px; }
-        .main-score-pill { 
-            background: var(--accent-pink); 
-            color: white; 
-            padding: 2px 18px; 
-            border-radius: 25px; 
-            font-family: var(--font-head);
-            font-size: 2rem;
-            line-height: 1;
+        /* Bowling Section */
+        .bowl-seg {
+            background: var(--primary-deep); color: white; min-width: 320px;
+            padding: 0 20px; display: flex; align-items: center; justify-content: flex-end;
+            clip-path: polygon(7% 0%, 100% 0%, 100% 100%, 7% 100%, 0% 50%);
         }
-        .overs-display { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; color: #333; }
-
-        .extra-line { font-family: var(--font-stat); font-size: 1.2rem; color: #e91e63; font-weight: 700; text-transform: uppercase; margin-top: 2px; }
-
-        /* Bowling Side (Right) */
-        .seg-bowling {
-            background: var(--primary-bg);
-            color: white;
-            min-width: 320px;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            clip-path: polygon(8% 0%, 100% 0%, 100% 100%, 8% 100%, 0% 50%);
+        .bowler-meta { text-align: right; margin-right: 20px; }
+        .bowler-name { display: block; font-weight: 700; font-size: 1rem; text-transform: uppercase; }
+        .timeline { display: flex; gap: 5px; margin-top: 5px; }
+        .ball { 
+            width: 20px; height: 20px; border-radius: 50%; background: #222; border: 1px solid #444;
+            display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900;
         }
+        .bowl-stats { font-family: var(--font-head); font-size: 1.8rem; color: var(--gold); border-left: 2px solid #333; padding-left: 15px; }
 
-        .bw-data { text-align: right; margin-right: 15px; }
-        .bw-name { display: block; font-weight: 700; text-transform: uppercase; font-size: 0.9rem; }
-        .bw-timeline { display: flex; gap: 4px; margin-top: 4px; }
-        .ball-dot { 
-            width: 18px; height: 18px; border-radius: 50%; background: #333; border: 1px solid #555;
-            display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: bold;
-        }
-        .bw-figs { font-family: var(--font-head); font-size: 1.6rem; color: var(--gold-accent); border-left: 2px solid #444; padding-left: 15px; }
-
-        /* Timeline Ball Colors */
-        .b-4 { background: var(--gold-accent) !important; color: black; }
-        .b-6 { background: var(--accent-pink) !important; }
-        .b-w { background: white !important; color: black; }
+        /* Ball Coloring Classes */
+        .b-4 { background: var(--gold) !important; color: #000; border-color: #fff; box-shadow: 0 0 10px var(--gold); }
+        .b-6 { background: var(--accent-pink) !important; color: #fff; box-shadow: 0 0 10px var(--accent-pink); }
+        .b-w { background: #fff !important; color: #000; border-color: var(--accent-pink); }
 
         /* =================================================================================
-           3. ADMIN PANEL DESIGN (UNCHANGED FUNCTIONALITY, NEW LOOK)
+           4. BOTTOM THIRD (PLAYER BIO)
            ================================================================================= */
-        .admin-dashboard {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-            background: #111;
-            border-radius: 15px;
-            display: none; /* Hidden until Auth */
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+        .bio-overlay {
+            position: fixed; bottom: 60px; left: 80px;
+            width: 700px; height: 150px; display: none;
+            background: linear-gradient(135deg, var(--primary-deep) 0%, #000 100%);
+            border-left: 10px solid var(--accent-pink); color: #fff;
+            animation: slideInLeft 0.8s var(--transition-smooth);
+            z-index: 500; box-shadow: 20px 20px 60px rgba(0,0,0,0.9);
         }
+        .bio-photo-area { width: 150px; height: 150px; background: #222; float: left; position: relative; }
+        .bio-photo-area img { width: 100%; height: 100%; object-fit: cover; }
+        .bio-content { padding: 25px; float: left; width: 540px; }
+        .bio-p-name { font-family: var(--font-head); font-size: 2rem; color: var(--gold); text-transform: uppercase; }
+        .bio-p-stats { font-family: var(--font-stat); font-size: 2.2rem; letter-spacing: 2px; color: #eee; margin-top: 5px; }
 
-        .panel-box { background: #1a1a1a; padding: 20px; border-radius: 10px; border: 1px solid #333; }
-        .panel-box h3 { border-bottom: 2px solid var(--accent-pink); padding-bottom: 10px; font-family: var(--font-head); font-size: 0.9rem; }
+        /* =================================================================================
+           5. FULL SCREEN CELEBRATIONS
+           ================================================================================= */
+        #celeb-screen {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            display: none; align-items: center; justify-content: center; z-index: 2000;
+        }
+        .celeb-wrap { text-align: center; }
+        .celeb-title { font-family: var(--font-head); font-size: 12rem; font-weight: 900; color: #fff; text-shadow: 0 0 60px var(--accent-pink); }
+        .celeb-subtitle { font-size: 2rem; color: var(--gold); text-transform: uppercase; letter-spacing: 10px; margin-top: -30px; }
+
+        /* =================================================================================
+           6. ADMIN CONTROL CONSOLE (HIDDEN BY DEFAULT)
+           ================================================================================= */
+        .admin-desk {
+            position: fixed; top: 110px; left: 50%; transform: translateX(-50%);
+            width: 95%; max-width: 1400px; background: #0a0a0a; border: 1px solid #333;
+            border-radius: 12px; padding: 25px; display: none; z-index: 9000;
+            max-height: 85vh; overflow-y: auto; color: #fff;
+            box-shadow: 0 0 100px rgba(0,0,0,1);
+        }
+        .desk-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-pink); margin-bottom: 20px; padding-bottom: 10px; }
+        .desk-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .desk-card { background: #151515; padding: 20px; border-radius: 10px; border: 1px solid #222; }
+        .desk-card h3 { margin-top: 0; color: var(--gold); font-family: var(--font-head); font-size: 0.8rem; }
         
-        .btn-ctrl { 
-            width: 100%; padding: 15px; margin: 5px 0; border: none; border-radius: 5px; 
-            cursor: pointer; font-family: var(--font-head); font-weight: 900; transition: 0.2s;
+        input, select { 
+            width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; 
+            color: #fff; border-radius: 6px; font-family: var(--font-body);
         }
-        .c-run { background: #2563eb; color: white; }
-        .c-4 { background: var(--gold-accent); color: black; }
-        .c-6 { background: var(--accent-pink); color: white; }
-        .c-w { background: white; color: black; }
-        .c-util { background: #444; color: #ccc; }
-
-        input { width: 100%; padding: 8px; margin: 5px 0; background: #000; border: 1px solid #333; color: white; border-radius: 4px; }
-
-        /* Auth Screen */
-        .auth-screen {
-            position: fixed; inset: 0; background: #000; z-index: 1000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        
+        .btn-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .btn-act { 
+            padding: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: 900; 
+            font-family: var(--font-head); transition: 0.2s; text-transform: uppercase;
         }
+        .btn-run { background: #2563eb; color: #fff; }
+        .btn-four { background: var(--gold); color: #000; }
+        .btn-six { background: var(--accent-pink); color: #fff; }
+        .btn-w { background: #fff; color: #000; }
+        .btn-util { background: #333; color: #aaa; }
+        .btn-save { background: #10b981; color: #fff; grid-column: span 3; margin-top: 15px; font-size: 1.2rem; }
+        
+        .btn-act:active { transform: scale(0.95); }
+
     </style>
 </head>
 <body>
 
-    <div id="authScreen" class="auth-screen">
-        <h2 style="font-family: var(--font-head); color: var(--gold-accent);">DEVDAS MALEKAR | CONTROL</h2>
-        <input type="password" id="authKey" style="width: 250px; text-align: center; letter-spacing: 5px;" placeholder="ENTER KEY">
-        <button onclick="unlockSystem()" class="btn-ctrl c-run" style="width: 250px;">UNLOCK BROADCAST</button>
+    <div id="celeb-screen">
+        <div class="celeb-wrap">
+            <div id="celeb-main" class="celeb-title animate__animated">FOUR</div>
+            <div id="celeb-sub" class="celeb-subtitle animate__animated">CRACKING BOUNDARY</div>
+        </div>
     </div>
 
-    <div class="overlay-wrapper">
-        <div class="score-bug">
-            <div class="seg-batting">
-                <div class="bat-players-box">
-                    <div class="bat-p-row" id="disp-p1-row">
-                        <span class="bat-p-name" id="disp-p1-name">PLAYER 1</span>
-                        <span class="bat-p-score" id="disp-p1-s">0 <span>(0)</span></span>
-                    </div>
-                    <div class="bat-p-row" id="disp-p2-row">
-                        <span class="bat-p-name" id="disp-p2-name">PLAYER 2</span>
-                        <span class="bat-p-score" id="disp-p2-s">0 <span>(0)</span></span>
-                    </div>
+    <div class="broadcast-container">
+        <div class="main-score-bug shine-effect" id="mainBug">
+            
+            <div class="flag-seg"><img id="v-f1" src="https://flagcdn.com/w80/in.png"></div>
+
+            <div class="bat-seg">
+                <div class="bat-row" id="v-p1-row">
+                    <span class="bat-name" id="v-p1-n">PLAYER 1</span>
+                    <span class="bat-score" id="v-p1-s">0 <span>(0)</span></span>
+                </div>
+                <div class="bat-row" id="v-p2-row">
+                    <span class="bat-name" id="v-p2-n">PLAYER 2</span>
+                    <span class="bat-score" id="v-p2-s">0 <span>(0)</span></span>
                 </div>
             </div>
 
-            <div class="seg-info">
-                <div class="match-title" id="disp-tour">TOURNAMENT NAME</div>
-                <div class="teams-vs" id="disp-teams">TEAM A v TEAM B</div>
-                <div class="score-box">
-                    <div class="main-score-pill" id="disp-total">0-0</div>
-                    <div class="overs-display" id="disp-overs">0.0</div>
+            <div class="info-seg">
+                <div class="tour-name" id="v-tour">TOURNAMENT NAME</div>
+                <div class="match-vs" id="v-vs">IND v BAN</div>
+                <div class="score-pill-row">
+                    <div class="score-pill" id="v-total">0-0</div>
+                    <div class="overs-text" id="v-ov">0.0</div>
                 </div>
-                <div class="extra-line" id="disp-extra">TARGET: 100</div>
             </div>
 
-            <div class="seg-bowling">
-                <div class="bw-data">
-                    <span class="bw-name" id="disp-bw-name">BOWLER NAME</span>
-                    <div class="bw-timeline" id="ball-timeline">
+            <div class="bowl-seg">
+                <div class="bowler-meta">
+                    <span class="bowler-name" id="v-bw-n">BOWLER NAME</span>
+                    <div class="timeline" id="v-timeline">
                         </div>
                 </div>
-                <div class="bw-figs" id="disp-bw-figs">0-0</div>
+                <div class="bowl-stats" id="v-bw-s">0-0</div>
             </div>
+
+            <div class="flag-seg"><img id="v-f2" src="https://flagcdn.com/w80/bd.png"></div>
         </div>
     </div>
 
-    <div class="admin-dashboard" id="adminPanel">
-        <div class="panel-box">
-            <h3>MATCH SETUP</h3>
-            Tournament: <input type="text" id="in-tour" oninput="syncManual()">
-            Team 1: <input type="text" id="in-t1" oninput="syncManual()">
-            Team 2: <input type="text" id="in-t2" oninput="syncManual()">
-            Target: <input type="number" id="in-target" oninput="syncManual()">
-            Batting Team (t1/t2): <input type="text" id="in-bat-team" oninput="syncManual()">
+    <div class="bio-overlay" id="v-bio">
+        <div class="bio-photo-area"><img id="v-bio-img" src="https://via.placeholder.com/150"></div>
+        <div class="bio-content">
+            <div class="bio-p-name" id="v-bio-n">VIRAT KOHLI</div>
+            <div class="bio-p-stats" id="v-bio-s">M: 254 | R: 12899 | AVG: 58.2</div>
+            <div style="font-size: 0.9rem; color: var(--accent-pink); font-weight: 900; letter-spacing: 5px; margin-top: 10px;">PRO PLAYER PROFILE</div>
+        </div>
+    </div>
+
+    <div class="admin-desk" id="adminDesk">
+        <div class="desk-header">
+            <h2><i class="fas fa-satellite-dish"></i> BROADCAST CONTROL CONSOLE</h2>
+            <div style="color: var(--gold)">LOGGED IN AS: DEVDAS MALEKAR</div>
         </div>
 
-        <div class="panel-box">
-            <h3>SCORING PAD</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
-                <button class="btn-ctrl c-run" onclick="scoreRun(0)">DOT</button>
-                <button class="btn-ctrl c-run" onclick="scoreRun(1)">1 RUN</button>
-                <button class="btn-ctrl c-run" onclick="scoreRun(2)">2 RUNS</button>
-                <button class="btn-ctrl c-run" onclick="scoreRun(3)">3 RUNS</button>
-                <button class="btn-ctrl c-4" onclick="scoreRun(4)">4 (FOUR)</button>
-                <button class="btn-ctrl c-6" onclick="scoreRun(6)">6 (SIX)</button>
-                <button class="btn-ctrl c-w" onclick="scoreWicket()">WICKET</button>
-                <button class="btn-ctrl c-util" onclick="scoreExtra('WD')">WD</button>
-                <button class="btn-ctrl c-util" onclick="undo()">UNDO</button>
-                <button class="btn-ctrl c-util" onclick="swapStrike()">SWAP</button>
+        <div class="desk-grid">
+            <div class="desk-card">
+                <h3>MATCH SETUP</h3>
+                Tournament: <input type="text" id="in-tour" value="CHHOTU PREMIER LEAGUE">
+                Team 1 Name: <input type="text" id="in-t1" value="IND">
+                Team 1 Flag (URL): <input type="text" id="in-f1" value="https://flagcdn.com/w80/in.png">
+                Team 2 Name: <input type="text" id="in-t2" value="BAN">
+                Team 2 Flag (URL): <input type="text" id="in-f2" value="https://flagcdn.com/w80/bd.png">
+                Current Batting (t1/t2): <input type="text" id="in-bat-team" value="t1">
+                Target: <input type="number" id="in-target" value="0">
             </div>
-        </div>
 
-        <div class="panel-box">
-            <h3>PLAYER EDIT</h3>
-            Striker Name: <input type="text" id="in-p1" oninput="syncManual()">
-            Non-Striker: <input type="text" id="in-p2" oninput="syncManual()">
-            Bowler Name: <input type="text" id="in-bw" oninput="syncManual()">
-            <br><br>
-            <button class="btn-ctrl c-run" style="background: green;" onclick="updateFirebase()">PUSH TO CLOUD</button>
+            <div class="desk-card">
+                <h3>SCORING ENGINE</h3>
+                <div class="btn-group">
+                    <button class="btn-act btn-util" onclick="score(0)">0</button>
+                    <button class="btn-act btn-run" onclick="score(1)">1</button>
+                    <button class="btn-act btn-run" onclick="score(2)">2</button>
+                    <button class="btn-act btn-run" onclick="score(3)">3</button>
+                    <button class="btn-act btn-four" onclick="score(4)">4 (FOUR)</button>
+                    <button class="btn-act btn-six" onclick="score(6)">6 (SIX)</button>
+                    <button class="btn-act btn-w" style="grid-column: span 3;" onclick="wicket()">WICKET</button>
+                </div>
+                <div class="btn-group" style="margin-top: 20px;">
+                    <button class="btn-act btn-util" onclick="extra('WD')">WD</button>
+                    <button class="btn-act btn-util" onclick="extra('NB')">NB</button>
+                    <button class="btn-act btn-util" onclick="swap()">SWAP</button>
+                    <button class="btn-act btn-util" style="grid-column: span 3; background: #666; color:#fff;" onclick="undo()">UNDO LAST ACTION</button>
+                </div>
+            </div>
+
+            <div class="desk-card">
+                <h3>PLAYERS DATA</h3>
+                Striker Name: <input type="text" id="in-p1" oninput="manualSync()">
+                Non-Striker: <input type="text" id="in-p2" oninput="manualSync()">
+                Bowler Name: <input type="text" id="in-bw" oninput="manualSync()">
+                <hr>
+                CRR: <span id="out-crr" style="color:var(--gold)">0.00</span> | RRR: <span id="out-rrr" style="color:var(--accent-pink)">0.00</span>
+            </div>
+
+            <div class="desk-card">
+                <h3>GRAPHICS MGMT</h3>
+                Bio Name: <input type="text" id="in-bio-n" value="VIRAT KOHLI">
+                Bio Stats: <input type="text" id="in-bio-s" value="M: 25 | R: 450 | SR: 145">
+                Bio Photo (URL): <input type="text" id="in-bio-i" value="">
+                <button class="btn-act btn-six" style="width:100%;" onclick="toggleBio()">SHOW/HIDE PLAYER BIO</button>
+                <div style="margin-top: 20px; font-size: 0.7rem; color: #555;">SHORTCUT: CTRL + M TO TOGGLE PANEL</div>
+                
+                <button class="btn-act btn-save" onclick="pushCloud()">PUSH ALL DATA TO CLOUD</button>
+            </div>
         </div>
     </div>
 
@@ -266,22 +309,28 @@
 
     <script>
         /* =================================================================================
-           JAVASCRIPT LOGIC ENGINE (ALL FEATURES PRESERVED & ENHANCED)
+           JAVASCRIPT LOGIC ENGINE (ULTIMATE EDITION)
            ================================================================================= */
 
-        // 1. STATE INITIALIZATION
+        // --- [A] GLOBAL STATE ---
         let state = {
-            meta: { tour: "CHHOTU PREMIER LEAGUE", t1: "IND", t2: "BAN", batting: "t1", target: 0 },
+            meta: {
+                tour: "CHHOTU PREMIER LEAGUE",
+                t1: "IND", f1: "https://flagcdn.com/w80/in.png",
+                t2: "BAN", f2: "https://flagcdn.com/w80/bd.png",
+                target: 0, batting: 't1'
+            },
             score: { runs: 0, wkts: 0, overs: 0, balls: 0 },
-            p1: { name: "PLAYER 1", runs: 0, balls: 0 },
-            p2: { name: "PLAYER 2", runs: 0, balls: 0 },
-            bw: { name: "BOWLER", runs: 0, wkts: 0, overs: 0, balls: 0 },
-            strike: 1, // 1 or 2
-            timeline: [], // Current Over
-            history: [] // For Undo
+            p1: { name: "SURYAKUMAR", runs: 0, balls: 0 },
+            p2: { name: "RISHABH PANT", runs: 0, balls: 0 },
+            bw: { name: "MAHMUDULLAH", runs: 0, wkts: 0, overs: 0, balls: 0 },
+            strike: 1, // 1 for P1, 2 for P2
+            timeline: [], // Balls in current over
+            bio: { visible: false, name: "", stats: "", img: "" },
+            history: [] // 50-step deep history
         };
 
-        // 2. FIREBASE CONFIG (ADD YOUR DETAILS HERE)
+        // --- [B] FIREBASE SETUP ---
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             databaseURL: "YOUR_DATABASE_URL",
@@ -290,134 +339,197 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // 3. AUTH SYSTEM
-        function unlockSystem() {
-            const key = document.getElementById('authKey').value;
-            if(key === "Chhotu@8718") {
-                document.getElementById('authScreen').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'grid';
-                init();
-            } else { alert("ACCESS DENIED"); }
-        }
-
-        // 4. CORE FUNCTIONS
+        // --- [C] SCORING CORE ---
         function saveToHistory() {
-            state.history.push(JSON.parse(JSON.stringify(state)));
-            if(state.history.length > 10) state.history.shift();
+            const snapshot = JSON.parse(JSON.stringify(state));
+            state.history.push(snapshot);
+            if(state.history.length > 50) state.history.shift();
         }
 
-        function scoreRun(runs) {
+        function score(runs) {
             saveToHistory();
             state.score.runs += runs;
             state.bw.runs += runs;
-            
-            if(state.strike === 1) { state.p1.runs += runs; state.p1.balls++; }
-            else { state.p2.runs += runs; state.p2.balls++; }
 
-            if(runs % 2 !== 0) swapStrikeLogic();
-            handleBall(runs);
+            // Batsman scoring
+            if(state.strike === 1) {
+                state.p1.runs += runs;
+                state.p1.balls++;
+            } else {
+                state.p2.runs += runs;
+                state.p2.balls++;
+            }
+
+            // Celebration Triggers
+            if(runs === 4) triggerCeleb("FOUR", "CRACKING BOUNDARY!");
+            if(runs === 6) triggerCeleb("SIX", "OUT OF THE PARK!");
+
+            // Strike rotation on odd runs
+            if(runs % 2 !== 0) rotateStrike();
+            
+            processBall(runs);
         }
 
-        function scoreWicket() {
+        function wicket() {
             saveToHistory();
             state.score.wkts++;
             state.bw.wkts++;
-            if(state.strike === 1) { state.p1.balls++; state.p1.name = "NEW BATSMAN"; state.p1.runs = 0; state.p1.balls = 0; }
-            else { state.p2.balls++; state.p2.name = "NEW BATSMAN"; state.p2.runs = 0; state.p2.balls = 0; }
-            handleBall('W');
+            triggerCeleb("OUT", "WICKET HAS FALLEN!");
+
+            // Mark striker as out and reset for new player
+            if(state.strike === 1) {
+                state.p1.name = "NEW BATSMAN";
+                state.p1.runs = 0;
+                state.p1.balls = 0;
+            } else {
+                state.p2.name = "NEW BATSMAN";
+                state.p2.runs = 0;
+                state.p2.balls = 0;
+            }
+
+            processBall('W');
         }
 
-        function scoreExtra(type) {
+        function extra(type) {
             saveToHistory();
             state.score.runs += 1;
             state.bw.runs += 1;
+            // No ball count increment for Extras in standard display
             render();
-            updateFirebase();
+            pushCloud();
         }
 
-        function handleBall(val) {
+        function processBall(val) {
             state.score.balls++;
             state.bw.balls++;
             state.timeline.push(val);
 
+            // Over completion
             if(state.score.balls >= 6) {
                 state.score.overs++;
                 state.score.balls = 0;
                 state.bw.overs++;
                 state.bw.balls = 0;
-                state.timeline = [];
-                swapStrikeLogic();
+                state.timeline = []; // Reset visual timeline
+                rotateStrike(); // End of over swap
             }
             render();
-            updateFirebase();
+            pushCloud();
         }
 
-        function swapStrike() {
-            saveToHistory();
-            swapStrikeLogic();
-            render();
-            updateFirebase();
-        }
-
-        function swapStrikeLogic() { state.strike = state.strike === 1 ? 2 : 1; }
+        function rotateStrike() { state.strike = state.strike === 1 ? 2 : 1; }
+        function swap() { saveToHistory(); rotateStrike(); render(); pushCloud(); }
 
         function undo() {
             if(state.history.length > 0) {
-                state = state.history.pop();
+                const last = state.history.pop();
+                state = last;
                 render();
-                updateFirebase();
+                pushCloud();
             }
         }
 
-        // 5. RENDERING ENGINE (THE NEXT LEVEL PART)
-        function render() {
-            // Textual Updates
-            document.getElementById('disp-tour').innerText = state.meta.tour;
-            document.getElementById('disp-total').innerText = `${state.score.runs}-${state.score.wkts}`;
-            document.getElementById('disp-overs').innerText = `${state.score.overs}.${state.score.balls}`;
+        // --- [D] GRAPHICS MGMT ---
+        function toggleBio() {
+            state.bio.visible = !state.bio.visible;
+            state.bio.name = document.getElementById('in-bio-n').value;
+            state.bio.stats = document.getElementById('in-bio-s').value;
+            state.bio.img = document.getElementById('in-bio-i').value;
+            render();
+            pushCloud();
+        }
+
+        function triggerCeleb(main, sub) {
+            const box = document.getElementById('celeb-screen');
+            const m = document.getElementById('celeb-main');
+            const s = document.getElementById('celeb-sub');
             
-            // Bold Team Logic
+            m.innerText = main;
+            s.innerText = sub;
+            
+            m.className = "celeb-title animate__animated animate__zoomInDown";
+            s.className = "celeb-subtitle animate__animated animate__fadeInUp";
+            
+            box.style.display = 'flex';
+            
+            setTimeout(() => {
+                m.className = "celeb-title animate__animated animate__zoomOutUp";
+                setTimeout(() => box.style.display = 'none', 500);
+            }, 2500);
+        }
+
+        // --- [E] RENDERING & SYNC ---
+        function render() {
+            // Match Info
+            document.getElementById('v-tour').innerText = state.meta.tour;
+            document.getElementById('v-f1').src = state.meta.f1;
+            document.getElementById('v-f2').src = state.meta.f2;
+            
             const t1 = state.meta.t1;
             const t2 = state.meta.t2;
             if(state.meta.batting === 't1') {
-                document.getElementById('disp-teams').innerHTML = `<b>${t1}</b> v ${t2}`;
+                document.getElementById('v-vs').innerHTML = `<b>${t1}</b> v ${t2}`;
             } else {
-                document.getElementById('disp-teams').innerHTML = `${t1} v <b>${t2}</b>`;
+                document.getElementById('v-vs').innerHTML = `${t1} v <b>${t2}</b>`;
             }
 
-            // Players
-            document.getElementById('disp-p1-name').innerText = state.p1.name;
-            document.getElementById('disp-p1-s').innerHTML = `${state.p1.runs} <span>(${state.p1.balls})</span>`;
-            document.getElementById('disp-p2-name').innerText = state.p2.name;
-            document.getElementById('disp-p2-s').innerHTML = `${state.p2.runs} <span>(${state.p2.balls})</span>`;
+            // Score Bug
+            document.getElementById('v-total').innerText = `${state.score.runs}-${state.score.wkts}`;
+            document.getElementById('v-ov').innerText = `${state.score.overs}.${state.score.balls}`;
 
-            // Striker Highlight
-            document.getElementById('disp-p1-name').classList.toggle('is-striker', state.strike === 1);
-            document.getElementById('disp-p2-name').classList.toggle('is-striker', state.strike === 2);
+            // Batsmen
+            document.getElementById('v-p1-n').innerText = state.p1.name;
+            document.getElementById('v-p1-s').innerHTML = `${state.p1.runs} <span>(${state.p1.balls})</span>`;
+            document.getElementById('v-p2-n').innerText = state.p2.name;
+            document.getElementById('v-p2-s').innerHTML = `${state.p2.runs} <span>(${state.p2.balls})</span>`;
+
+            // Active Highlight
+            document.getElementById('v-p1-row').style.borderLeft = state.strike === 1 ? "4px solid var(--gold)" : "none";
+            document.getElementById('v-p1-row').style.paddingLeft = state.strike === 1 ? "10px" : "0";
+            document.getElementById('v-p2-row').style.borderLeft = state.strike === 2 ? "4px solid var(--gold)" : "none";
+            document.getElementById('v-p2-row').style.paddingLeft = state.strike === 2 ? "10px" : "0";
 
             // Bowler
-            document.getElementById('disp-bw-name').innerText = state.bw.name;
-            document.getElementById('disp-bw-figs').innerText = `${state.bw.wkts}-${state.bw.runs}`;
+            document.getElementById('v-bw-n').innerText = state.bw.name;
+            document.getElementById('v-bw-s').innerText = `${state.bw.wkts}-${state.bw.runs}`;
 
-            // Timeline
-            const tl = document.getElementById('ball-timeline');
-            tl.innerHTML = '';
-            state.timeline.forEach(b => {
-                const d = document.createElement('div');
-                d.className = `ball-dot b-${b}`;
-                d.innerText = b;
-                tl.appendChild(d);
+            // Timeline (Over View)
+            const tContainer = document.getElementById('v-timeline');
+            tContainer.innerHTML = '';
+            state.timeline.forEach(ball => {
+                const bDiv = document.createElement('div');
+                bDiv.className = 'ball';
+                if(ball === 4) bDiv.classList.add('b-4');
+                if(ball === 6) bDiv.classList.add('b-6');
+                if(ball === 'W') bDiv.classList.add('b-w');
+                bDiv.innerText = ball;
+                tContainer.appendChild(bDiv);
             });
 
-            // Target/Equation
+            // Stats Calc (CRR/RRR)
+            const totalBalls = (state.score.overs * 6) + state.score.balls;
+            const crr = totalBalls === 0 ? 0 : (state.score.runs / totalBalls) * 6;
+            document.getElementById('out-crr').innerText = crr.toFixed(2);
+
             if(state.meta.target > 0) {
                 const need = state.meta.target - state.score.runs;
-                document.getElementById('disp-extra').innerText = `NEED ${need} RUNS`;
-            } else {
-                document.getElementById('disp-extra').innerText = `1ST INNINGS`;
+                const remBalls = 120 - totalBalls; // Standard T20
+                const rrr = remBalls <= 0 ? 0 : (need / remBalls) * 6;
+                document.getElementById('out-rrr').innerText = rrr.toFixed(2);
             }
 
-            // Sync Admin Inputs
+            // Bio Graphic
+            const bioBug = document.getElementById('v-bio');
+            if(state.bio.visible) {
+                bioBug.style.display = 'block';
+                document.getElementById('v-bio-n').innerText = state.bio.name;
+                document.getElementById('v-bio-s').innerText = state.bio.stats;
+                document.getElementById('v-bio-img').src = state.bio.img || "https://via.placeholder.com/150";
+            } else {
+                bioBug.style.display = 'none';
+            }
+
+            // Sync Admin Panel Inputs
             document.getElementById('in-tour').value = state.meta.tour;
             document.getElementById('in-t1').value = state.meta.t1;
             document.getElementById('in-t2').value = state.meta.t2;
@@ -426,33 +538,46 @@
             document.getElementById('in-bw').value = state.bw.name;
         }
 
-        // 6. SYNC & CLOUD
-        function syncManual() {
+        function manualSync() {
             state.meta.tour = document.getElementById('in-tour').value;
             state.meta.t1 = document.getElementById('in-t1').value;
+            state.meta.f1 = document.getElementById('in-f1').value;
             state.meta.t2 = document.getElementById('in-t2').value;
-            state.meta.target = parseInt(document.getElementById('in-target').value) || 0;
+            state.meta.f2 = document.getElementById('in-f2').value;
             state.meta.batting = document.getElementById('in-bat-team').value;
+            state.meta.target = parseInt(document.getElementById('in-target').value) || 0;
+            
             state.p1.name = document.getElementById('in-p1').value;
             state.p2.name = document.getElementById('in-p2').value;
             state.bw.name = document.getElementById('in-bw').value;
             render();
         }
 
-        function updateFirebase() {
-            db.ref('broadcast_state').set(state);
+        function pushCloud() {
+            db.ref('cpl_ultimate_v5').set(state);
         }
 
-        function init() {
-            // Start listening for cloud changes
-            db.ref('broadcast_state').on('value', (snap) => {
-                const cloudData = snap.val();
-                if(cloudData) {
-                    state = cloudData;
-                    render();
-                }
-            });
-        }
+        // --- [F] SYSTEM EVENTS ---
+        window.addEventListener('keydown', (e) => {
+            // Toggle Admin Panel with CTRL + M
+            if(e.ctrlKey && e.key === 'm') {
+                const desk = document.getElementById('adminDesk');
+                desk.style.display = desk.style.display === 'none' ? 'block' : 'none';
+            }
+        });
+
+        // Firebase Cloud Listener (Sync all clients)
+        db.ref('cpl_ultimate_v5').on('value', (snap) => {
+            const cloudData = snap.val();
+            if(cloudData) {
+                state = cloudData;
+                render();
+            }
+        });
+
+        // First initialization
+        render();
+
     </script>
 </body>
 </html>
