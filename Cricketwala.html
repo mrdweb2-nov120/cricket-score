@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Cricket Scoreboard Overlay</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #1a0633; /* Dark Purple/Blue */
+            --accent-pink: #e91e63;
+            --white: #ffffff;
+            --text-gray: #ccc;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent; /* पारदर्शी ताकि वीडियो पर दिखे */
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        /* Main Container */
+        .score-bug {
+            display: flex;
+            align-items: center;
+            height: 60px;
+            background: var(--white);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 4px;
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Sections common styles */
+        .section {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+        }
+
+        /* Batting Side (Left) */
+        .batting-side {
+            background: var(--primary-bg);
+            color: white;
+            min-width: 250px;
+            position: relative;
+            clip-path: polygon(0% 0%, 95% 0%, 100% 50%, 95% 100%, 0% 100%);
+        }
+
+        .flag-icon { width: 35px; height: 22px; margin-right: 10px; border: 1px solid #444; }
+
+        .players-info { display: flex; flex-direction: column; font-size: 14px; flex-grow: 1; }
+        .player-row { display: flex; justify-content: space-between; align-items: center; margin: 1px 0; }
+        .player-name { font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .active-strike::before { content: '🏏'; font-size: 10px; margin-right: 5px; color: yellow; }
+        .player-score { font-weight: 900; color: #ffd700; margin-left: 10px; }
+        .balls { font-size: 11px; color: var(--text-gray); margin-left: 5px; }
+
+        /* Match Info (Middle) */
+        .match-info {
+            background: white;
+            color: #000;
+            min-width: 300px;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .teams-line { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+        .teams-line span.bold-team { font-weight: 900; color: #000; font-size: 16px; }
+        
+        .score-row { display: flex; align-items: center; gap: 10px; }
+        .main-score { 
+            background: var(--accent-pink); 
+            color: white; 
+            padding: 2px 15px; 
+            border-radius: 20px; 
+            font-weight: 900; 
+            font-size: 20px; 
+        }
+        .overs { font-weight: 700; font-size: 14px; color: #444; text-transform: uppercase; }
+        
+        .last-wicket { font-size: 11px; font-weight: 900; color: #333; margin-top: 2px; text-transform: uppercase; }
+
+        /* Bowling Side (Right) */
+        .bowling-side {
+            background: var(--primary-bg);
+            color: white;
+            min-width: 250px;
+            clip-path: polygon(5% 0%, 100% 0%, 100% 100%, 5% 100%, 0% 50%);
+            justify-content: flex-end;
+        }
+
+        .bowler-info { text-align: right; margin-right: 10px; }
+        .bowler-name { font-size: 14px; font-weight: 700; text-transform: uppercase; display: block; }
+        .last-over-runs { font-size: 11px; color: #ffd700; font-weight: 700; }
+        .bowler-stats { font-size: 18px; font-weight: 900; margin-left: 10px; border-left: 2px solid #555; padding-left: 10px; }
+        .bowler-overs { font-size: 12px; vertical-align: super; margin-left: 3px; color: var(--text-gray); }
+
+    </style>
+</head>
+<body>
+
+    <div class="score-bug" id="app">
+        <div class="section batting-side">
+            <img id="team1-flag" src="https://flagcdn.com/w80/in.png" class="flag-icon">
+            <div class="players-info">
+                <div class="player-row">
+                    <span id="p1-name" class="player-name">SURYAKUMAR</span>
+                    <span><span id="p1-r" class="player-score">1</span><span id="p1-b" class="balls">1</span></span>
+                </div>
+                <div class="player-row">
+                    <span id="p2-name" class="player-name active-strike">PANT</span>
+                    <span><span id="p2-r" class="player-score">29</span><span id="p2-b" class="balls">16</span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section match-info">
+            <div class="teams-line">
+                <span id="team-v-team">BAN v <span class="bold-team">IND</span></span>
+            </div>
+            <div class="score-row">
+                <div id="total-score" class="main-score">61-2</div>
+                <div id="total-overs" class="overs">7 OVERS</div>
+            </div>
+            <div id="last-wicket-info" class="last-wicket">LAST WICKET: ROHIT 23 (19)</div>
+        </div>
+
+        <div class="section bowling-side">
+            <div class="bowler-info">
+                <span id="bowler-name" class="bowler-name">MAHMUDULLAH</span>
+                <span id="last-over-runs" class="last-over-runs">LAST OVER 6 RUNS</span>
+            </div>
+            <div class="bowler-stats">
+                <span id="bowler-w-r">1-6</span>
+                <span id="bowler-o" class="bowler-overs">1</span>
+            </div>
+            <img id="team2-flag" src="https://flagcdn.com/w80/bd.png" class="flag-icon" style="margin-left: 10px; margin-right: 0;">
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Configuration (Replace with your own)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Listen for Realtime Updates
+        db.ref('scoreData').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if(!data) return;
+
+            // Update UI elements
+            document.getElementById('p1-name').innerText = data.p1Name;
+            document.getElementById('p1-r').innerText = data.p1R;
+            document.getElementById('p1-b').innerText = data.p1B;
+            
+            document.getElementById('p2-name').innerText = data.p2Name;
+            document.getElementById('p2-r').innerText = data.p2R;
+            document.getElementById('p2-b').innerText = data.p2B;
+
+            // Strike Logic
+            document.getElementById('p1-name').classList.toggle('active-strike', data.strike === 1);
+            document.getElementById('p2-name').classList.toggle('active-strike', data.strike === 2);
+
+            document.getElementById('total-score').innerText = `${data.runs}-${data.wickets}`;
+            document.getElementById('total-overs').innerText = `${data.overs} OVERS`;
+            document.getElementById('last-wicket-info').innerText = `LAST WICKET: ${data.lastWicket}`;
+
+            document.getElementById('bowler-name').innerText = data.bowlerName;
+            document.getElementById('bowler-w-r').innerText = `${data.bowlerW}-${data.bowlerR}`;
+            document.getElementById('bowler-o').innerText = data.bowlerO;
+            document.getElementById('last-over-runs').innerText = `LAST OVER ${data.lastOverRuns} RUNS`;
+
+            // Team Bold Logic
+            const t1 = data.team1;
+            const t2 = data.team2;
+            const battingTeam = data.battingTeam; // 't1' or 't2'
+            document.getElementById('team-v-team').innerHTML = 
+                `${battingTeam === 't2' ? '<span class="bold-team">'+t2+'</span>' : t2} v ${battingTeam === 't1' ? '<span class="bold-team">'+t1+'</span>' : t1}`;
+        });
+    </script>
+</body>
+</html>
